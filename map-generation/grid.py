@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from square import Square
@@ -23,6 +25,7 @@ class Grid:
             for j in range(self.size):
                 node = Square(i, j, self.gap, self.size, self.size, 0)
                 self.nodes[i].append(node)
+        self.update()
 
     """def draw_grid(self):
         for i in range(self.size):
@@ -30,12 +33,17 @@ class Grid:
             for j in range(self.size):
                 pygame.draw.line(self.win, BLACK, (j * self.gap, 0), (j * self.gap, self.gap * self.size - 1))"""
 
-    def draw(self):
-        self.win.fill(WHITE)
+    def update(self):
         for row in self.nodes:
             for spot in row:
                 spot.update_neighbors(self)
                 spot.surrounding_barrier(self)
+
+    def draw(self):
+        self.win.fill((125, 125, 125))
+        self.update()
+        for row in self.nodes:
+            for spot in row:
                 spot.draw(self.win)
                 if spot.is_border():
                     spot.make_barrier()
@@ -50,8 +58,8 @@ class Grid:
 
     def get_node(self, pos):
         y, x = pos
-        row = y // self.gap
-        col = x // self.gap
+        row = math.floor(y / self.gap)
+        col = math.floor(x / self.gap)
         return self.nodes[row][col]
 
     def read_map(self, full_file_path):

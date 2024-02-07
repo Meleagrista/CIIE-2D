@@ -14,12 +14,13 @@ TURQUOISE = (64, 224, 208)
 
 
 class Square:
+
     def __init__(self, row, col, size, total_rows, total_cols, weight):
         # Positional variables
         self.row = row
         self.col = col
-        self.x = row * size
-        self.y = col * size
+        self.x = (row * size) + size * 0.5
+        self.y = (col * size) + size * 0.5
         self.size = size
         self.total_rows = total_rows
         self.total_cols = total_cols
@@ -32,11 +33,18 @@ class Square:
         self.weight = weight
         self.hover = False
 
-    def get_pos(self):
+    # ########################### POSITION ########################### #
+
+    def get_grid_pos(self):
         return self.row, self.col
+
+    def get_pos(self):
+        return self.x, self.y
 
     def get_weight(self):
         return self.weight
+
+    # ############################# STATE ############################ #
 
     def is_barrier(self):
         return self.barrier
@@ -51,6 +59,14 @@ class Square:
     def make_barrier(self):
         self.barrier = True
         self.color = BLACK
+
+    # ########################## INTERACTIVE ######################### #
+
+    def compare_node(self, node):
+        return self.row == node.row and self.col == node.col
+
+    def compare_pos(self, pos, threshold: int = 1):
+        return (self.x - threshold <= pos[0] <= self.x + threshold) and (self.y - threshold <= pos[1] <= self.y + threshold)
 
     def surrounding_barrier(self, grid):
         if self.row < self.total_rows - 1:
@@ -97,12 +113,17 @@ class Square:
     # #################################### PYGAME FUNCTIONS #################################### #
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.size, self.size))
+        # Calculate the top-left corner of the rectangle
+        top_left_x = self.x - self.size / 2
+        top_left_y = self.y - self.size / 2
+
+        # Draw the rectangle with the adjusted coordinates
+        pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
 
     def update_neighbors(self, grid):
         self.neighbors = []
 
-        # #################################### CARDINAL NEIGHBOURS #################################### #
+        # ################################# CARDINAL NEIGHBOURS ################################# #
 
         if self.row < self.total_rows - 1 and not grid.nodes[self.row + 1][self.col].is_barrier():  # DOWN
             self.neighbors.append(grid.nodes[self.row + 1][self.col])
@@ -116,7 +137,7 @@ class Square:
         if self.col > 0 and not grid.nodes[self.row][self.col - 1].is_barrier():  # LEFT
             self.neighbors.append(grid.nodes[self.row][self.col - 1])
 
-        # #################################### DIAGONAL NEIGHBOURS #################################### #
+        # ################################# DIAGONAL NEIGHBOURS ################################# #
 
         # LEFT UP
         if self.col > 0 and self.row > 0 and ((not grid.nodes[self.row - 1][self.col].is_barrier()) or (

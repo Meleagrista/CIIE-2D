@@ -1,6 +1,8 @@
+import random
 import sys
 import pygame
 from grid import Grid
+from enemy import Enemy
 
 # Define constants
 GRID_SIZE = 35
@@ -17,6 +19,17 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     grid = Grid(GRID_SIZE, screen)
     grid.create_array()
+    grid.read_map(path_to_map)
+
+    pos = (random.randint(0, GRID_SIZE * SQUARE_SIZE), random.randint(0, GRID_SIZE * SQUARE_SIZE))
+    node = grid.get_node(pos)
+    while node.is_barrier():
+        pos = (random.randint(0, GRID_SIZE * SQUARE_SIZE), random.randint(0, GRID_SIZE * SQUARE_SIZE))
+        node = grid.get_node(pos)
+
+    print('Entity spawned in ' + str(pos))
+    x, y = pos
+    enemy = Enemy(x, y, 1, 0.5, grid, screen)
 
     dragging = False  # Flag to track if the left mouse button is being dragged
     resetting = False  # Flag to track if the right mouse button is being pressed
@@ -28,60 +41,17 @@ if __name__ == '__main__':
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_r:
-                    grid.read_map(path_to_map)
-
-            elif event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 running = False
-
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button is pressed
-                    dragging = True
-                elif event.button == 2:  # Middle button pressed
-                    setting_terminal = True
-                elif event.button == 3:  # Right mouse button is pressed
-                    resetting = True
-
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:  # Left mouse button is released
-                    dragging = False
-                elif event.button == 2:  # Middle button released
-                    setting_terminal = False
-                elif event.button == 3:  # Right mouse button is released
-                    resetting = False
-
             elif event.type == pygame.MOUSEMOTION:
-                if not dragging and not resetting:  # Only update on motion if not dragging or resetting
-                    hover_node = grid.get_node(pygame.mouse.get_pos())
-                    grid.hover_over(hover_node)
-
-        if dragging:
-            clicked_node = grid.get_node(pygame.mouse.get_pos())
-            if not clicked_node.is_border():
-                clicked_node.make_barrier()
-
-        if resetting:
-            clicked_node = grid.get_node(pygame.mouse.get_pos())
-            if not clicked_node.is_border() and not clicked_node.is_terminal():
-                clicked_node.reset()
-
-        """if setting_terminal:
-            clicked_node = grid.get_node(pygame.mouse.get_pos())
-            if start_set and end_set and clicked_node != path.get_end():
-                path.substitute_path(clicked_node)
-                path_set = False
-            if not start_set:
-                path.set_start(clicked_node)
-                start_set = True
-            if not end_set and clicked_node != path.get_start():
-                path.set_end(clicked_node)
-                end_set = True
-            if start_set and end_set and not path_set:
-                path.get_path(grid)
-                path_set = True"""
+                hover_node = grid.get_node(pygame.mouse.get_pos())
+                grid.hover_over(hover_node)
 
         grid.draw()
+        enemy.update()
+        enemy.dummy(enemy.end.get_pos())
+        enemy.dummy(enemy.next_node.get_pos())
+        enemy.draw()
         pygame.display.flip()
         clock.tick(FPS)
 
