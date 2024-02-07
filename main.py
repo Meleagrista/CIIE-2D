@@ -1,15 +1,15 @@
 import random
 import sys
 import pygame
-from grid import Grid
-from enemy import Enemy
+from map.grid import Grid
+from entities.enemy import Enemy
 
 # Define constants
 GRID_SIZE = 35
 SQUARE_SIZE = 20
 FPS = 60
 
-path_to_map = 'map-generation/map-files/map-1.txt'
+path_to_map = 'map/map-files/map-1.txt'
 
 if __name__ == '__main__':
     pygame.init()
