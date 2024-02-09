@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from square import Square
+from map.square import Square
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)

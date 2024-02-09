@@ -209,11 +209,53 @@ class Enemy:
                         open_set_hash.add(neighbor)
 
         return []
+    
+
+
+    def points_from_square(self, path_nodes):
+        #Se obtienen una lista de las posiciones a partir de la lista de Squares 
+        points = []
+        for i in path_nodes:
+            points.append(i.get_pos())
+        #points contiene los puntos de path_nodes
+            
+        return points
+
+    #path_nodes es la lista de Squares
+    #inter_points es el numero de puntos intermedios entre cada par de puntos
+    def create_points(self, path_nodes, inter_points):
+        #Se obtienen una lista de las posiciones a partir de la lista de Squares 
+        points = []
+        for i in path_nodes:
+            points.append(i.get_pos())
+        #points contiene los puntos de path_nodes
+            
+        smooth_points = []
+
+        for i in range(len(points) - 1):
+            ini = points[i]
+            end = points[i+1]
+
+            for j in range(inter_points+1):
+                x_inter = ini[0] + (end[0] - ini[0]) * j / inter_points
+                y_inter = ini[1] + (end[1] - ini[1]) * j / inter_points
+                smooth_points.append((x_inter, y_inter))
+
+
+        smooth_points.append(points[-1])
+        return smooth_points
+
 
     def pathfinding(self):
         self.set_start()
         self.set_random_end()
         self.path_nodes = self.a_star()
+        print("********************************* PATH_NODES ************************************")
+        print(self.path_nodes)
+        print("********************************* NO INTERPOLATION ************************************")
+        print(self.points_from_square(self.path_nodes))
+        print("********************************* INTERPOLATION (2 INTER POINTS) ************************************")
+        print(self.create_points(self.path_nodes,2))
         self.next_node = self.path_nodes[1]
 
     def set_next_node(self):
