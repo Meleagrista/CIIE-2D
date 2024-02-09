@@ -95,10 +95,16 @@ class Enemy:
             self.pathfinding()
         elif self.next_node.compare_pos(current_pos):
             self.set_next_node()
+
         end_point = self.next_node.get_pos()
+        self.draw_path(self.points_from_path(), 2, (0, 255, 0))
+        self.draw_path(self.interpolate_points(2), 1, (0, 0, 255))
+
+        if self.end is not None:
+            pygame.draw.circle(self.screen, (255, 0, 0), self.end.get_pos_zip(), 3)
         if self.is_facing(end_point):
             if not self.need_spin:
-                print('He looked the right way!')
+                # print('He looked the right way!')
                 self.need_spin = True
             self.x -= self.delta_x * self.speed
             self.y -= self.delta_y * self.speed
@@ -106,10 +112,10 @@ class Enemy:
             if self.need_spin:
                 if self.shortest_rotation(end_point) > 0:
                     self.rotation = abs(self.rotation)
-                    print('He should look to the left.')
+                    # print('He should look to the left.')
                 else:
                     self.rotation = -1 * abs(self.rotation)
-                    print('He should look to the right.')
+                    # print('He should look to the right.')
                 self.need_spin = False
             self.rotate(self.rotation)
             self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
@@ -117,8 +123,9 @@ class Enemy:
 
     # ############################# DRAWING ############################# #
 
-    def dummy(self, center):
-        pygame.draw.circle(self.screen, (255, 0, 0), center, self.size // 2)
+    def draw_path(self, point_list, point_size=1, point_color=(255, 0, 0)):
+        for point in point_list:
+            pygame.draw.circle(self.screen, point_color, point, point_size)
 
     def draw(self):
         # Create a surface for the rectangle with transparency
@@ -209,59 +216,42 @@ class Enemy:
                         open_set_hash.add(neighbor)
 
         return []
-    
 
-
-    def points_from_square(self, path_nodes):
-        #Se obtienen una lista de las posiciones a partir de la lista de Squares 
+    def points_from_path(self):
         points = []
-        for i in path_nodes:
-            points.append(i.get_pos())
-        #points contiene los puntos de path_nodes
-            
+        for square in self.path_nodes:
+            points.append(square.get_pos())
         return points
 
-    #path_nodes es la lista de Squares
-    #inter_points es el numero de puntos intermedios entre cada par de puntos
-    def create_points(self, path_nodes, inter_points):
-        #Se obtienen una lista de las posiciones a partir de la lista de Squares 
-        points = []
-        for i in path_nodes:
-            points.append(i.get_pos())
-        #points contiene los puntos de path_nodes
-            
+    def interpolate_points(self, segments):
+        points = self.points_from_path()
         smooth_points = []
-
         for i in range(len(points) - 1):
             ini = points[i]
-            end = points[i+1]
+            end = points[i + 1]
 
-            for j in range(inter_points+1):
-                x_inter = ini[0] + (end[0] - ini[0]) * j / inter_points
-                y_inter = ini[1] + (end[1] - ini[1]) * j / inter_points
+            for j in range(segments + 1):
+                x_inter = ini[0] + (end[0] - ini[0]) * j / segments
+                y_inter = ini[1] + (end[1] - ini[1]) * j / segments
                 smooth_points.append((x_inter, y_inter))
 
-
+        # Append the last point without interpolation
         smooth_points.append(points[-1])
-        return smooth_points
 
+        return smooth_points
 
     def pathfinding(self):
         self.set_start()
         self.set_random_end()
         self.path_nodes = self.a_star()
-        print("********************************* PATH_NODES ************************************")
-        print(self.path_nodes)
-        print("********************************* NO INTERPOLATION ************************************")
-        print(self.points_from_square(self.path_nodes))
-        print("********************************* INTERPOLATION (2 INTER POINTS) ************************************")
-        print(self.create_points(self.path_nodes,2))
         self.next_node = self.path_nodes[1]
+        self.path_nodes.pop(0)
 
     def set_next_node(self):
         try:
             index = self.path_nodes.index(self.next_node)
             self.next_node = self.path_nodes[index + 1]
+            self.path_nodes.pop(index)
         except Exception as e:
             print(e)
 

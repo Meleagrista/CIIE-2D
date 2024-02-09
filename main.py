@@ -49,8 +49,6 @@ if __name__ == '__main__':
 
         grid.draw()
         enemy.update()
-        enemy.dummy(enemy.end.get_pos())
-        enemy.dummy(enemy.next_node.get_pos())
         enemy.draw()
         pygame.display.flip()
         clock.tick(FPS)
