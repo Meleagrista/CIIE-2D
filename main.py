@@ -9,7 +9,7 @@ GRID_SIZE = 35
 SQUARE_SIZE = 20
 FPS = 60
 
-path_to_map = 'map/map-files/map-1.txt'
+path_to_map = 'map/files/map-1.txt'
 
 if __name__ == '__main__':
     pygame.init()
@@ -33,10 +33,6 @@ if __name__ == '__main__':
 
     dragging = False  # Flag to track if the left mouse button is being dragged
     resetting = False  # Flag to track if the right mouse button is being pressed
-    """setting_terminal = False
-    start_set = False
-    end_set = False
-    path_set = False"""
 
     running = True
     while running:
