@@ -60,9 +60,6 @@ class Square:
         self.barrier = True
         self.color = BLACK
 
-    def set_id(self, id):
-        self.id = int(id)
-
     # ########################## INTERACTIVE ######################### #
 
     def compare_node(self, node):
@@ -103,6 +100,12 @@ class Square:
 
     def is_path(self):
         return self.color == YELLOW
+
+    def set_id(self, id):
+        self.id = int(id)
+
+    def get_id(self):
+        return self.id
 
     def make_selected(self):
         self.color = GREEN

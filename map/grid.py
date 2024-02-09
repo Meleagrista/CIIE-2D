@@ -1,5 +1,5 @@
 import math
-
+import os
 import pygame
 
 from map.square import Square
@@ -73,3 +73,31 @@ class Grid:
                 else:
                     node.reset()
         print("Map imported successfully.")
+
+
+    def save_map(self, file_path):
+
+        files = [f for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
+        # Extract the numbers from the filenames and find the maximum
+        numbers = []
+        for file in files:
+            if file.startswith('map') and file.split('.')[0].split('-')[1].isdigit():
+                numbers = [int(file.split('.')[0].split('-')[1])]
+        if numbers:
+            next_number = max(numbers) + 1
+        else:
+            next_number = 1
+
+        # Open a file for writing
+        with open(file_path + 'map-' + str(next_number) + '.txt', 'w') as file:
+            # Write content to the file
+            for row in self.nodes:
+                for node in row:
+                    if node.is_barrier():
+                        file.write('X')
+                    else:
+                        print(chr(node.get_id()))
+                        file.write(chr(node.get_id()))
+                file.write('\n')
+
+        print("Map exported successfully.")
