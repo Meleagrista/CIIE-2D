@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from square import Square
+from map.square import Square
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -26,12 +26,6 @@ class Grid:
                 node = Square(i, j, self.gap, self.size, self.size, 0)
                 self.nodes[i].append(node)
         self.update()
-
-    """def draw_grid(self):
-        for i in range(self.size):
-            pygame.draw.line(self.win, BLACK, (0, i * self.gap), (self.gap * self.size - 1, i * self.gap))
-            for j in range(self.size):
-                pygame.draw.line(self.win, BLACK, (j * self.gap, 0), (j * self.gap, self.gap * self.size - 1))"""
 
     def update(self):
         for row in self.nodes:
@@ -74,6 +68,8 @@ class Grid:
             for character, node in zip(split_result, list_of_nodes):
                 if character == 'X':
                     node.make_barrier()
+                elif character.isnumeric():
+                    node.set_id(character)
                 else:
                     node.reset()
         print("Map imported successfully.")

@@ -60,6 +60,9 @@ class Square:
         self.barrier = True
         self.color = BLACK
 
+    def set_id(self, id):
+        self.id = int(id)
+
     # ########################## INTERACTIVE ######################### #
 
     def compare_node(self, node):
@@ -142,26 +145,26 @@ class Square:
         # LEFT UP
         if self.col > 0 and self.row > 0 and ((not grid.nodes[self.row - 1][self.col].is_barrier()) or (
                 not grid.nodes[self.row][self.col - 1].is_barrier())) and not grid.nodes[self.row - 1][
-                self.col - 1].is_barrier():
+                self.col - 1].is_barrier() and (not grid.nodes[self.row-1][self.col].is_barrier() and not grid.nodes[self.row][self.col-1].is_barrier()):
             self.neighbors.append(grid.nodes[self.row - 1][self.col - 1])
 
         # RIGHT UP
         if self.row > 0 and self.col < self.total_rows - 1 and (
                 (not grid.nodes[self.row - 1][self.col].is_barrier()) or (
                 not grid.nodes[self.row][self.col + 1].is_barrier())) and not grid.nodes[self.row - 1][
-                self.col + 1].is_barrier():
+            self.col + 1].is_barrier() and (not grid.nodes[self.row-1][self.col].is_barrier() and not grid.nodes[self.row][self.col+1].is_barrier()):
             self.neighbors.append(grid.nodes[self.row - 1][self.col + 1])
 
         # RIGHT DOWN
         if self.row < self.total_rows - 1 and self.col < self.total_rows - 1 and (
                 (not grid.nodes[self.row][self.col + 1].is_barrier()) or (
                 not grid.nodes[self.row + 1][self.col].is_barrier())) and not grid.nodes[self.row + 1][
-                self.col + 1].is_barrier():
+                self.col + 1].is_barrier() and (not grid.nodes[self.row+1][self.col].is_barrier() and not grid.nodes[self.row][self.col+1].is_barrier()):
             self.neighbors.append(grid.nodes[self.row + 1][self.col + 1])
 
         # LEFT DOWN
         if self.col > 0 and self.row < self.total_rows - 1 and (
                 (not grid.nodes[self.row][self.col - 1].is_barrier()) or (
-                not grid.nodes[self.row + 1][self.col].is_barrier())) and not grid.nodes[self.row + 1][
-                self.col - 1].is_barrier():
+                not grid.nodes[self.row + 1][self.col].is_barrier())) and (not grid.nodes[self.row + 1][
+                self.col - 1].is_barrier()) and (not grid.nodes[self.row+1][self.col].is_barrier() and not grid.nodes[self.row][self.col-1].is_barrier()):
             self.neighbors.append(grid.nodes[self.row + 1][self.col - 1])
