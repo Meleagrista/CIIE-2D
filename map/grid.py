@@ -6,7 +6,7 @@ from map.square import Square
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-
+PINK = (230, 108, 223)
 
 class Grid:
     def __init__(self, size, win):
@@ -41,6 +41,10 @@ class Grid:
                 spot.draw(self.win)
                 if spot.is_border():
                     spot.make_barrier()
+                elif spot.id != 0:
+                    font = pygame.font.SysFont('arial', 20)
+                    text = font.render(str(spot.id), True, (0, 0, 0))
+                    self.win.blit(text, (spot.row*spot.size, spot.col*spot.size))
 
     def hover_over(self, node):
         if self.hover is not None:
@@ -69,7 +73,7 @@ class Grid:
                 if character == 'X':
                     node.make_barrier()
                 elif character.isnumeric():
-                    node.set_id(character)
+                    node.set_id(int(character))
                 else:
                     node.reset()
         print("Map imported successfully.")
@@ -96,8 +100,7 @@ class Grid:
                     if node.is_barrier():
                         file.write('X')
                     else:
-                        print(chr(node.get_id()))
-                        file.write(chr(node.get_id()))
+                        file.write(str(node.get_id()))
                 file.write('\n')
 
         print("Map exported successfully.")

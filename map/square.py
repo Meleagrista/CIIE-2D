@@ -55,10 +55,12 @@ class Square:
     def reset(self):
         self.barrier = False
         self.color = WHITE
+        self.id = 0
 
     def make_barrier(self):
         self.barrier = True
         self.color = BLACK
+        self.id = 0
 
     # ########################## INTERACTIVE ######################### #
 
