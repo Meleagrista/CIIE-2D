@@ -8,6 +8,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 PINK = (230, 108, 223)
 
+
 class Grid:
     def __init__(self, size, win):
         w, _ = win.get_size()
@@ -44,7 +45,7 @@ class Grid:
                 elif spot.id != 0:
                     font = pygame.font.SysFont('arial', 20)
                     text = font.render(str(spot.id), True, (0, 0, 0))
-                    self.win.blit(text, (spot.row*spot.size, spot.col*spot.size))
+                    self.win.blit(text, (spot.row * spot.size, spot.col * spot.size))
 
     def hover_over(self, node):
         if self.hover is not None:
@@ -77,7 +78,6 @@ class Grid:
                 else:
                     node.reset()
         print("Map imported successfully.")
-
 
     def save_map(self, file_path):
 
