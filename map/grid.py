@@ -61,6 +61,9 @@ class Grid:
         col = math.floor(x / self.gap)
         return self.nodes[row][col]
 
+    def get_nodes_by_id(self, id):
+        return filter(lambda x: x.id == id, self.list)
+
     def read_map(self, full_file_path):
         with open(full_file_path, 'r') as file:
             file_content = file.read()
