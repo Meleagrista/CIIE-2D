@@ -95,9 +95,9 @@ class Grid:
             None
         """
         if self.hover is not None:
-            if not self.hover.is_border() and not self.hover.is_barrier() and not self.hover.is_terminal() and not self.hover.is_path():
+            if not self.hover.is_border() and not self.hover.is_barrier():
                 self.hover.reset()
-        if not node.is_border() and not node.is_barrier() and not node.is_terminal() and not node.is_path():
+        if not node.is_border() and not node.is_barrier():
             node.make_selected()
         self.hover = node
 

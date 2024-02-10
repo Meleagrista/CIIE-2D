@@ -26,7 +26,11 @@ GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 FPS = 60  # Represents the refresh rate (frames per second) for the loop.
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
+<<<<<<< Updated upstream
 BLUE = (0, 255, 0)
+=======
+BLUE = (0, 0, 255)
+>>>>>>> Stashed changes
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
