@@ -1,8 +1,7 @@
 import math
-
+import random
 import pygame
-
-from square import Square
+from map.square import Square
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -18,6 +17,8 @@ class Grid:
         self.nodes = []
         self.hover = None
 
+        self.create_array()
+
     def create_array(self):
         self.nodes = []
         for i in range(self.size):
@@ -26,12 +27,6 @@ class Grid:
                 node = Square(i, j, self.gap, self.size, self.size, 0)
                 self.nodes[i].append(node)
         self.update()
-
-    """def draw_grid(self):
-        for i in range(self.size):
-            pygame.draw.line(self.win, BLACK, (0, i * self.gap), (self.gap * self.size - 1, i * self.gap))
-            for j in range(self.size):
-                pygame.draw.line(self.win, BLACK, (j * self.gap, 0), (j * self.gap, self.gap * self.size - 1))"""
 
     def update(self):
         for row in self.nodes:
@@ -61,6 +56,16 @@ class Grid:
         row = math.floor(y / self.gap)
         col = math.floor(x / self.gap)
         return self.nodes[row][col]
+
+    def get_random_node(self):
+        row = random.randint(0, self.size - 1)
+        col = random.randint(0, self.size - 1)
+        node = self.nodes[row][col]
+        while node.is_barrier():
+            row = random.randint(0, self.size - 1)
+            col = random.randint(0, self.size - 1)
+            node = self.nodes[row][col]
+        return node
 
     def read_map(self, full_file_path):
         with open(full_file_path, 'r') as file:

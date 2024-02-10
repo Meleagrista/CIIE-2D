@@ -1,4 +1,5 @@
 import pygame
+from utils.constants import GRID_SHOW
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -118,7 +119,10 @@ class Square:
         top_left_y = self.y - self.size / 2
 
         # Draw the rectangle with the adjusted coordinates
-        pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
+        if GRID_SHOW:
+            pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
+        else:
+            pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size, self.size))
 
     def update_neighbors(self, grid):
         self.neighbors = []
