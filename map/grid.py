@@ -62,7 +62,10 @@ class Grid:
         return self.nodes[row][col]
 
     def get_nodes_by_id(self, id):
-        return filter(lambda x: x.id == id, self.list)
+        nodes = []
+        for row in self.nodes:
+            nodes = nodes + list(filter(lambda node: node.id == id, row))
+        return nodes
 
     def read_map(self, full_file_path):
         with open(full_file_path, 'r') as file:

@@ -212,7 +212,7 @@ class Enemy:
 
     def pathfinding(self):
         self.set_start()
-        self.set_random_end()
+        self.set_end_by_id(1)
         self.path_nodes = self.a_star()
         self.next_node = self.path_nodes[1]
 
@@ -239,3 +239,8 @@ class Enemy:
             node = self.grid.nodes[row][col]
         print('End point created in position ' + str(node.get_pos()))
         self.end = node
+
+    def set_end_by_id(self, id):
+        node = random.choice(self.grid.get_nodes_by_id(id))
+        self.end = node
+        print('End point created in position ' + str(node.get_pos()))
