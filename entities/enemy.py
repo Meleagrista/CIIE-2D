@@ -50,6 +50,66 @@ class Enemy:
         self.next_node = None
 
     # ####################################################################### #
+    #                                   DRAW                                  #
+    # ####################################################################### #
+
+    def draw(self):
+        """
+        Draw the enemy.
+        """
+        rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        pygame.draw.rect(rect_surface, (0, 255, 0), (0, 0, self.size, self.size))
+        rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
+        rect = rotated_rect.get_rect()
+        rect.center = (self.x, self.y)
+        self.screen.blit(rotated_rect, rect)
+        end_point = (self.x - self.delta_x * 10, self.y - self.delta_y * 10)
+        angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
+        triangle_size = self.size // 2
+        triangle_points = [
+            end_point,
+            (
+                end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
+                end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
+            ),
+            (
+                end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
+                end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
+            ),
+        ]
+        pygame.draw.polygon(self.screen, (255, 0, 0), triangle_points)
+
+    # ####################################################################### #
+    #                                   MOVE                                  #
+    # ####################################################################### #
+
+    def update(self):
+        """
+        Update the enemy's position and orientation.
+        """
+        current_pos = (self.x, self.y)
+        if self.next_node is None or self.end.compare_pos(current_pos):
+            self.pathfinding()
+        elif self.next_node.compare_pos(current_pos):
+            self.set_next_node()
+        end_point = self.next_node.get_pos()
+        if self.is_facing(end_point):
+            if not self.need_spin:
+                self.need_spin = True
+            self.x -= self.delta_x * self.speed
+            self.y -= self.delta_y * self.speed
+        else:
+            if self.need_spin:
+                if self.shortest_rotation(end_point) > 0:
+                    self.rotation = abs(self.rotation)
+                else:
+                    self.rotation = -1 * abs(self.rotation)
+                self.need_spin = False
+            self.rotate(self.rotation)
+            self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
+            self.delta_y = math.sin(math.radians(self.angle)) * self.offset
+
+    # ####################################################################### #
     #                                  ROTATE                                 #
     # ####################################################################### #
 
@@ -115,66 +175,6 @@ class Enemy:
             rotation (int): Rotation angle.
         """
         self.angle = (self.angle + rotation) % 360
-
-    # ####################################################################### #
-    #                                   MOVE                                  #
-    # ####################################################################### #
-
-    def update(self):
-        """
-        Update the enemy's position and orientation.
-        """
-        current_pos = (self.x, self.y)
-        if self.next_node is None or self.end.compare_pos(current_pos):
-            self.pathfinding()
-        elif self.next_node.compare_pos(current_pos):
-            self.set_next_node()
-        end_point = self.next_node.get_pos()
-        if self.is_facing(end_point):
-            if not self.need_spin:
-                self.need_spin = True
-            self.x -= self.delta_x * self.speed
-            self.y -= self.delta_y * self.speed
-        else:
-            if self.need_spin:
-                if self.shortest_rotation(end_point) > 0:
-                    self.rotation = abs(self.rotation)
-                else:
-                    self.rotation = -1 * abs(self.rotation)
-                self.need_spin = False
-            self.rotate(self.rotation)
-            self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
-            self.delta_y = math.sin(math.radians(self.angle)) * self.offset
-
-    # ####################################################################### #
-    #                                   DRAW                                  #
-    # ####################################################################### #
-
-    def draw(self):
-        """
-        Draw the enemy.
-        """
-        rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        pygame.draw.rect(rect_surface, (0, 255, 0), (0, 0, self.size, self.size))
-        rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
-        rect = rotated_rect.get_rect()
-        rect.center = (self.x, self.y)
-        self.screen.blit(rotated_rect, rect)
-        end_point = (self.x - self.delta_x * 10, self.y - self.delta_y * 10)
-        angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
-        triangle_size = self.size // 2
-        triangle_points = [
-            end_point,
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
-            ),
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
-            ),
-        ]
-        pygame.draw.polygon(self.screen, (255, 0, 0), triangle_points)
 
     # ####################################################################### #
     #                                 PATHFIND                                #
