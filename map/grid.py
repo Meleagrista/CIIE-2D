@@ -31,7 +31,7 @@ class Grid:
     def update(self):
         for row in self.nodes:
             for spot in row:
-                spot.update_neighbors(self)
+                spot.update_neighbours(self)
                 spot.surrounding_barrier(self)
 
     def draw(self):

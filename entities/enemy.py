@@ -195,18 +195,18 @@ class Enemy:
             if current == self.end:
                 return self.reconstruct_path(came_from, self.end)
 
-            for neighbor in current.neighbors:
+            for neighbour in current.neighbours:
                 temp_g_score = g_score[current] + current.weight
 
-                if temp_g_score < g_score[neighbor]:
-                    came_from[neighbor] = current
-                    g_score[neighbor] = temp_g_score
-                    f_score[neighbor] = temp_g_score + heuristic(neighbor.get_pos(), self.end.get_pos(),
-                                                                 neighbor.get_weight())
-                    if neighbor not in open_set_hash:
+                if temp_g_score < g_score[neighbour]:
+                    came_from[neighbour] = current
+                    g_score[neighbour] = temp_g_score
+                    f_score[neighbour] = temp_g_score + heuristic(neighbour.get_pos(), self.end.get_pos(),
+                                                                 neighbour.get_weight())
+                    if neighbour not in open_set_hash:
                         count += 1
-                        open_set.put((f_score[neighbor], count, neighbor))
-                        open_set_hash.add(neighbor)
+                        open_set.put((f_score[neighbour], count, neighbour))
+                        open_set_hash.add(neighbour)
 
         return []
 
