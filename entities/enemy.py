@@ -49,12 +49,6 @@ class Enemy:
         self.path_nodes = []
         self.next_node = None
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-    # ############################## MOVING ############################# #
-=======
->>>>>>> Stashed changes
     # ####################################################################### #
     #                                   DRAW                                  #
     # ####################################################################### #
@@ -64,11 +58,7 @@ class Enemy:
         Draw the enemy.
         """
         rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-<<<<<<< Updated upstream
         pygame.draw.rect(rect_surface, (0, 255, 0), (0, 0, self.size, self.size))
-=======
-        pygame.draw.rect(rect_surface, GREEN, (0, 0, self.size, self.size))
->>>>>>> Stashed changes
         rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
         rect = rotated_rect.get_rect()
         rect.center = (self.x, self.y)
@@ -122,10 +112,6 @@ class Enemy:
     # ####################################################################### #
     #                                  ROTATE                                 #
     # ####################################################################### #
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
     def angle_to_point(self, point, show: bool = False):
         """
