@@ -24,6 +24,17 @@ GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 # ####################################################################### #
 
 FPS = 60  # Represents the refresh rate (frames per second) for the loop.
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 255, 0)
+YELLOW = (255, 255, 0)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+TEAL = (0, 128, 128)
+PURPLE = (128, 0, 128)
+ORANGE = (255, 165, 0)
+GREY = (128, 128, 128)
+TURQUOISE = (64, 224, 208)
 
 # ####################################################################### #
 #                               MENU CONSTANTS                            #

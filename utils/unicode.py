@@ -1,6 +1,10 @@
 from unidecode import unidecode
 
 
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                       TEXT REFACTORING                                        #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+
 def replace_accented_characters(text):
     """
     Replace accented characters with their base characters.
