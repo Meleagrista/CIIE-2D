@@ -1,6 +1,7 @@
 import os
 import pygame
 import pygame_menu
+import time
 from utils.constants import *
 from utils.unicode import replace_accented_characters
 from loop import play_game
@@ -14,6 +15,31 @@ def start_game():
 # Function to handle difficulty change (placeholder)
 def change_difficulty():
     pass
+
+# Function for the Splash Screen
+def splash_screen(screen, wait_seconds):
+    # Loads the image
+    splash_image = pygame.image.load("assets\splash_screen_placeholder.jpeg")
+    splash_image = pygame.transform.scale(splash_image, (800, 600))
+
+    # Draws the splash screen image
+    screen.blit(splash_image, (0, 0))
+
+    # Updates the screen
+    pygame.display.flip()
+
+    # Waits until the user interacts (or the time ends)
+    start_time = time.time()
+    running = True
+    while running and time.time() - start_time < wait_seconds:  
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                running = False
+
+        # Limits to 60fps
+        pygame.time.delay(1000 // 60)
 
 
 # Function to create a custom theme for menus
@@ -64,6 +90,8 @@ def write_credits(labels):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
+
+    splash_screen(screen, 10)
 
     # Create the main menu
     menu = pygame_menu.Menu("Game Title", 800, 600, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
