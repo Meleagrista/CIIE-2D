@@ -1,6 +1,8 @@
 import math
 import random
 from queue import PriorityQueue
+import numpy as np
+from scipy.interpolate import CubicSpline
 
 import pygame
 
@@ -98,7 +100,8 @@ class Enemy:
 
         end_point = self.next_node.get_pos()
         self.draw_path(self.points_from_path(), 2, (0, 255, 0))
-        self.draw_path(self.interpolate_points(2), 1, (0, 0, 255))
+        if (len(self.points_from_path()) > 1):
+            self.draw_path(self.interpolate_points(8), 1, (0, 0, 255))
 
         if self.end is not None:
             pygame.draw.circle(self.screen, (255, 0, 0), self.end.get_pos_zip(), 3)
@@ -223,7 +226,7 @@ class Enemy:
             points.append(square.get_pos())
         return points
 
-    def interpolate_points(self, segments):
+    """ def interpolate_points(self, segments):
         points = self.points_from_path()
         smooth_points = []
         for i in range(len(points) - 1):
@@ -238,7 +241,26 @@ class Enemy:
         # Append the last point without interpolation
         smooth_points.append(points[-1])
 
-        return smooth_points
+        return smooth_points """
+    
+    def interpolate_points(self, segments):
+        points = np.array(self.points_from_path())
+        t = np.arange(len(points))
+        x = points[:, 0]
+        y = points[:, 1]
+
+        cs_x = CubicSpline(t, x)
+        cs_y = CubicSpline(t, y)
+
+        smooth_points = []
+        for i in range(len(points) - 1):
+            smooth_t = np.linspace(i, i+1, segments)
+            smooth_points.extend(np.column_stack([cs_x(smooth_t), cs_y(smooth_t)]))
+
+        # Append the last point without interpolation
+        smooth_points.append(points[-1])
+
+        return [tuple(point) for point in smooth_points]
 
     def pathfinding(self):
         self.set_start()
