@@ -71,29 +71,28 @@ class Square:
         return (self.x - threshold <= pos[0] <= self.x + threshold) and (self.y - threshold <= pos[1] <= self.y + threshold)
 
     def surrounding_barrier(self, grid):
-        if self.row < self.total_rows - 1:
-            grid.nodes[self.row + 1][self.col].weight += 1
 
-        if self.col < self.total_cols - 1:
-            grid.nodes[self.row][self.col + 1].weight += 1
+        # auxiliar definitions
+        bottom = self.row == self.total_rows - 1
+        top = self.row == 0
+        rightmost = self.col == self.total_cols - 1
+        leftmost = self.col == 0
 
-        if self.row < self.total_rows - 1 and self.col < self.total_cols - 1:
-            grid.nodes[self.row + 1][self.col + 1].weight += 1
+        weight = 2
 
-        if self.col > 0:
-            grid.nodes[self.row][self.col - 1].weight += 1
+        if self.is_barrier():
+            if not bottom:
+                grid.nodes[self.row + 1][self.col].weight += weight
 
-        if self.col > 0 and self.row < self.total_rows - 1:
-            grid.nodes[self.row + 1][self.col - 1].weight += 1
+            if not rightmost:
+                grid.nodes[self.row][self.col + 1].weight += weight
 
-        if self.row > 0:
-            grid.nodes[self.row - 1][self.col].weight += 1
+            if not top:
+                grid.nodes[self.row - 1][self.col].weight += weight
 
-        if self.row > 0 and self.col < self.total_cols - 1:
-            grid.nodes[self.row - 1][self.col + 1].weight += 1
+            if not leftmost:
+                grid.nodes[self.row][self.col - 1].weight += weight
 
-        if self.row > 0 and self.col > 0:
-            grid.nodes[self.row - 1][self.col - 1].weight += 1
 
     # #################################### PATHFINDING FUNCTIONS #################################### #
 

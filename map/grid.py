@@ -50,7 +50,7 @@ class Grid:
     def hover_over(self, node):
         if self.hover is not None:
             if not self.hover.is_border() and not self.hover.is_barrier() and not self.hover.is_terminal() and not self.hover.is_path():
-                self.hover.reset()
+                self.hover.color = WHITE
         if not node.is_border() and not node.is_barrier() and not node.is_terminal() and not node.is_path():
             node.make_selected()
         self.hover = node
