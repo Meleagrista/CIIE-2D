@@ -187,9 +187,9 @@ class Enemy:
         self.set_random_end()
         self.path_nodes = a_star(self)
         self.next_node = self.path_nodes[1]
-        self.path_nodes.pop(0)
         self.path_points = self.interpolate_points(8)
         self.next_point = self.path_points[1]
+        self.path_nodes.pop(0)
         self.path_points.pop(0)
 
     def set_next_node(self):

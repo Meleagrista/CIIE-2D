@@ -3,6 +3,7 @@ import os
 import random
 import pygame
 from map.square import Square
+from utils.constants import SQUARE_SIZE
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -42,6 +43,10 @@ class Grid:
         self.hover = None
 
         self.create_array()
+
+    # ####################################################################### #
+    #                                  TRIVIAL                                #
+    # ####################################################################### #
 
     def create_array(self):
         """
@@ -88,6 +93,10 @@ class Grid:
             for spot in row:
                 spot.update_neighbors(self)
                 spot.surrounding_barrier(self)
+
+    # ####################################################################### #
+    #                                   NODES                                 #
+    # ####################################################################### #
 
     def hover_over(self, node):
         """
@@ -152,6 +161,10 @@ class Grid:
             node = self.nodes[row][col]
         return node
 
+    # ####################################################################### #
+    #                                    MAP                                  #
+    # ####################################################################### #
+
     def read_map(self, full_file_path):
         """
         Reads a map from a text file and updates the grid accordingly.
@@ -208,3 +221,49 @@ class Grid:
                         file.write(str(node.get_id()))
                 file.write('\n')
         print("Map exported successfully.")
+
+    # ####################################################################### #
+    #                                COLLISIONS                               #
+    # ####################################################################### #
+
+    def has_collision(self, x, y, size):
+        """
+        Checks whether the player (a square) is entering inside a barrier.
+
+        Args:
+            x (float): The x-coordinate of the center of the player.
+            y (float): The y-coordinate of the center of the player.
+            size (int): The size of the player (side length of the square).
+
+        Returns:
+            bool: True if the player is colliding with a barrier, False otherwise.
+        """
+        # Calculate the half-size of the player's bounding box for collision detection
+        half_size = size / 2
+
+        # Calculate the min distance in the cardinal axis requiered for collision
+        min_size = half_size + SQUARE_SIZE/2
+
+        # Get the grid cell containing the player
+        player_node = self.get_node((x, y))
+        if player_node is None:
+            return False  # Player position is outside the grid
+
+        # Iterate through neighboring nodes and check for collision with barriers
+        for neighbor in player_node.barriers:
+            if neighbor.is_barrier():
+                # Calculate the distance from the center of the player to the center of the barrier node
+                dx = neighbor.x - x
+                dy = neighbor.y - y
+
+                # Adjust the distance calculation if it's negative
+                if dx > 0:
+                    dx -= abs(dx) * 0.07  # Subtract 5% of the absolute value of the negative distance
+                if dy > 0:
+                    dy -= abs(dy) * 0.07  # Subtract 5% of the absolute value of the negative distance
+
+                # Check if the closest point is inside the player's bounding box
+                if abs(dx) < min_size and abs(dy) < min_size:
+                    return True  # Collision detected
+
+        return False  # No collision detected

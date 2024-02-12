@@ -122,6 +122,12 @@ class Player:
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
-        # Update player's position based on direction
-        self.x += direction.delta_x * self.speed
-        self.y += direction.delta_y * self.speed
+        # Calculate the new position the player wants to move to
+        new_x = self.x + direction.delta_x * self.speed
+        new_y = self.y + direction.delta_y * self.speed
+
+        # Check for collision with walls
+        if not self.grid.has_collision(new_x, new_y, self.size):
+            # Update player's position if there's no collision
+            self.x = new_x
+            self.y = new_y
