@@ -16,7 +16,7 @@ VIEW_OFFSET = 2.5  # Represents the offset value for the entity's directional in
 
 GRID_SIZE = 35  # Represents the number of squares in the grid.
 SQUARE_SIZE = 20  # Represents the size of each square in pixels on the grid.
-MAP = 'map/map-files/map-1.txt'  # Represents the path to the file containing the map information.
+MAP = 'map/files/map-1.txt'  # Represents the path to the file containing the map information.
 GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 
 # ####################################################################### #
@@ -26,7 +26,7 @@ GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 FPS = 60  # Represents the refresh rate (frames per second) for the loop.
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-BLUE = (0, 255, 0)
+BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -53,4 +53,4 @@ CREDITS = (
     "Yago Fernández Rego\n"
     "David García Ramallal\n"
     "Pelayo Vieites Pérez"
-)  # Represents the credits information.
+)  # Represents the credits' information.

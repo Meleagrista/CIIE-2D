@@ -2,6 +2,7 @@ import sys
 import pygame
 from entities.enemy import Enemy
 from map.grid import Grid
+from entities.player import Player
 from utils.constants import *
 
 
@@ -9,25 +10,24 @@ from utils.constants import *
 def play_game():
     # Initialize pygame
     pygame.init()
-
-    # Set up the game screen
-    screen = pygame.display.set_mode((GRID_SIZE * SQUARE_SIZE, GRID_SIZE * SQUARE_SIZE))
-
-    # Create a clock to control the frame rate
     clock = pygame.time.Clock()
+
+    # Set the size of the window
+    win_size = GRID_SIZE * SQUARE_SIZE
+    screen = pygame.display.set_mode((win_size, win_size))
 
     # Create the game grid
     grid = Grid(GRID_SIZE, screen)
-
-    # Read the map data for the grid
     grid.read_map(MAP)
 
     # Create a list to hold enemy objects
     enemies = []
-    # Spawn 5 enemies at random positions on the grid
     for i in range(5):
         x, y = grid.get_random_node().get_pos()
         enemies.append(Enemy(x, y, 1, 0.5, grid, screen))
+
+    # Create the player entity
+    player = Player(win_size // 2, win_size // 2, 1, grid, screen)
 
     # Flag to control the game loop
     running = True
@@ -35,18 +35,19 @@ def play_game():
     while running:
         # Event handling loop
         for event in pygame.event.get():
-            # Check if the user wants to quit the game
             if event.type == pygame.QUIT:
                 running = False
-            # Check for mouse motion events
-            elif event.type == pygame.MOUSEMOTION:
-                # Get the node over which the mouse is hovering
+            """elif event.type == pygame.MOUSEMOTION:
                 hover_node = grid.get_node(pygame.mouse.get_pos())
-                # Update the grid to show the hover effect
-                grid.hover_over(hover_node)
+                grid.hover_over(hover_node)"""
 
         # Draw the game grid
         grid.draw()
+
+        # Update and draw the player
+        player.move(pygame.key.get_pressed())
+        player.draw()
+
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
@@ -60,5 +61,4 @@ def play_game():
 
     # Quit pygame when the game loop exits
     pygame.quit()
-    # Exit the Python interpreter
     sys.exit()
