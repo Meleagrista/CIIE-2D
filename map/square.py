@@ -56,6 +56,16 @@ class Square:
         self.hover = False
 
     # ####################################################################### #
+    #                                VARIABLES                                #
+    # ####################################################################### #
+
+    def set_id(self, node_id):
+        self.id = int(node_id)
+
+    def get_id(self):
+        return self.id
+
+    # ####################################################################### #
     #                                  DRAW                                   #
     # ####################################################################### #
 
@@ -174,29 +184,27 @@ class Square:
         Returns:
             None
         """
-        if self.row < self.total_rows - 1:
-            grid.nodes[self.row + 1][self.col].weight += 1
+        bottom = self.row == self.total_rows - 1
+        top = self.row == 0
+        rightmost = self.col == self.total_cols - 1
+        leftmost = self.col == 0
 
-        if self.col < self.total_cols - 1:
-            grid.nodes[self.row][self.col + 1].weight += 1
+        # TODO: Turn this into a constant
+        weight = 2
 
-        if self.row < self.total_rows - 1 and self.col < self.total_cols - 1:
-            grid.nodes[self.row + 1][self.col + 1].weight += 1
+        if self.is_barrier():
+            if not bottom:
+                grid.nodes[self.row + 1][self.col].weight += weight
+            if not rightmost:
+                grid.nodes[self.row][self.col + 1].weight += weight
+            if not top:
+                grid.nodes[self.row - 1][self.col].weight += weight
+            if not leftmost:
+                grid.nodes[self.row][self.col - 1].weight += weight
 
-        if self.col > 0:
-            grid.nodes[self.row][self.col - 1].weight += 1
-
-        if self.col > 0 and self.row < self.total_rows - 1:
-            grid.nodes[self.row + 1][self.col - 1].weight += 1
-
-        if self.row > 0:
-            grid.nodes[self.row - 1][self.col].weight += 1
-
-        if self.row > 0 and self.col < self.total_cols - 1:
-            grid.nodes[self.row - 1][self.col + 1].weight += 1
-
-        if self.row > 0 and self.col > 0:
-            grid.nodes[self.row - 1][self.col - 1].weight += 1
+    def add_neighbour(self, node):
+        if not node.is_barrier():
+            self.neighbors.append(node)
 
     def update_neighbors(self, grid):
         """
@@ -210,72 +218,69 @@ class Square:
         """
         self.neighbors = []
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~          DOWN         ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        bottom = self.row == self.total_rows - 1
+        top = self.row == 0
+        rightmost = self.col == self.total_cols - 1
+        leftmost = self.col == 0
 
-        if self.row < self.total_rows - 1 and not grid.nodes[self.row + 1][self.col].is_barrier():  # DOWN
-            self.neighbors.append(grid.nodes[self.row + 1][self.col])
+        down_node = up_node = right_node = left_node = None
+        left_down_node = right_down_node = left_up_node = right_up_node = None
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~           UP          ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Assign accessible cardinal nodes
+        if not bottom:
+            down_node = grid.nodes[self.row + 1][self.col]
 
-        if self.row > 0 and not grid.nodes[self.row - 1][self.col].is_barrier():  # UP
-            self.neighbors.append(grid.nodes[self.row - 1][self.col])
+        if not top:
+            up_node = grid.nodes[self.row - 1][self.col]
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~         RIGHT         ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if not rightmost:
+            right_node = grid.nodes[self.row][self.col + 1]
 
-        if self.col < self.total_rows - 1 and not grid.nodes[self.row][self.col + 1].is_barrier():  # RIGHT
-            self.neighbors.append(grid.nodes[self.row][self.col + 1])
+        if not leftmost:
+            left_node = grid.nodes[self.row][self.col - 1]
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~         LEFT          ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Assign accessible diagonal nodes
+        if not bottom and not leftmost:
+            left_down_node = grid.nodes[self.row + 1][self.col - 1]
 
-        if self.col > 0 and not grid.nodes[self.row][self.col - 1].is_barrier():  # LEFT
-            self.neighbors.append(grid.nodes[self.row][self.col - 1])
+        if not bottom and not rightmost:
+            right_down_node = grid.nodes[self.row + 1][self.col + 1]
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~        LEFT-UP        ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if not top and not leftmost:
+            left_up_node = grid.nodes[self.row - 1][self.col - 1]
 
-        if self.col > 0 and self.row > 0 and ((not grid.nodes[self.row - 1][self.col].is_barrier()) or (
-                not grid.nodes[self.row][self.col - 1].is_barrier())) and not grid.nodes[self.row - 1][
-            self.col - 1].is_barrier():
-            self.neighbors.append(grid.nodes[self.row - 1][self.col - 1])
+        if not top and not rightmost:
+            right_up_node = grid.nodes[self.row - 1][self.col + 1]
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~       RIGHT-UP        ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Cardinal checks & additions
+        if down_node is not None:
+            self.add_neighbour(down_node)
 
-        if self.row > 0 and self.col < self.total_rows - 1 and (
-                (not grid.nodes[self.row - 1][self.col].is_barrier()) or (
-                not grid.nodes[self.row][self.col + 1].is_barrier())) and not grid.nodes[self.row - 1][
-            self.col + 1].is_barrier():
-            self.neighbors.append(grid.nodes[self.row - 1][self.col + 1])
+        if up_node is not None:
+            self.add_neighbour(up_node)
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~       RIGHT-DOWN      ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if right_node is not None:
+            self.add_neighbour(right_node)
 
-        if self.row < self.total_rows - 1 and self.col < self.total_rows - 1 and (
-                (not grid.nodes[self.row][self.col + 1].is_barrier()) or (
-                not grid.nodes[self.row + 1][self.col].is_barrier())) and not grid.nodes[self.row + 1][
-            self.col + 1].is_barrier():
-            self.neighbors.append(grid.nodes[self.row + 1][self.col + 1])
+        if left_node is not None:
+            self.add_neighbour(left_node)
 
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~       LEFT-DOWN       ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Diagonal checks & additions
+        if left_down_node is not None and (
+                not left_node.is_barrier() and not down_node.is_barrier()):
+            self.add_neighbour(left_down_node)
 
-        if self.col > 0 and self.row < self.total_rows - 1 and (
-                (not grid.nodes[self.row][self.col - 1].is_barrier()) or (
-                not grid.nodes[self.row + 1][self.col].is_barrier())) and not grid.nodes[self.row + 1][
-            self.col - 1].is_barrier():
-            self.neighbors.append(grid.nodes[self.row + 1][self.col - 1])
+        if left_up_node is not None and (
+                not left_node.is_barrier() and not up_node.is_barrier()):
+            self.add_neighbour(left_up_node)
+
+        if right_down_node is not None and (
+                not right_node.is_barrier() and not down_node.is_barrier()):
+            self.add_neighbour(right_down_node)
+
+        if right_up_node is not None and (
+                not right_node.is_barrier() and not up_node.is_barrier()):
+            self.add_neighbour(right_up_node)
 
     # ####################################################################### #
     #                                  EQUALS                                 #

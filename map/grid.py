@@ -1,4 +1,5 @@
 import math
+import os
 import random
 import pygame
 from map.square import Square
@@ -57,13 +58,14 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self):
+    def draw(self, show_id=False):
         """
         Draws the grid on the pygame window surface.
 
         Returns:
             None
         """
+        font = pygame.font.SysFont('arial', 20)
         self.win.fill((125, 125, 125))
         self.update()
         for row in self.nodes:
@@ -71,6 +73,9 @@ class Grid:
                 spot.draw(self.win)
                 if spot.is_border():
                     spot.make_barrier()
+                elif spot.id != 0 and show_id:
+                    text = font.render(str(spot.id), True, (0, 0, 0))
+                    self.win.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
 
     def update(self):
         """
@@ -116,6 +121,21 @@ class Grid:
         col = math.floor(x / self.gap)
         return self.nodes[row][col]
 
+    def get_nodes_by_id(self, node_id):
+        """
+        Gets all grid cells with the corresponding id.
+
+        Args:
+            node_id (int): The id of the grid cell.
+
+        Returns:
+            list: A list of all grid cells with the specified id.
+        """
+        nodes = []
+        for row in self.nodes:
+            nodes = nodes + list(filter(lambda node: node.id == node_id, row))
+        return nodes
+
     def get_random_node(self):
         """
         Gets a random non-barrier grid cell.
@@ -153,7 +173,38 @@ class Grid:
             for character, node in zip(split_result, list_of_nodes):
                 if character == 'X':
                     node.make_barrier()
+                elif character.isnumeric():
+                    node.set_id(int(character))
                 else:
                     node.reset()
         print("Map imported successfully.")
 
+    def save_map(self, file_path):
+        """
+        Stores the map in a text file.
+
+        Args:
+            file_path (str): The path to the folder where the map will be saved.
+
+        Returns:
+            None
+        """
+        files = [f for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
+        numbers = []
+        for file in files:
+            if file.startswith('map') and file.split('.')[0].split('-')[1].isdigit():
+                numbers = [int(file.split('.')[0].split('-')[1])]
+        if numbers:
+            next_number = max(numbers) + 1
+        else:
+            next_number = 1
+
+        with open(file_path + 'map-' + str(next_number) + '.txt', 'w') as file:
+            for row in self.nodes:
+                for node in row:
+                    if node.is_barrier():
+                        file.write('X')
+                    else:
+                        file.write(str(node.get_id()))
+                file.write('\n')
+        print("Map exported successfully.")
