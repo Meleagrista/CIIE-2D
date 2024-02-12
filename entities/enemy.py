@@ -1,7 +1,7 @@
-import math
 import numpy as np
-from scipy.interpolate import CubicSpline
 import pygame
+from scipy.interpolate import CubicSpline
+
 from map.grid import Grid
 from utils.algorithms import *
 from utils.constants import *
@@ -39,7 +39,7 @@ class Enemy:
         self.angle = NPC_ANGLE
         self.speed = movement_speed
         self.rotation = rotation_speed
-        self.need_spin = True
+        # self.need_spin = True
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
@@ -49,6 +49,8 @@ class Enemy:
         self.grid = grid
         self.end = None
         self.start = None
+        self.path_points = []
+        self.next_point = None
         self.path_nodes = []
         self.next_node = None
 
@@ -91,28 +93,18 @@ class Enemy:
         Update the enemy's position and orientation.
         """
         current_pos = (self.x, self.y)
-        if self.next_node is None or self.end.compare_pos(current_pos):
+        if self.next_point is None or self.end.compare_pos(current_pos):
             self.pathfinding()
-        elif self.next_node.compare_pos(current_pos):
-            self.set_next_node()
-        self.draw_path(self.points_from_path(), 2, (0, 255, 0))
-        self.draw_path(self.points_from_path(), 2, (0, 255, 0))
-        if len(self.points_from_path()) > 1:
-            self.draw_path(self.interpolate_points(8), 1, (0, 0, 255))
-        end_point = self.next_node.get_pos()
+        elif self.has_reached(self.next_point):
+            self.set_next_point()
+        """if len(self.points_from_path()) > 1:
+            self.draw_path(self.interpolate_points(8), 1, (0, 0, 255))"""
+        end_point = self.next_point
         if self.is_facing(end_point):
-            if not self.need_spin:
-                self.need_spin = True
             self.x -= self.delta_x * self.speed
             self.y -= self.delta_y * self.speed
         else:
-            if self.need_spin:
-                if self.shortest_rotation(end_point) > 0:
-                    self.rotation = abs(self.rotation)
-                else:
-                    self.rotation = -1 * abs(self.rotation)
-                self.need_spin = False
-            self.rotate(self.rotation)
+            self.angle = self.angle_to_point(end_point)
             self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
             self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
@@ -195,6 +187,10 @@ class Enemy:
         self.set_random_end()
         self.path_nodes = a_star(self)
         self.next_node = self.path_nodes[1]
+        self.path_nodes.pop(0)
+        self.path_points = self.interpolate_points(8)
+        self.next_point = self.path_points[1]
+        self.path_points.pop(0)
 
     def set_next_node(self):
         """
@@ -203,6 +199,7 @@ class Enemy:
         try:
             index = self.path_nodes.index(self.next_node)
             self.next_node = self.path_nodes[index + 1]
+            self.path_nodes.pop(index)
         except Exception as e:
             print(e)
 
@@ -230,6 +227,18 @@ class Enemy:
     def draw_path(self, point_list, point_size=1, point_color=(255, 0, 0)):
         for point in point_list:
             pygame.draw.circle(self.screen, point_color, point, point_size)
+
+    def set_next_point(self):
+        try:
+            index = self.path_points.index(self.next_point)
+            self.next_point = self.path_points[index + 1]
+            self.path_points.pop(index)
+        except Exception as e:
+            print(e)
+
+    def has_reached(self, point, threshold: int = 1):
+        return (point[0] - threshold <= self.x <= point[0] + threshold) and (
+                point[1] - threshold <= self.y <= point[1] + threshold)
 
     def points_from_path(self):
         points = []

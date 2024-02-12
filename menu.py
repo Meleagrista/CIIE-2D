@@ -17,10 +17,11 @@ def start_game():
 def change_difficulty():
     pass
 
+
 # Function for the Splash Screen
 def splash_screen(screen, wait_seconds):
     # Loads the image
-    splash_image = pygame.image.load("assets\splash_screen_placeholder.jpeg")
+    splash_image = pygame.image.load("assets/splash_screen_placeholder.jpeg")
     splash_image = pygame.transform.scale(splash_image, (800, 600))
 
     # Draws the splash screen image
@@ -32,7 +33,7 @@ def splash_screen(screen, wait_seconds):
     # Waits until the user interacts (or the time ends)
     start_time = time.time()
     running = True
-    while running and time.time() - start_time < wait_seconds:  
+    while running and time.time() - start_time < wait_seconds:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -99,6 +100,7 @@ https://creativecommons.org/licenses/by/3.0/
 
 """
 
+
 # Main function
 def main():
     pygame.init()
@@ -107,9 +109,8 @@ def main():
     pygame.mixer.init()
 
     # Loads and reproduce music 
-    pygame.mixer.music.load('assets\Fall-From-Grace(chosic.com).mp3')
+    pygame.mixer.music.load('assets/Fall-From-Grace(chosic.com).mp3')
     pygame.mixer.music.play(-1)  # -1 to infinity music
-
 
     screen = pygame.display.set_mode((800, 600))
 
