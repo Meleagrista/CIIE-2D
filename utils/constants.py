@@ -54,3 +54,9 @@ CREDITS = (
     "David García Ramallal\n"
     "Pelayo Vieites Pérez"
 )  # Represents the credits' information.
+
+# ####################################################################### #
+#                               PATH CONSTANTS                            #
+# ####################################################################### #
+
+WEIGHT = 2
