@@ -2,9 +2,9 @@ import sys
 
 import pygame
 
-from map.gridOld import Grid
+from map.grid import Grid
 
-# Define constants
+# TODO: Utilize global variables instead
 GRID_SIZE = 35
 SQUARE_SIZE = 20
 FPS = 60
@@ -65,10 +65,11 @@ if __name__ == '__main__':
 
         if resetting:
             clicked_node = grid.get_node(pygame.mouse.get_pos())
-            if not clicked_node.is_border() and not clicked_node.is_terminal():
+            if not clicked_node.is_border():
                 clicked_node.reset()
 
-        grid.draw()
+        # TODO: Fixed visibility issues
+        grid.draw(show_id=True)
         pygame.display.flip()
         clock.tick(FPS)
 
