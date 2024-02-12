@@ -176,7 +176,7 @@ class Square:
 
     def surrounding_barrier(self, grid):
         """
-        Update the weights of neighboring squares.
+        Update the weights of neighboring squares if the current square is a barrier.
 
         Args:
             grid (Grid): The grid containing the squares.
@@ -189,26 +189,32 @@ class Square:
         rightmost = self.col == self.total_cols - 1
         leftmost = self.col == 0
 
-        # TODO: Turn this into a constant
-        weight = 2
-
         if self.is_barrier():
             if not bottom:
-                grid.nodes[self.row + 1][self.col].weight += weight
+                grid.nodes[self.row + 1][self.col].weight += WEIGHT
             if not rightmost:
-                grid.nodes[self.row][self.col + 1].weight += weight
+                grid.nodes[self.row][self.col + 1].weight += WEIGHT
             if not top:
-                grid.nodes[self.row - 1][self.col].weight += weight
+                grid.nodes[self.row - 1][self.col].weight += WEIGHT
             if not leftmost:
-                grid.nodes[self.row][self.col - 1].weight += weight
+                grid.nodes[self.row][self.col - 1].weight += WEIGHT
 
     def add_neighbour(self, node):
+        """
+        Add a node as a neighbor if it's not a barrier.
+
+        Args:
+            node (Node): The node to be added as a neighbor.
+
+        Returns:
+            None
+        """
         if not node.is_barrier():
             self.neighbors.append(node)
 
     def update_neighbors(self, grid):
         """
-        Update the neighboring squares of the square.
+        Update the neighboring squares of the square based on its position.
 
         Args:
             grid (Grid): The grid containing the squares.
