@@ -63,7 +63,7 @@ class Enemy:
         Draw the enemy.
         """
         rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        pygame.draw.rect(rect_surface, (0, 255, 0), (0, 0, self.size, self.size))
+        pygame.draw.rect(rect_surface, GREEN, (0, 0, self.size, self.size))
         rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
         rect = rotated_rect.get_rect()
         rect.center = (self.x, self.y)
