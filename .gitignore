@@ -5,3 +5,8 @@ utils/__pycache__/
 .idea
 
 
+__pycache__/loop.cpython-312.pyc
+__pycache__/loop.cpython-312.pyc
+__pycache__/loop.cpython-312.pyc
+entities/__pycache__/enemy.cpython-312.pyc
+*.pyc
