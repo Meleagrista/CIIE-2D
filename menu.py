@@ -1,6 +1,7 @@
 import os
 import pygame
 import pygame_menu
+import time
 from utils.constants import *
 from utils.unicode import replace_accented_characters
 from loop import play_game
@@ -8,12 +9,39 @@ from loop import play_game
 
 # Function to start the game (placeholder)
 def start_game():
+    pygame.mixer.music.stop()
     play_game()
 
 
 # Function to handle difficulty change (placeholder)
 def change_difficulty():
     pass
+
+
+# Function for the Splash Screen
+def splash_screen(screen, wait_seconds):
+    # Loads the image
+    splash_image = pygame.image.load("assets/splash_screen_placeholder.jpeg")
+    splash_image = pygame.transform.scale(splash_image, (800, 600))
+
+    # Draws the splash screen image
+    screen.blit(splash_image, (0, 0))
+
+    # Updates the screen
+    pygame.display.flip()
+
+    # Waits until the user interacts (or the time ends)
+    start_time = time.time()
+    running = True
+    while running and time.time() - start_time < wait_seconds:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                running = False
+
+        # Limits to 60fps
+        pygame.time.delay(1000 // 60)
 
 
 # Function to create a custom theme for menus
@@ -60,10 +88,33 @@ def write_credits(labels):
     return menu
 
 
+"""
+SI NOS QUEDAMOS ESA CANCION HAY QUE INCLUIR LO SIGUIENTE EN LOS CREDITOS:
+
+Fall From Grace by Darren Curtis | https://www.darrencurtismusic.com/
+Music promoted by https://www.chosic.com/free-music/all/
+Creative Commons CC BY 3.0
+https://creativecommons.org/licenses/by/3.0/
+
+
+
+"""
+
+
 # Main function
 def main():
     pygame.init()
+
+    # Inicialize the music mixer
+    pygame.mixer.init()
+
+    # Loads and reproduce music 
+    pygame.mixer.music.load('assets/Fall-From-Grace(chosic.com).mp3')
+    pygame.mixer.music.play(-1)  # -1 to infinity music
+
     screen = pygame.display.set_mode((800, 600))
+
+    splash_screen(screen, 10)
 
     # Create the main menu
     menu = pygame_menu.Menu("Game Title", 800, 600, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
