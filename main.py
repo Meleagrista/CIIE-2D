@@ -1,7 +1,7 @@
 import random
 import sys
 import pygame
-from map.grid import Grid
+from map.gridOld import Grid
 from entities.enemy import Enemy
 
 # Define constants

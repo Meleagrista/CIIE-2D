@@ -1,7 +1,8 @@
 import sys
+
 import pygame
-from map.grid import Grid
-from map.square import Square
+
+from map.gridOld import Grid
 
 # Define constants
 GRID_SIZE = 35
@@ -15,7 +16,7 @@ if __name__ == '__main__':
     pygame.init()
 
     screen = pygame.display.set_mode((GRID_SIZE * SQUARE_SIZE, GRID_SIZE * SQUARE_SIZE))
-    pygame.display.set_caption("Pathfinding Visualizer")
+    pygame.display.set_caption("Map editor")
     clock = pygame.time.Clock()
     grid = Grid(GRID_SIZE, screen)
     grid.create_array()
