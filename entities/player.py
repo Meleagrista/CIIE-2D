@@ -21,12 +21,14 @@ class Player:
             grid (Grid): Grid for pathfinding.
             win: Surface for drawing.
         """
-        # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~ VISUAL REPRESENTATION ~~
-        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.x = x
         self.y = y
         self.size = NPC_SIZE
+
+        # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ VISUAL REPRESENTATION ~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.rect = pygame.Rect(x, y, NPC_SIZE, NPC_SIZE)
         self.screen = win
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
 
@@ -48,15 +50,13 @@ class Player:
         """
         Draw the player.
         """
-        rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        pygame.draw.rect(rect_surface, BLUE, (0, 0, self.size, self.size))
-        rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
-        rect = rotated_rect.get_rect()
-        rect.center = (self.x, self.y)
-        self.screen.blit(rotated_rect, rect)
-        end_point = (self.x - self.delta_x * 10, self.y - self.delta_y * 10)
+        # Draw the square
+        pygame.draw.rect(self.screen, BLUE, self.rect)
+
+        # Draw the rotated triangle
+        end_point = (self.rect.centerx - self.delta_x * 10, self.rect.centery - self.delta_y * 10)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
-        triangle_size = self.size // 2
+        triangle_size = NPC_SIZE // 2
         triangle_points = [
             end_point,
             (
@@ -126,8 +126,34 @@ class Player:
         new_x = self.x + direction.delta_x * self.speed
         new_y = self.y + direction.delta_y * self.speed
 
-        # Check for collision with walls
-        if not self.grid.has_collision(new_x, new_y, self.size):
-            # Update player's position if there's no collision
-            self.x = new_x
-            self.y = new_y
+        # Update player's position
+        self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
+
+        collisions = self.grid.has_collision(self.rect, self.rect.width)
+
+        while len(collisions) != 0:
+            set_collisions = collisions
+            for collision in set_collisions:
+                if collision.rect.left < self.rect.right or collision.rect.right > self.rect.left:
+                    new_x = self.x
+                    new_y = self.y + direction.delta_y * self.speed
+                    self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
+                    collisions = self.grid.has_collision(self.rect, self.rect.width)
+                    if len(collisions) == 0:
+                        break
+                if collision.rect.top < self.rect.bottom or collision.rect.bottom > self.rect.top:
+                    new_y = self.y
+                    new_x = self.x + direction.delta_x * self.speed
+                    self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
+                    collisions = self.grid.has_collision(self.rect, self.rect.width)
+                    if len(collisions) == 0:
+                        break
+            if len(set_collisions) == len(collisions):
+                new_y = self.y
+                new_x = self.x
+                self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
+                collisions = self.grid.has_collision(self.rect, self.rect.width)
+
+        # Update player's position
+        self.x = new_x
+        self.y = new_y

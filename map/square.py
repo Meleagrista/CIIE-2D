@@ -25,6 +25,7 @@ class Square:
         color (tuple): The color of the square.
         weight (int): The weight of the square used in pathfinding algorithms.
         hover (bool): A flag indicating whether the square is being hovered over.
+        rect (pygame.Rect): The rectangle representing the square.
     """
 
     def __init__(self, row, col, size, total_rows, total_cols, weight):
@@ -53,9 +54,10 @@ class Square:
         self.barriers = []
         self.id = 0
         self.barrier = False
-        self.color = WHITE
+        self.color = (255, 255, 255)  # WHITE
         self.weight = weight
         self.hover = False
+        self.rect = pygame.Rect((row * size), (col * size), size, size)
 
     # ####################################################################### #
     #                                VARIABLES                                #
@@ -88,7 +90,7 @@ class Square:
         if GRID_SHOW:
             pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
         else:
-            pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size, self.size))
+            pygame.draw.rect(win, self.color, self.rect)
 
     # ####################################################################### #
     #                                POSITION                                 #
@@ -230,6 +232,7 @@ class Square:
             None
         """
         self.neighbors = []
+        self.barriers = []
 
         bottom = self.row == self.total_rows - 1
         top = self.row == 0
@@ -284,7 +287,7 @@ class Square:
             self.add_neighbour(left_down_node)
 
         if left_down_node is not None and left_down_node.is_barrier():
-            self.add_neighbour(left_node, force_barrier=True)
+            self.add_neighbour(left_down_node, force_barrier=True)
 
         if left_up_node is not None and (
                 not left_node.is_barrier() and not up_node.is_barrier()):

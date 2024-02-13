@@ -226,44 +226,35 @@ class Grid:
     #                                COLLISIONS                               #
     # ####################################################################### #
 
-    def has_collision(self, x, y, size):
+    def has_collision(self, player_rect, size, axis='both'):
         """
-        Checks whether the player (a square) is entering inside a barrier.
+        Checks whether the player (a square) is entering inside a barrier along the specified axis.
 
         Args:
-            x (float): The x-coordinate of the center of the player.
-            y (float): The y-coordinate of the center of the player.
+            player_rect (pygame.Rect): The player's bounding box.
             size (int): The size of the player (side length of the square).
+            axis (str): The axis to check for collision ('x', 'y', or 'both').
 
         Returns:
-            bool: True if the player is colliding with a barrier, False otherwise.
+            tuple: A tuple containing a list of collided barrier nodes and a dictionary indicating collision directions.
         """
-        # Calculate the half-size of the player's bounding box for collision detection
-        half_size = size / 2
-
-        # Calculate the min distance in the cardinal axis requiered for collision
-        min_size = half_size + SQUARE_SIZE/2
 
         # Get the grid cell containing the player
-        player_node = self.get_node((x, y))
+        player_node = self.get_node((player_rect.centerx, player_rect.centery))
+
         if player_node is None:
-            return False  # Player position is outside the grid
+            return []  # Player position is outside the grid
 
-        # Iterate through neighboring nodes and check for collision with barriers
+        # Create a list to store collided barriers
+        collided_barriers = []
+
+        # Iterate through neighboring nodes and check for collision with barriers along the specified axis
         for neighbor in player_node.barriers:
-            if neighbor.is_barrier():
-                # Calculate the distance from the center of the player to the center of the barrier node
-                dx = neighbor.x - x
-                dy = neighbor.y - y
+            # Check collision between player_rect and neighbor's rect
+            if player_rect.colliderect(neighbor.rect):
+                collided_barriers.append(neighbor)
 
-                # Adjust the distance calculation if it's negative
-                if dx > 0:
-                    dx -= abs(dx) * 0.07  # Subtract 5% of the absolute value of the negative distance
-                if dy > 0:
-                    dy -= abs(dy) * 0.07  # Subtract 5% of the absolute value of the negative distance
+        return collided_barriers
 
-                # Check if the closest point is inside the player's bounding box
-                if abs(dx) < min_size and abs(dy) < min_size:
-                    return True  # Collision detected
 
-        return False  # No collision detected
+
