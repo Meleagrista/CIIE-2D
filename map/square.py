@@ -19,11 +19,13 @@ class Square:
         total_rows (int): The total number of rows in the grid.
         total_cols (int): The total number of columns in the grid.
         neighbors (list): A list of neighboring squares.
+        barriers (list): A list of surrounding barriers.
         id (int): The identification number of the square.
         barrier (bool): A flag indicating whether the square is a barrier.
         color (tuple): The color of the square.
         weight (int): The weight of the square used in pathfinding algorithms.
         hover (bool): A flag indicating whether the square is being hovered over.
+        rect (pygame.Rect): The rectangle representing the square.
     """
 
     def __init__(self, row, col, size, total_rows, total_cols, weight):
@@ -49,11 +51,13 @@ class Square:
         self.total_rows = total_rows
         self.total_cols = total_cols
         self.neighbors = []
+        self.barriers = []
         self.id = 0
         self.barrier = False
-        self.color = WHITE
+        self.color = (255, 255, 255)  # WHITE
         self.weight = weight
         self.hover = False
+        self.rect = pygame.Rect((row * size), (col * size), size, size)
 
     # ####################################################################### #
     #                                VARIABLES                                #
@@ -86,7 +90,7 @@ class Square:
         if GRID_SHOW:
             pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
         else:
-            pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size, self.size))
+            pygame.draw.rect(win, self.color, self.rect)
 
     # ####################################################################### #
     #                                POSITION                                 #
@@ -199,17 +203,22 @@ class Square:
             if not leftmost:
                 grid.nodes[self.row][self.col - 1].weight += WEIGHT
 
-    def add_neighbour(self, node):
+    def add_neighbour(self, node, force_barrier=False):
         """
         Add a node as a neighbor if it's not a barrier.
 
         Args:
             node (Node): The node to be added as a neighbor.
+            force_barrier (Bool): Whether the node must be always a barrier.
 
         Returns:
             None
+            :param node:
+            :param force_barrier:
         """
-        if not node.is_barrier():
+        if node.is_barrier() or force_barrier:
+            self.barriers.append(node)
+        else:
             self.neighbors.append(node)
 
     def update_neighbors(self, grid):
@@ -223,6 +232,7 @@ class Square:
             None
         """
         self.neighbors = []
+        self.barriers = []
 
         bottom = self.row == self.total_rows - 1
         top = self.row == 0
@@ -276,17 +286,29 @@ class Square:
                 not left_node.is_barrier() and not down_node.is_barrier()):
             self.add_neighbour(left_down_node)
 
+        if left_down_node is not None and left_down_node.is_barrier():
+            self.add_neighbour(left_down_node, force_barrier=True)
+
         if left_up_node is not None and (
                 not left_node.is_barrier() and not up_node.is_barrier()):
             self.add_neighbour(left_up_node)
+
+        if left_up_node is not None and left_up_node.is_barrier():
+            self.add_neighbour(left_up_node, force_barrier=True)
 
         if right_down_node is not None and (
                 not right_node.is_barrier() and not down_node.is_barrier()):
             self.add_neighbour(right_down_node)
 
+        if right_down_node is not None and right_down_node.is_barrier():
+            self.add_neighbour(right_down_node, force_barrier=True)
+
         if right_up_node is not None and (
                 not right_node.is_barrier() and not up_node.is_barrier()):
             self.add_neighbour(right_up_node)
+
+        if right_up_node is not None and right_up_node.is_barrier():
+            self.add_neighbour(right_up_node, force_barrier=True)
 
     # ####################################################################### #
     #                                  EQUALS                                 #

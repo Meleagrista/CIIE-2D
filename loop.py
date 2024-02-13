@@ -27,7 +27,7 @@ def play_game():
         enemies.append(Enemy(x, y, 1, 0.5, grid, screen))
 
     # Create the player entity
-    player = Player(win_size // 2, win_size // 2, 1, grid, screen)
+    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 1, grid, screen)
 
     # Flag to control the game loop
     running = True

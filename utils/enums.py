@@ -24,6 +24,28 @@ class Direction(Enum):
     def delta_y(self):
         return self.dy
 
+    def is_cardinal(self):
+        if self == Direction.EAST or self == Direction.NORTH:
+            return True
+        if self == Direction.WEST or self == Direction.SOUTH:
+            return True
+        if self == Direction.STOPPED:
+            return True
+
+    @staticmethod
+    def general_direction(general_direction):
+        if general_direction == Direction.EAST:
+            direction_list = [Direction.NORTHEAST, Direction.SOUTHEAST]
+        elif general_direction == Direction.NORTH:
+            direction_list = [Direction.NORTHEAST, Direction.NORTHWEST]
+        elif general_direction == Direction.WEST:
+            direction_list = [Direction.NORTHWEST, Direction.SOUTHWEST]
+        elif general_direction == Direction.SOUTH:
+            direction_list = [Direction.SOUTHWEST, Direction.SOUTHEAST]
+        else:
+            direction_list = []
+        return direction_list
+
     def angle(self):
         """
         Returns the angle in degrees corresponding to the direction.
@@ -45,3 +67,6 @@ class Direction(Enum):
             return 315
         elif self == Direction.SOUTHWEST:
             return 225
+
+    def __str__(self):
+        return self.name
