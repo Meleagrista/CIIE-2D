@@ -136,14 +136,14 @@ class Player:
             for collision in set_collisions:
                 if collision.rect.left < self.rect.right or collision.rect.right > self.rect.left:
                     new_x = self.x
-                    new_y = self.y + direction.delta_y * self.speed
+                    new_y = self.y + direction.delta_y * (self.speed * FRICTION)
                     self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
                     collisions = self.grid.has_collision(self.rect, self.rect.width)
                     if len(collisions) == 0:
                         break
                 if collision.rect.top < self.rect.bottom or collision.rect.bottom > self.rect.top:
                     new_y = self.y
-                    new_x = self.x + direction.delta_x * self.speed
+                    new_x = self.x + direction.delta_x * (self.speed * FRICTION)
                     self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
                     collisions = self.grid.has_collision(self.rect, self.rect.width)
                     if len(collisions) == 0:
