@@ -122,9 +122,15 @@ class Player:
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
-        # Calculate the new position the player wants to move to
-        new_x = self.x + direction.delta_x * self.speed
-        new_y = self.y + direction.delta_y * self.speed
+        # Normalize the direction vector for diagonal movement
+        if direction_x != 0 and direction_y != 0:
+            direction_length = math.sqrt(direction_x ** 2 + direction_y ** 2)
+            direction_x /= direction_length
+            direction_y /= direction_length
+
+        # Calculate the new position the player wants to move to with adjusted speed
+        new_x = self.x + direction_x * self.speed
+        new_y = self.y + direction_y * self.speed
 
         # Update player's position
         self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
