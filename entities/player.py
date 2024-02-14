@@ -42,6 +42,8 @@ class Player:
         self.grid = grid
         self.last_direction = Direction.NORTH
 
+        self.is_alive = True
+
     # ####################################################################### #
     #                                   DRAW                                  #
     # ####################################################################### #
@@ -90,6 +92,9 @@ class Player:
             direction_x += 1
         if keys[pygame.K_a]:
             direction_x -= 1
+        if keys[pygame.K_ESCAPE]:
+            self.is_alive = False
+            return
 
         # Handle diagonal movement
         if direction_x != 0 and direction_y != 0:

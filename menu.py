@@ -4,13 +4,13 @@ import pygame_menu
 import time
 from utils.constants import *
 from utils.unicode import replace_accented_characters
-from loop import play_game
+import loop
 
 
 # Function to start the game (placeholder)
 def start_game():
     pygame.mixer.music.stop()
-    play_game()
+    loop.play_game()
 
 
 # Function to handle difficulty change (placeholder)
@@ -102,7 +102,7 @@ https://creativecommons.org/licenses/by/3.0/
 
 
 # Main function
-def main():
+def main_menu():
     pygame.init()
 
     # Inicialize the music mixer
@@ -130,4 +130,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_menu()
