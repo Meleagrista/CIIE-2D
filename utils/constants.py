@@ -9,6 +9,8 @@
 NPC_SIZE = 10  # Represents the size of the entity's visual representation (square).
 NPC_ANGLE = 90.0  # Represents the initial angle in degrees for all enemy entities.
 VIEW_OFFSET = 2.5  # Represents the offset value for the entity's directional indicator (triangle), indicating its orientation.
+FIELD_OF_VISION = 60
+REACH_OF_VISION = 8
 
 # ####################################################################### #
 #                               MAP CONSTANTS                             #
@@ -25,6 +27,7 @@ GRID_SHOW = True  # Represents whether the grid lines are shown on the screen.
 
 FPS = 60  # Represents the refresh rate (frames per second) for the loop.
 RED = (255, 0, 0)
+PASTEL_RED = (255, 182, 193)  # This is a pastel shade of red
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)

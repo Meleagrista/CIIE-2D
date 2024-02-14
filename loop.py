@@ -24,10 +24,10 @@ def play_game():
     enemies = []
     for i in range(5):
         x, y = grid.get_random_node().get_pos()
-        enemies.append(Enemy(x, y, 1, 0.5, grid, screen))
+        enemies.append(Enemy(x, y, 0.5, 1, grid, screen))
 
     # Create the player entity
-    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 1, grid, screen)
+    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 2, grid, screen)
 
     # Flag to control the game loop
     running = True
@@ -44,14 +44,18 @@ def play_game():
         # Draw the game grid
         grid.draw()
 
-        # Update and draw the player
-        player.move(pygame.key.get_pressed())
-        player.draw()
-
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
+            enemy.cast()
+
+        # Update and draw each enemy
+        for enemy in enemies:
             enemy.draw()
+
+        # Update and draw the player
+        player.move(pygame.key.get_pressed())
+        player.draw()
 
         # Update the display
         pygame.display.flip()

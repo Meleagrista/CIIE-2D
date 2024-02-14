@@ -3,7 +3,7 @@ import pygame
 import pygame_menu
 import time
 from utils.constants import *
-from utils.unicode import replace_accented_characters
+from utils.auxiliar import replace_accented_characters
 from loop import play_game
 
 

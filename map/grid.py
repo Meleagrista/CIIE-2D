@@ -1,9 +1,10 @@
 import math
 import os
 import random
+
 import pygame
+
 from map.square import Square
-from utils.constants import SQUARE_SIZE
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -60,6 +61,8 @@ class Grid:
             self.nodes.append([])
             for j in range(self.size):
                 node = Square(i, j, self.gap, self.size, self.size, 0)
+                if node.is_border():
+                    node.make_barrier()
                 self.nodes[i].append(node)
         self.update()
 
@@ -226,14 +229,12 @@ class Grid:
     #                                COLLISIONS                               #
     # ####################################################################### #
 
-    def has_collision(self, player_rect, size, axis='both'):
+    def has_collision(self, player_rect):
         """
         Checks whether the player (a square) is entering inside a barrier along the specified axis.
 
         Args:
             player_rect (pygame.Rect): The player's bounding box.
-            size (int): The size of the player (side length of the square).
-            axis (str): The axis to check for collision ('x', 'y', or 'both').
 
         Returns:
             tuple: A tuple containing a list of collided barrier nodes and a dictionary indicating collision directions.
@@ -255,6 +256,3 @@ class Grid:
                 collided_barriers.append(neighbor)
 
         return collided_barriers
-
-
-
