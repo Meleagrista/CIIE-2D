@@ -3,6 +3,7 @@ import os
 import random
 import pygame
 from map.square import Square
+from utils.constants import SQUARE_SIZE
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -42,6 +43,10 @@ class Grid:
         self.hover = None
 
         self.create_array()
+
+    # ####################################################################### #
+    #                                  TRIVIAL                                #
+    # ####################################################################### #
 
     def create_array(self):
         """
@@ -88,6 +93,10 @@ class Grid:
             for spot in row:
                 spot.update_neighbors(self)
                 spot.surrounding_barrier(self)
+
+    # ####################################################################### #
+    #                                   NODES                                 #
+    # ####################################################################### #
 
     def hover_over(self, node):
         """
@@ -152,6 +161,10 @@ class Grid:
             node = self.nodes[row][col]
         return node
 
+    # ####################################################################### #
+    #                                    MAP                                  #
+    # ####################################################################### #
+
     def read_map(self, full_file_path):
         """
         Reads a map from a text file and updates the grid accordingly.
@@ -208,3 +221,40 @@ class Grid:
                         file.write(str(node.get_id()))
                 file.write('\n')
         print("Map exported successfully.")
+
+    # ####################################################################### #
+    #                                COLLISIONS                               #
+    # ####################################################################### #
+
+    def has_collision(self, player_rect, size, axis='both'):
+        """
+        Checks whether the player (a square) is entering inside a barrier along the specified axis.
+
+        Args:
+            player_rect (pygame.Rect): The player's bounding box.
+            size (int): The size of the player (side length of the square).
+            axis (str): The axis to check for collision ('x', 'y', or 'both').
+
+        Returns:
+            tuple: A tuple containing a list of collided barrier nodes and a dictionary indicating collision directions.
+        """
+
+        # Get the grid cell containing the player
+        player_node = self.get_node((player_rect.centerx, player_rect.centery))
+
+        if player_node is None:
+            return []  # Player position is outside the grid
+
+        # Create a list to store collided barriers
+        collided_barriers = []
+
+        # Iterate through neighboring nodes and check for collision with barriers along the specified axis
+        for neighbor in player_node.barriers:
+            # Check collision between player_rect and neighbor's rect
+            if player_rect.colliderect(neighbor.rect):
+                collided_barriers.append(neighbor)
+
+        return collided_barriers
+
+
+

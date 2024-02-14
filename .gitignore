@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-entities/__pycache__
-map/__pycache__
+__pycache__/
+entities/__pycache__/
+map/__pycache__/
+utils/__pycache__/
 .idea
-=======
-__pycache__
->>>>>>> 95d8ededc1a18efcd871ad91918659433456459e
+*.pyc

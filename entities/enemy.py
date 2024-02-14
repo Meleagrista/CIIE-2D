@@ -187,9 +187,9 @@ class Enemy:
         self.set_random_end()
         self.path_nodes = a_star(self)
         self.next_node = self.path_nodes[1]
-        self.path_nodes.pop(0)
         self.path_points = self.interpolate_points(8)
         self.next_point = self.path_points[1]
+        self.path_nodes.pop(0)
         self.path_points.pop(0)
 
     def set_next_node(self):
@@ -225,10 +225,24 @@ class Enemy:
         self.end = self.grid.get_random_node()
 
     def draw_path(self, point_list, point_size=1, point_color=(255, 0, 0)):
+        """
+        Draws a path on the screen using circles to represent points.
+
+        Args:
+            point_list (list): List of points (tuples) to be drawn.
+            point_size (int, optional): Size of the points. Defaults to 1.
+            point_color (tuple, optional): RGB tuple representing the color of the points. Defaults to (255, 0, 0).
+        """
         for point in point_list:
             pygame.draw.circle(self.screen, point_color, point, point_size)
 
     def set_next_point(self):
+        """
+        Sets the next point in the path.
+
+        Raises:
+            Exception: If the next point is not found in the path_points list.
+        """
         try:
             index = self.path_points.index(self.next_point)
             self.next_point = self.path_points[index + 1]
@@ -237,33 +251,41 @@ class Enemy:
             print(e)
 
     def has_reached(self, point, threshold: int = 1):
+        """
+        Checks if the current point has reached the specified point within a certain threshold.
+
+        Args:
+            point (tuple): The target point to check against.
+            threshold (int, optional): The maximum allowable distance between the current point and the target point. Defaults to 1.
+
+        Returns:
+            bool: True if the current point is within the threshold of the target point, False otherwise.
+        """
         return (point[0] - threshold <= self.x <= point[0] + threshold) and (
                 point[1] - threshold <= self.y <= point[1] + threshold)
 
     def points_from_path(self):
+        """
+        Extracts points from path_nodes and returns them as a list.
+
+        Returns:
+            list: A list of points extracted from path_nodes.
+        """
         points = []
         for square in self.path_nodes:
             points.append(square.get_pos())
         return points
 
-    """ def interpolate_points(self, segments):
-        points = self.points_from_path()
-        smooth_points = []
-        for i in range(len(points) - 1):
-            ini = points[i]
-            end = points[i + 1]
-
-            for j in range(segments + 1):
-                x_inter = ini[0] + (end[0] - ini[0]) * j / segments
-                y_inter = ini[1] + (end[1] - ini[1]) * j / segments
-                smooth_points.append((x_inter, y_inter))
-
-        # Append the last point without interpolation
-        smooth_points.append(points[-1])
-
-        return smooth_points """
-
     def interpolate_points(self, segments):
+        """
+        Interpolates points along the path using cubic spline interpolation.
+
+        Args:
+            segments (int): Number of segments for interpolation.
+
+        Returns:
+            list: A list of interpolated points.
+        """
         points = np.array(self.points_from_path())
         t = np.arange(len(points))
         x = points[:, 0]
