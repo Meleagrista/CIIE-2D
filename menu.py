@@ -110,11 +110,20 @@ https://creativecommons.org/licenses/by/3.0/
 
 
 """
+
 # Function that allows to change between WASD and Arrows movement
 def change_movement_option(value, index):
     global movement_option
     movement_option = value
     print(f'User selected {value} at index {index}')
+
+
+# Function that changes the volume
+def change_volume(value, **kwargs):
+    if value:
+        pygame.mixer.music.set_volume(1.0)  # Max volume
+    else:
+        pygame.mixer.music.set_volume(0.0)  # Mute
 
 
 # Main function
@@ -143,11 +152,13 @@ def main():
     credits_menu = write_credits(replace_accented_characters(CREDITS))
 
     # Create the controls menu
-    controls_menu = pygame_menu.Menu("Controls", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    controls_menu = pygame_menu.Menu("Settings", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
     controls_menu.add.selector('Player movement: ', [('WASD', 1), ('Arrows', 2)], onchange=change_movement_option)
+    controls_menu.add.toggle_switch('Volume:', True, onchange=change_volume, state_color=((255, 78, 69), (183, 255, 115)), slider_thickness=10)
+    #controls_menu.add.selector('Volume :', ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'], onchange=change_volume)
 
     menu.add.button("Play", start_game)
-    menu.add.button("Controls", controls_menu)
+    menu.add.button("Settings", controls_menu)
     menu.add.button("Credits", credits_menu)
     menu.add.button("Quit", pygame_menu.events.EXIT)
 
