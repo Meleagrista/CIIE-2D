@@ -20,9 +20,12 @@ def change_difficulty():
 
 # Function for the Splash Screen
 def splash_screen(screen, wait_seconds):
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
     # Loads the image
     splash_image = pygame.image.load("assets/splash_screen_placeholder.jpeg")
-    splash_image = pygame.transform.scale(splash_image, (800, 600))
+    splash_image = pygame.transform.scale(splash_image, (screen_width, screen_height))
 
     # Draws the splash screen image
     screen.blit(splash_image, (0, 0))
@@ -54,8 +57,11 @@ def create_theme(font_size, title_font_size, font_color):
     background_img_path = "assets/desert-pixel-placeholder.png"
     image = pygame.image.load(background_img_path)
 
-    target_width = 800
-    target_height = 600
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    target_width = screen_width
+    target_height = screen_height
 
     # Define the new size for the image (e.g., half the original size)
     new_width = image.get_width() // (image.get_width() / target_width)
@@ -82,7 +88,10 @@ def create_theme(font_size, title_font_size, font_color):
 
 # Function to create the credit's menu with given labels
 def write_credits(labels):
-    menu = pygame_menu.Menu("Credits", 800, 600, theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    menu = pygame_menu.Menu("Credits", screen_width, screen_height, theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
     for label in labels.split('\n'):
         menu.add.label(label)
     return menu
@@ -112,12 +121,15 @@ def main():
     pygame.mixer.music.load('assets/Fall-From-Grace(chosic.com).mp3')
     pygame.mixer.music.play(-1)  # -1 to infinity music
 
-    screen = pygame.display.set_mode((800, 600))
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
     splash_screen(screen, 10)
 
     # Create the main menu
-    menu = pygame_menu.Menu("Game Title", 800, 600, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    menu = pygame_menu.Menu("Game Title", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
 
     # Create the credits menu
     credits_menu = write_credits(replace_accented_characters(CREDITS))
