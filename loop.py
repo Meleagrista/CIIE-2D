@@ -22,7 +22,7 @@ def play_game():
 
     # Create a list to hold enemy objects
     enemies = []
-    for i in range(5):
+    for i in range(2):
         x, y = grid.get_random_node().get_pos()
         enemies.append(Enemy(x, y, 0.5, 1, grid, screen))
 
@@ -47,7 +47,6 @@ def play_game():
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
-            enemy.cast()
 
         # Update and draw each enemy
         for enemy in enemies:

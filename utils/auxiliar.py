@@ -1,5 +1,8 @@
-from unidecode import unidecode
 import math
+
+import numpy as np
+import pygame
+from unidecode import unidecode
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -17,6 +20,25 @@ def replace_accented_characters(text):
         str: The text with accented characters replaced by their base characters.
     """
     return unidecode(text)
+
+
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        MASKING FUNCTIONS                                      #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+
+def create_mask(points, width, height):
+    mask_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+    if len(points) > 2:  # Ensure we have at least 3 points to draw a polygon
+        pygame.draw.polygon(mask_surface, (255, 255, 255), points)
+    mask = pygame.mask.from_surface(mask_surface)
+    return mask
+
+
+def fill_mask(surface, mask):
+    # Convert the mask to a surface with white for the mask area and transparent for the rest
+    result_surface = mask.to_surface(setcolor=(255, 255, 255, 255), unsetcolor=None)
+
+    surface.blit(result_surface, (0, 0))
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#

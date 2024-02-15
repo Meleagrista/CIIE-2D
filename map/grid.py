@@ -1,7 +1,7 @@
 import math
 import os
 import random
-
+from utils.constants import GRID_BACKGROUND
 import pygame
 
 from map.square import Square
@@ -74,7 +74,7 @@ class Grid:
             None
         """
         font = pygame.font.SysFont('arial', 20)
-        self.win.fill((125, 125, 125))
+        self.win.fill(GRID_BACKGROUND)
         self.update()
         for row in self.nodes:
             for spot in row:

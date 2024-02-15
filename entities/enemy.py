@@ -1,11 +1,9 @@
-import numpy as np
-import pygame
 from scipy.interpolate import CubicSpline
 
 from map.grid import Grid
 from utils.algorithms import *
-from utils.constants import *
 from utils.auxiliar import *
+from utils.constants import *
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -62,6 +60,7 @@ class Enemy:
         self.ray_cone = FIELD_OF_VISION
         self.ray_reach = REACH_OF_VISION
         self.corners = []
+        self.mask = None
 
     # ####################################################################### #
     #                                   DRAW                                  #
@@ -141,6 +140,10 @@ class Enemy:
 
             self.x -= self.delta_x * self.speed
             self.y -= self.delta_y * self.speed
+
+        self.cast()
+        self.update_mask()
+        self.draw_mask()  # Draw the mask onto the screen
 
     # ####################################################################### #
     #                                  ROTATE                                 #
@@ -358,7 +361,7 @@ class Enemy:
             vertices.append(point2)
         pygame.draw.polygon(self.screen, PASTEL_RED, vertices)
 
-    def cast(self, show=False):
+    def cast(self):
         start = increase_degree(self.angle, self.ray_cone / 2 + 1)
         ray_degree = start
         end = increase_degree(self.angle, -self.ray_cone / 2)
@@ -403,7 +406,8 @@ class Enemy:
                 map_y = int(ray_y // self.grid.gap - (1 if up else 0))
                 # map_point = map_y * self.grid.size + map_x
 
-                if 0 < map_x < self.grid.size and 0 < map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier():
+                if 0 <= map_x < self.grid.size and 0 <= map_y < self.grid.size and self.grid.nodes[map_x][
+                    map_y].is_barrier():
                     ray_distance = self.ray_reach
                 else:
                     ray_x = ray_x + offset_x
@@ -447,7 +451,8 @@ class Enemy:
                 map_y = int(ray_y // self.grid.gap)
                 # map_point = map_y * self.grid.size + map_x
 
-                if 0 < map_x < self.grid.size and 0 < map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier():
+                if 0 <= map_x < self.grid.size and 0 <= map_y < self.grid.size and self.grid.nodes[map_x][
+                    map_y].is_barrier():
                     ray_distance = self.ray_reach
                 else:
                     ray_x += offset_x
@@ -478,7 +483,9 @@ class Enemy:
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         corner_list.append((contact_point, (self.x, self.y)))
-        if show:
+        self.corners = corner_list
+
+        """if show:
             for pair in corner_list:
                 first_point, second_point = pair
                 x, y = first_point
@@ -501,4 +508,47 @@ class Enemy:
                         self.draw_circle_and_line((0, 0, 255), first_point)
         else:
             self.corners = corner_list
-            self.draw_point_of_view()
+            vertices = []
+            for pair in self.corners:
+                point1, point2 = pair
+                vertices.append(point1)
+                vertices.append(point2)
+            mask = create_mask(vertices, self.screen.get_width(), self.screen.get_height())
+            mask_surface = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+            fill_mask(mask_surface, mask)
+            self.screen.blit(mask_surface, (0, 0))"""
+
+    def draw_mask(self):
+        """
+        Draw the mask onto the screen.
+        """
+        # Adjust the opacity of the mask surface
+        mask_surface = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+
+        fill_mask(mask_surface, self.mask)
+        self.screen.blit(mask_surface, (0, 0))
+
+    def update_mask(self):
+        """
+        Update the mask based on the enemy's current position and vision.
+        """
+        # Logic to update the mask based on the enemy's current position and vision
+        # This would involve updating self.mask according to the current state of the enemy
+        # Example:
+        vertices = []
+        for pair in self.corners:
+            point1, point2 = pair
+            vertices.append(point1)
+            vertices.append(point2)
+
+        # Create surface for circular mask
+        circle_mask_surface = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+        pygame.draw.circle(circle_mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)),
+                           REACH_OF_VISION*SQUARE_SIZE)  # Adjust 10 to desired circle size
+
+        # Convert circular mask surface to mask
+        circle_mask = pygame.mask.from_surface(circle_mask_surface)
+
+        # Combine circular and polygon masks using bitwise AND
+        self.mask = create_mask(vertices, self.screen.get_width(), self.screen.get_height())
+        self.mask = self.mask.overlap_mask(circle_mask, (0, 0))
