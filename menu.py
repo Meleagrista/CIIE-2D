@@ -6,11 +6,13 @@ from utils.constants import *
 from utils.unicode import replace_accented_characters
 from loop import play_game
 
+movement_option = 'WASD'
 
 # Function to start the game (placeholder)
 def start_game():
+    global movement_option
     pygame.mixer.music.stop()
-    play_game()
+    play_game(movement_option)
 
 
 # Function to handle difficulty change (placeholder)
@@ -108,10 +110,16 @@ https://creativecommons.org/licenses/by/3.0/
 
 
 """
+# Function that allows to change between WASD and Arrows movement
+def change_movement_option(value, index):
+    global movement_option
+    movement_option = value
+    print(f'User selected {value} at index {index}')
 
 
 # Main function
 def main():
+    global movement_option
     pygame.init()
 
     # Inicialize the music mixer
@@ -134,7 +142,12 @@ def main():
     # Create the credits menu
     credits_menu = write_credits(replace_accented_characters(CREDITS))
 
+    # Create the controls menu
+    controls_menu = pygame_menu.Menu("Controls", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    controls_menu.add.selector('Player movement: ', [('WASD', 1), ('Arrows', 2)], onchange=change_movement_option)
+
     menu.add.button("Play", start_game)
+    menu.add.button("Controls", controls_menu)
     menu.add.button("Credits", credits_menu)
     menu.add.button("Quit", pygame_menu.events.EXIT)
 

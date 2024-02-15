@@ -7,7 +7,7 @@ from utils.constants import *
 
 
 # Define a function to start the game
-def play_game():
+def play_game(movement_option):
     # Initialize pygame
     pygame.init()
     clock = pygame.time.Clock()
@@ -45,7 +45,7 @@ def play_game():
         grid.draw()
 
         # Update and draw the player
-        player.move(pygame.key.get_pressed())
+        player.move(pygame.key.get_pressed(), movement_option)
         player.draw()
 
         # Update and draw each enemy
