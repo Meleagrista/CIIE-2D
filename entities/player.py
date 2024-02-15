@@ -92,7 +92,7 @@ class Player:
             direction_x += 1
         if keys[pygame.K_a]:
             direction_x -= 1
-        if keys[pygame.K_ESCAPE]:
+        if keys[pygame.K_k]:
             self.is_alive = False
             return
 

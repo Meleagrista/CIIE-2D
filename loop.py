@@ -11,6 +11,9 @@ from entities.player import Player
 from utils.constants import *
 from menu import main_menu
 
+PAUSE_MENU_ID = "pause_menu"
+DIE_MENU_ID = "die_menu"
+
 
 # Define a function to start the game
 def play_game():
@@ -22,6 +25,10 @@ def play_game():
     # Set the size of the window
     win_size = GRID_SIZE * SQUARE_SIZE
     screen = pygame.display.set_mode((win_size, win_size))
+
+    # Initialize variables for the menus
+    menu_manager = MenuManager(screen)
+    pause_menu, die_menu = get_menus()
 
     # Create the game grid
     grid = Grid(GRID_SIZE, screen)
@@ -45,9 +52,16 @@ def play_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            """elif event.type == pygame.MOUSEMOTION:
-                hover_node = grid.get_node(pygame.mouse.get_pos())
-                grid.hover_over(hover_node)"""
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    show_menu(menu_manager, pause_menu)
+                    menu_loop(menu_manager, clock)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1 or event.button == 3:
+                    menu_manager.click(event.button, event.pos)
+        """elif event.type == pygame.MOUSEMOTION:
+                        hover_node = grid.get_node(pygame.mouse.get_pos())
+                        grid.hover_over(hover_node)"""
 
         # Draw the game grid
         grid.draw()
@@ -67,18 +81,35 @@ def play_game():
         # Control the frame rate
         clock.tick(FPS)
 
+    # If the player died, show the die menu
     if not player.is_alive:
-        show_die_menu(screen, clock)
+        show_menu(menu_manager, die_menu)
+        menu_loop(menu_manager, clock)
 
+    # Quit pygame when the game loop exits
     else:
-        # Quit pygame when the game loop exits
         pygame.quit()
         sys.exit()
 
 
-def show_die_menu(screen, clock):
-    menu_manager = MenuManager(screen)
-
+def get_menus():
+    pause_menu = InfoBox("Pause menu",
+                         [
+                             [Button(
+                                 title="Go to main menu",
+                                 callback=lambda: main_menu(),
+                                 size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                             )],
+                             [Button(
+                                 title="Restart",
+                                 callback=lambda: play_game(),
+                                 size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                             )],
+                         ],
+                         width=500,
+                         close_button_text="Resume",
+                         identifier=PAUSE_MENU_ID
+                         )
     die_menu = InfoBox("You died",
                        [
                            [Button(
@@ -93,21 +124,37 @@ def show_die_menu(screen, clock):
                            )],
                        ],
                        width=500,
-                       has_close_button=False
+                       has_close_button=False,
+                       identifier=DIE_MENU_ID
                        )
 
-    while True:
+    return pause_menu, die_menu
+
+
+def show_menu(menu_manager, menu):
+    # display a menu if it is not already open
+    if menu_manager.active_menu is not None:
+        if menu_manager.active_menu.identifier == menu.identifier:
+            print("Given menu is already opened")
+            return
+        else:
+            menu_manager.close_active_menu()
+    menu_manager.open_menu(menu)
+
+
+def menu_loop(menu_manager, clock):
+    while menu_manager.active_menu is not None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                break
+            elif event.type == pygame.MOUSEMOTION:
+                menu_manager.motion(event.pos)  # Highlight buttons upon hover
+            elif event.type == pygame.KEYDOWN and menu_manager.active_menu.identifier == PAUSE_MENU_ID:
+                if event.key == pygame.K_ESCAPE:
+                    menu_manager.close_active_menu()
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1 or event.button == 3:
-                    if not menu_manager.active_menu.is_position_inside(event.pos):
-                        menu_manager.close_active_menu()
                     menu_manager.click(event.button, event.pos)
-
-        menu_manager.open_menu(die_menu)
         menu_manager.display()
         pygame.display.update()
         clock.tick(FPS)
