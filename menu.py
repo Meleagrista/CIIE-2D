@@ -3,19 +3,17 @@ import pygame
 import pygame_menu
 import time
 from utils.constants import *
-from utils.unicode import replace_accented_characters
+from utils.auxiliar import replace_accented_characters
 import loop
 
-
-
 movement_option = 'WASD'
+
 
 # Function to start the game (placeholder)
 def start_game():
     global movement_option
     pygame.mixer.music.stop()
-    play_game(movement_option)
-
+    loop.play_game(movement_option)
 
 
 # Function to handle difficulty change (placeholder)
@@ -96,7 +94,8 @@ def write_credits(labels):
     # Get user screen size
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
-    menu = pygame_menu.Menu("Credits", screen_width, screen_height, theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
+    menu = pygame_menu.Menu("Credits", screen_width, screen_height,
+                            theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
     for label in labels.split('\n'):
         menu.add.label(label)
     return menu
@@ -114,6 +113,7 @@ https://creativecommons.org/licenses/by/3.0/
 
 """
 
+
 # Function that allows to change between WASD and Arrows movement
 def change_movement_option(value, index):
     global movement_option
@@ -122,7 +122,7 @@ def change_movement_option(value, index):
 
 
 # Function that changes the volume
-def change_volume(value, **kwargs):
+def change_volume(value):
     if value:
         pygame.mixer.music.set_volume(1.0)  # Max volume
     else:
@@ -130,7 +130,7 @@ def change_volume(value, **kwargs):
 
 
 # Main function
-def main():
+def main_menu():
     global movement_option
 
     pygame.init()
@@ -150,16 +150,19 @@ def main():
     splash_screen(screen, 10)
 
     # Create the main menu
-    menu = pygame_menu.Menu("Game Title", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    menu = pygame_menu.Menu("Game Title", screen_width, screen_height,
+                            theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
 
     # Create the credits menu
     credits_menu = write_credits(replace_accented_characters(CREDITS))
 
     # Create the controls menu
-    controls_menu = pygame_menu.Menu("Settings", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    controls_menu = pygame_menu.Menu("Settings", screen_width, screen_height,
+                                     theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
     controls_menu.add.selector('Player movement: ', [('WASD', 1), ('Arrows', 2)], onchange=change_movement_option)
-    controls_menu.add.toggle_switch('Volume:', True, onchange=change_volume, state_color=((255, 78, 69), (183, 255, 115)), slider_thickness=10)
-    #controls_menu.add.selector('Volume :', ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'], onchange=change_volume)
+    controls_menu.add.toggle_switch('Volume:', True, onchange=change_volume,
+                                    state_color=((255, 78, 69), (183, 255, 115)), slider_thickness=10)
+    # controls_menu.add.selector('Volume :', ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'], onchange=change_volume)
 
     menu.add.button("Play", start_game)
     menu.add.button("Settings", controls_menu)

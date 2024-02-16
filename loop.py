@@ -16,12 +16,8 @@ DIE_MENU_ID = "die_menu"
 
 
 # Define a function to start the game
-def play_game():
-    # Initialize pygame and pygamepopup
-
 def play_game(movement_option):
     # Initialize pygame
-
     pygame.init()
     pygamepopup.init()
     clock = pygame.time.Clock()
@@ -80,7 +76,7 @@ def play_game(movement_option):
             enemy.draw(screen)
 
         # Update and draw the player
-        player.move(pygame.key.get_pressed())
+        player.move(pygame.key.get_pressed(), )
         player.draw()
 
         # Update the display

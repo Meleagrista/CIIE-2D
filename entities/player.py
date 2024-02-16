@@ -76,14 +76,13 @@ class Player:
     #                                   MOVE                                  #
     # ####################################################################### #
 
-    def move(self, keys, movement_option):
+    def move(self, keys, movement_option='WASD'):
         """
         Update the player's position and orientation.
         """
         direction_x = 0
         direction_y = 0
         direction = Direction.STOPPED
-
 
         if movement_option == 'WASD':
             if keys[pygame.K_w]:
