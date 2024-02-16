@@ -49,20 +49,20 @@ def a_star(self):
     """
     count = 0
     open_set = PriorityQueue()
-    open_set.put((0, count, self.start))
+    open_set.put((0, count, self.start_node))
     came_from = {}
     g_score = {spot: float("inf") for row in self.grid.nodes for spot in row}
-    g_score[self.start] = 0
+    g_score[self.start_node] = 0
     f_score = {spot: float("inf") for row in self.grid.nodes for spot in row}
-    f_score[self.start] = heuristic(self.start.get_pos(), self.end.get_pos(), self.start.get_weight())
-    open_set_hash = {self.start}
+    f_score[self.start_node] = heuristic(self.start_node.get_pos(), self.end_node.get_pos(), self.start_node.get_weight())
+    open_set_hash = {self.start_node}
 
     while not open_set.empty():
         current = open_set.get()[2]
         open_set_hash.remove(current)
 
-        if current == self.end:
-            return reconstruct_path(came_from, self.end)
+        if current == self.end_node:
+            return reconstruct_path(came_from, self.end_node)
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + current.weight
@@ -70,8 +70,8 @@ def a_star(self):
             if temp_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
                 g_score[neighbor] = temp_g_score
-                f_score[neighbor] = temp_g_score + heuristic(neighbor.get_pos(), self.end.get_pos(),
-                                                                  neighbor.get_weight())
+                f_score[neighbor] = temp_g_score + heuristic(neighbor.get_pos(), self.end_node.get_pos(),
+                                                             neighbor.get_weight())
                 if neighbor not in open_set_hash:
                     count += 1
                     open_set.put((f_score[neighbor], count, neighbor))

@@ -76,7 +76,7 @@ class Player:
     #                                   MOVE                                  #
     # ####################################################################### #
 
-    def move(self, keys):
+    def move(self, keys, movement_option):
         """
         Update the player's position and orientation.
         """
@@ -84,17 +84,25 @@ class Player:
         direction_y = 0
         direction = Direction.STOPPED
 
-        if keys[pygame.K_w]:
-            direction_y -= 1
-        if keys[pygame.K_s]:
-            direction_y += 1
-        if keys[pygame.K_d]:
-            direction_x += 1
-        if keys[pygame.K_a]:
-            direction_x -= 1
-        if keys[pygame.K_k]:
-            self.is_alive = False
-            return
+
+        if movement_option == 'WASD':
+            if keys[pygame.K_w]:
+                direction_y -= 1
+            if keys[pygame.K_s]:
+                direction_y += 1
+            if keys[pygame.K_d]:
+                direction_x += 1
+            if keys[pygame.K_a]:
+                direction_x -= 1
+        else:
+            if keys[pygame.K_UP]:
+                direction_y -= 1
+            if keys[pygame.K_DOWN]:
+                direction_y += 1
+            if keys[pygame.K_RIGHT]:
+                direction_x += 1
+            if keys[pygame.K_LEFT]:
+                direction_x -= 1
 
         # Handle diagonal movement
         if direction_x != 0 and direction_y != 0:
@@ -140,7 +148,7 @@ class Player:
         # Update player's position
         self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
 
-        collisions = self.grid.has_collision(self.rect, self.rect.width)
+        collisions = self.grid.has_collision(self.rect)
 
         while len(collisions) != 0:
             set_collisions = collisions
@@ -149,21 +157,21 @@ class Player:
                     new_x = self.x
                     new_y = self.y + direction.delta_y * (self.speed * FRICTION)
                     self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
-                    collisions = self.grid.has_collision(self.rect, self.rect.width)
+                    collisions = self.grid.has_collision(self.rect)
                     if len(collisions) == 0:
                         break
                 if collision.rect.top < self.rect.bottom or collision.rect.bottom > self.rect.top:
                     new_y = self.y
                     new_x = self.x + direction.delta_x * (self.speed * FRICTION)
                     self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
-                    collisions = self.grid.has_collision(self.rect, self.rect.width)
+                    collisions = self.grid.has_collision(self.rect)
                     if len(collisions) == 0:
                         break
             if len(set_collisions) == len(collisions):
                 new_y = self.y
                 new_x = self.x
                 self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
-                collisions = self.grid.has_collision(self.rect, self.rect.width)
+                collisions = self.grid.has_collision(self.rect)
 
         # Update player's position
         self.x = new_x

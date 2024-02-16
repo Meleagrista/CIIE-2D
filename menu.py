@@ -7,10 +7,15 @@ from utils.unicode import replace_accented_characters
 import loop
 
 
+
+movement_option = 'WASD'
+
 # Function to start the game (placeholder)
 def start_game():
+    global movement_option
     pygame.mixer.music.stop()
-    loop.play_game()
+    play_game(movement_option)
+
 
 
 # Function to handle difficulty change (placeholder)
@@ -20,9 +25,12 @@ def change_difficulty():
 
 # Function for the Splash Screen
 def splash_screen(screen, wait_seconds):
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
     # Loads the image
     splash_image = pygame.image.load("assets/splash_screen_placeholder.jpeg")
-    splash_image = pygame.transform.scale(splash_image, (800, 600))
+    splash_image = pygame.transform.scale(splash_image, (screen_width, screen_height))
 
     # Draws the splash screen image
     screen.blit(splash_image, (0, 0))
@@ -54,8 +62,11 @@ def create_theme(font_size, title_font_size, font_color):
     background_img_path = "assets/desert-pixel-placeholder.png"
     image = pygame.image.load(background_img_path)
 
-    target_width = 800
-    target_height = 600
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    target_width = screen_width
+    target_height = screen_height
 
     # Define the new size for the image (e.g., half the original size)
     new_width = image.get_width() // (image.get_width() / target_width)
@@ -82,7 +93,10 @@ def create_theme(font_size, title_font_size, font_color):
 
 # Function to create the credit's menu with given labels
 def write_credits(labels):
-    menu = pygame_menu.Menu("Credits", 800, 600, theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    menu = pygame_menu.Menu("Credits", screen_width, screen_height, theme=create_theme(CREDITS_FONT, TITLE_FONT, FONT_COLOR))
     for label in labels.split('\n'):
         menu.add.label(label)
     return menu
@@ -100,9 +114,25 @@ https://creativecommons.org/licenses/by/3.0/
 
 """
 
+# Function that allows to change between WASD and Arrows movement
+def change_movement_option(value, index):
+    global movement_option
+    movement_option = value
+    print(f'User selected {value} at index {index}')
+
+
+# Function that changes the volume
+def change_volume(value, **kwargs):
+    if value:
+        pygame.mixer.music.set_volume(1.0)  # Max volume
+    else:
+        pygame.mixer.music.set_volume(0.0)  # Mute
+
 
 # Main function
-def main_menu():
+def main():
+    global movement_option
+
     pygame.init()
 
     # Inicialize the music mixer
@@ -112,17 +142,27 @@ def main_menu():
     pygame.mixer.music.load('assets/Fall-From-Grace(chosic.com).mp3')
     pygame.mixer.music.play(-1)  # -1 to infinity music
 
-    screen = pygame.display.set_mode((800, 600))
+    # Get user screen size
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
     splash_screen(screen, 10)
 
     # Create the main menu
-    menu = pygame_menu.Menu("Game Title", 800, 600, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    menu = pygame_menu.Menu("Game Title", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
 
     # Create the credits menu
     credits_menu = write_credits(replace_accented_characters(CREDITS))
 
+    # Create the controls menu
+    controls_menu = pygame_menu.Menu("Settings", screen_width, screen_height, theme=create_theme(MENU_FONT, TITLE_FONT, FONT_COLOR))
+    controls_menu.add.selector('Player movement: ', [('WASD', 1), ('Arrows', 2)], onchange=change_movement_option)
+    controls_menu.add.toggle_switch('Volume:', True, onchange=change_volume, state_color=((255, 78, 69), (183, 255, 115)), slider_thickness=10)
+    #controls_menu.add.selector('Volume :', ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'], onchange=change_volume)
+
     menu.add.button("Play", start_game)
+    menu.add.button("Settings", controls_menu)
     menu.add.button("Credits", credits_menu)
     menu.add.button("Quit", pygame_menu.events.EXIT)
 

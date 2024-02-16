@@ -18,6 +18,10 @@ DIE_MENU_ID = "die_menu"
 # Define a function to start the game
 def play_game():
     # Initialize pygame and pygamepopup
+
+def play_game(movement_option):
+    # Initialize pygame
+
     pygame.init()
     pygamepopup.init()
     clock = pygame.time.Clock()
@@ -36,12 +40,12 @@ def play_game():
 
     # Create a list to hold enemy objects
     enemies = []
-    for i in range(5):
+    for i in range(2):
         x, y = grid.get_random_node().get_pos()
-        enemies.append(Enemy(x, y, 1, 0.5, grid, screen))
+        enemies.append(Enemy((x, y), 0.5, 1, grid, screen))
 
     # Create the player entity
-    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 1, grid, screen)
+    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 2, grid, screen)
 
     # Flag to control the game loop
     running = True
@@ -67,13 +71,17 @@ def play_game():
         grid.draw()
 
         # Update and draw the player
-        player.move(pygame.key.get_pressed())
+        player.move(pygame.key.get_pressed(), movement_option)
         player.draw()
-
+        
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
-            enemy.draw()
+            enemy.draw(screen)
+
+        # Update and draw the player
+        player.move(pygame.key.get_pressed())
+        player.draw()
 
         # Update the display
         pygame.display.flip()
