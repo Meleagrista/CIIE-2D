@@ -24,7 +24,7 @@ def play_game():
     enemies = []
     for i in range(2):
         x, y = grid.get_random_node().get_pos()
-        enemies.append(Enemy(x, y, 0.5, 1, grid, screen))
+        enemies.append(Enemy((x, y), 0.5, 1, grid, screen))
 
     # Create the player entity
     player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 2, grid, screen)
@@ -37,9 +37,6 @@ def play_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            """elif event.type == pygame.MOUSEMOTION:
-                hover_node = grid.get_node(pygame.mouse.get_pos())
-                grid.hover_over(hover_node)"""
 
         # Draw the game grid
         grid.draw()
@@ -47,10 +44,7 @@ def play_game():
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
-
-        # Update and draw each enemy
-        for enemy in enemies:
-            enemy.draw()
+            enemy.draw(screen)
 
         # Update and draw the player
         player.move(pygame.key.get_pressed())
