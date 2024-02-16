@@ -74,7 +74,7 @@ class Player:
     #                                   MOVE                                  #
     # ####################################################################### #
 
-    def move(self, keys):
+    def move(self, keys, movement_option):
         """
         Update the player's position and orientation.
         """
@@ -82,14 +82,24 @@ class Player:
         direction_y = 0
         direction = Direction.STOPPED
 
-        if keys[pygame.K_w]:
-            direction_y -= 1
-        if keys[pygame.K_s]:
-            direction_y += 1
-        if keys[pygame.K_d]:
-            direction_x += 1
-        if keys[pygame.K_a]:
-            direction_x -= 1
+        if movement_option == 'WASD':
+            if keys[pygame.K_w]:
+                direction_y -= 1
+            if keys[pygame.K_s]:
+                direction_y += 1
+            if keys[pygame.K_d]:
+                direction_x += 1
+            if keys[pygame.K_a]:
+                direction_x -= 1
+        else:
+            if keys[pygame.K_UP]:
+                direction_y -= 1
+            if keys[pygame.K_DOWN]:
+                direction_y += 1
+            if keys[pygame.K_RIGHT]:
+                direction_x += 1
+            if keys[pygame.K_LEFT]:
+                direction_x -= 1
 
         # Handle diagonal movement
         if direction_x != 0 and direction_y != 0:
