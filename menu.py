@@ -3,8 +3,10 @@ import pygame
 import pygame_menu
 import time
 from utils.constants import *
-from utils.auxiliar import replace_accented_characters
-from loop import play_game
+from utils.unicode import replace_accented_characters
+import loop
+
+
 
 movement_option = 'WASD'
 
@@ -13,6 +15,7 @@ def start_game():
     global movement_option
     pygame.mixer.music.stop()
     play_game(movement_option)
+
 
 
 # Function to handle difficulty change (placeholder)
@@ -129,6 +132,7 @@ def change_volume(value, **kwargs):
 # Main function
 def main():
     global movement_option
+
     pygame.init()
 
     # Inicialize the music mixer
@@ -166,4 +170,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_menu()

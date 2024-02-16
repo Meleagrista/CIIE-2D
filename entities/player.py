@@ -42,6 +42,8 @@ class Player:
         self.grid = grid
         self.last_direction = Direction.NORTH
 
+        self.is_alive = True
+
     # ####################################################################### #
     #                                   DRAW                                  #
     # ####################################################################### #
@@ -81,6 +83,7 @@ class Player:
         direction_x = 0
         direction_y = 0
         direction = Direction.STOPPED
+
 
         if movement_option == 'WASD':
             if keys[pygame.K_w]:
