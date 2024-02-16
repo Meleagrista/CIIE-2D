@@ -22,12 +22,12 @@ def play_game(movement_option):
 
     # Create a list to hold enemy objects
     enemies = []
-    for i in range(5):
+    for i in range(2):
         x, y = grid.get_random_node().get_pos()
-        enemies.append(Enemy(x, y, 1, 0.5, grid, screen))
+        enemies.append(Enemy((x, y), 0.5, 1, grid, screen))
 
     # Create the player entity
-    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 1, grid, screen)
+    player = Player(win_size // 2 - SQUARE_SIZE, win_size // 2 - SQUARE_SIZE, 2, grid, screen)
 
     # Flag to control the game loop
     running = True
@@ -37,9 +37,6 @@ def play_game(movement_option):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            """elif event.type == pygame.MOUSEMOTION:
-                hover_node = grid.get_node(pygame.mouse.get_pos())
-                grid.hover_over(hover_node)"""
 
         # Draw the game grid
         grid.draw()
@@ -47,11 +44,15 @@ def play_game(movement_option):
         # Update and draw the player
         player.move(pygame.key.get_pressed(), movement_option)
         player.draw()
-
+        
         # Update and draw each enemy
         for enemy in enemies:
             enemy.update()
-            enemy.draw()
+            enemy.draw(screen)
+
+        # Update and draw the player
+        player.move(pygame.key.get_pressed())
+        player.draw()
 
         # Update the display
         pygame.display.flip()

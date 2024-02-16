@@ -54,10 +54,10 @@ class Square:
         self.barriers = []
         self.id = 0
         self.barrier = False
-        self.color = (255, 255, 255)  # WHITE
+        self.color = GRID_BACKGROUND
         self.weight = weight
         self.hover = False
-        self.rect = pygame.Rect((row * size), (col * size), size, size)
+        self.rect = pygame.Rect((row * size), (col * size), size + 1, size + 1)
 
     # ####################################################################### #
     #                                VARIABLES                                #
@@ -153,7 +153,7 @@ class Square:
             None
         """
         self.barrier = False
-        self.color = WHITE
+        self.color = GRID_BACKGROUND
 
     def make_barrier(self):
         """
