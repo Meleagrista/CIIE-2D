@@ -153,8 +153,8 @@ class GameManager:
             pygame.draw.circle(substract_surface, (255, 255, 255, 255), (int(enemy.x), int(enemy.y)), vision)
 
         mask = pygame.mask.from_surface(mask_surface)
-        substract = pygame.mask.from_surface(substract_surface)
-        mask = mask.overlap_mask(substract, (0, 0))
+        subtract = pygame.mask.from_surface(substract_surface)
+        mask = mask.overlap_mask(subtract, (0, 0))
 
         result_surface = mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100))
 
@@ -169,7 +169,7 @@ class GameManager:
         return mask.overlap_area(enemy_sight, (0, 0)) > 0
 
     # ####################################################################### #
-    #                                   MENUS                                 #
+    #                             USER INTERFACE                              #
     # ####################################################################### #
 
     def draw_bar(self, surface):
