@@ -9,6 +9,8 @@ from entities.enemy import Enemy
 from entities.player import Player
 from map.grid import Grid
 
+from camera import Camera
+
 import sys
 import pygame
 import pygamepopup
@@ -30,7 +32,7 @@ class GameManager:
         self.player = None
         self.grid = Grid(GRID_SIZE, self.win)
         self.enemies = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites = Camera()
 
         self.start()
         self.death_counter = 0
@@ -45,6 +47,7 @@ class GameManager:
     def start(self):
         self.spawn_enemies()
         self.spawn_player()
+        self.add_grid()
 
     def restart(self):
         self.death_counter = 0
@@ -65,10 +68,8 @@ class GameManager:
                     if event.button == 1 or event.button == 3:
                         self.menu_manager.click(event.button, event.pos)
 
-            self.grid.draw()
-
-            self.update(pygame.key.get_pressed())
-            self.draw(self.win)
+            self.update()
+            self.draw(self.player)
 
             if self.detect_player():
                 if self.death_counter >= LIFE * FPS:
@@ -109,6 +110,9 @@ class GameManager:
         self.player = None
         player.kill()
 
+    def add_grid(self):
+        self.grid.add(self.all_sprites)
+
     def spawn_enemies(self):
         self.remove_all_enemies()
         for i in range(2):
@@ -127,14 +131,12 @@ class GameManager:
         for enemy in self.enemies.sprites():
             enemy.kill()
 
-    def update(self, keys):
-        self.player.update(keys)
-        self.enemies.update()
+    def update(self):
+        self.all_sprites.update()
 
-    def draw(self, surface):
+    def draw(self, player):
         # TODO: Use native method when we incorporate Sprite images
-        for sprite in self.all_sprites.sprites():
-            sprite.draw(surface)
+        self.all_sprites.custom_draw(player)
 
     def mask_vision(self):
         mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)

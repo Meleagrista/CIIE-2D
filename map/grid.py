@@ -25,6 +25,7 @@ class Grid:
     """
 
     def __init__(self, size, win):
+        self.groups = []
         """
         Initializes the Grid object with the given size and window.
 
@@ -85,6 +86,11 @@ class Grid:
                 elif spot.id != 0 and show_id:
                     text = font.render(str(spot.id), True, (0, 0, 0))
                     self.win.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
+
+    def add(self, group):
+        for row in self.nodes:
+            for node in row:
+                node.add(group)
 
     def update(self):
         """

@@ -35,6 +35,10 @@ class Enemy(pygame.sprite.Sprite):
         self.x, self.y = pos
         self.size = NPC_SIZE
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
+        self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
+        self.image.fill((0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -151,6 +155,9 @@ class Enemy(pygame.sprite.Sprite):
         # CASTING RAYS
         ##############################
         self.cast()
+
+        # Update sprite
+        self.rect.center = (self.x, self.y)
 
     def kill(self):
         for group in self.groups:

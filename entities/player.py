@@ -32,7 +32,10 @@ class Player(pygame.sprite.Sprite):
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
-        self.rect = pygame.Rect(x, y, NPC_SIZE, NPC_SIZE)
+        self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
+        self.image.fill((0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -66,10 +69,13 @@ class Player(pygame.sprite.Sprite):
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
 
-    def update(self, keys):
+
+    def update(self):
         direction_x = 0
         direction_y = 0
         direction = Direction.STOPPED
+
+        keys = pygame.key.get_pressed()
 
         if self.movement_option == Controls.WASD:
             if keys[pygame.K_w]:
@@ -162,6 +168,10 @@ class Player(pygame.sprite.Sprite):
         # Update player's position
         self.x = new_x
         self.y = new_y
+
+        # Update sprite
+        self.rect.topleft = (self.x, self.y)
+
 
     def kill(self):
         for group in self.groups:

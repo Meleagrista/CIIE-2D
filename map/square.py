@@ -6,7 +6,7 @@ from utils.constants import *
 #                                        SQUARE CLASS                                           #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-class Square:
+class Square(pygame.sprite.Sprite):
     """
     A class representing a square grid cell in the pathfinding visualization grid.
 
@@ -43,6 +43,10 @@ class Square:
         Returns:
             None
         """
+        super().__init__()
+
+        self.groups = []
+
         self.row = row
         self.col = col
         self.x = (row * size) + size * 0.5
@@ -57,6 +61,11 @@ class Square:
         self.color = GRID_BACKGROUND
         self.weight = weight
         self.hover = False
+
+        self.image = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
         self.rect = pygame.Rect((row * size), (col * size), size + 1, size + 1)
 
     # ####################################################################### #
@@ -114,6 +123,12 @@ class Square:
         """
         return self.x, self.y
 
+    def add(self, *groups):
+        for group in groups:
+            group.add(self)
+            if group not in self.groups:
+                self.groups.append(group)
+
     # ####################################################################### #
     #                                VARIABLES                                #
     # ####################################################################### #
@@ -164,6 +179,7 @@ class Square:
         """
         self.barrier = True
         self.color = BLACK
+        self.image.fill((0, 0, 0))
 
     def make_selected(self):
         """
