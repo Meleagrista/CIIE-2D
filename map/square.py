@@ -1,4 +1,6 @@
 import pygame
+from pygame import rect
+
 from utils.constants import *
 
 
@@ -6,7 +8,7 @@ from utils.constants import *
 #                                        SQUARE CLASS                                           #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-class Square(pygame.sprite.Sprite):
+class Square():
     """
     A class representing a square grid cell in the pathfinding visualization grid.
 
@@ -45,8 +47,6 @@ class Square(pygame.sprite.Sprite):
         """
         super().__init__()
 
-        self.groups = []
-
         self.row = row
         self.col = col
         self.x = (row * size) + size * 0.5
@@ -56,7 +56,7 @@ class Square(pygame.sprite.Sprite):
         self.total_cols = total_cols
         self.neighbors = []
         self.barriers = []
-        self.id = 0
+        self.id = -1
         self.barrier = False
         self.color = GRID_BACKGROUND
         self.weight = weight
@@ -82,7 +82,7 @@ class Square(pygame.sprite.Sprite):
     #                                  DRAW                                   #
     # ####################################################################### #
 
-    def draw(self, win):
+    def draw(self, win, offset):
         """
         Draw the square on the pygame window surface.
 
@@ -91,15 +91,16 @@ class Square(pygame.sprite.Sprite):
            Returns:
             None
          """
+
         # Calculate the top-left corner of the rectangle
-        top_left_x = self.x - self.size / 2
-        top_left_y = self.y - self.size / 2
+        top_left_x = (self.x - self.size / 2) - offset.x - (self.size // 2)
+        top_left_y = (self.y - self.size / 2) - offset.y - (self.size // 2)
 
         # Draw the rectangle with the adjusted coordinates
         if GRID_SHOW:
             pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
         else:
-            pygame.draw.rect(win, self.color, self.rect)
+            pygame.draw.rect(win, self.color, ((self.x - offset.x), (self.y - offset.y), self.size, self.size))
 
     # ####################################################################### #
     #                                POSITION                                 #
@@ -180,6 +181,12 @@ class Square(pygame.sprite.Sprite):
         self.barrier = True
         self.color = BLACK
         self.image.fill((0, 0, 0))
+
+    def make_room(self, id):
+        self.barrier = False
+        self.color = WHITE
+        self.set_id(id)
+        self.image.fill((255, 255, 255))
 
     def make_selected(self):
         """

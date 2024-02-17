@@ -47,7 +47,7 @@ class GameManager:
     def start(self):
         self.spawn_enemies()
         self.spawn_player()
-        self.add_grid()
+        #self.add_grid()
 
     def restart(self):
         self.death_counter = 0
@@ -69,7 +69,7 @@ class GameManager:
                         self.menu_manager.click(event.button, event.pos)
 
             self.update()
-            self.draw(self.player)
+            self.draw()
 
             if self.detect_player():
                 if self.death_counter >= LIFE * FPS:
@@ -110,9 +110,6 @@ class GameManager:
         self.player = None
         player.kill()
 
-    def add_grid(self):
-        self.grid.add(self.all_sprites)
-
     def spawn_enemies(self):
         self.remove_all_enemies()
         for i in range(2):
@@ -134,9 +131,9 @@ class GameManager:
     def update(self):
         self.all_sprites.update()
 
-    def draw(self, player):
+    def draw(self):
         # TODO: Use native method when we incorporate Sprite images
-        self.all_sprites.custom_draw(player)
+        self.all_sprites.custom_draw(self.player, self.grid)
 
     def mask_vision(self):
         mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
@@ -148,11 +145,7 @@ class GameManager:
                 point1, point2 = pair
                 vertices.append(point1)
                 vertices.append(point2)
-            if len(vertices) > 2:
-                pygame.draw.polygon(mask_surface, (255, 255, 255), vertices)
-            pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(enemy.x), int(enemy.y)), enemy.size * 2)
-            vision = enemy.ray_reach * SQUARE_SIZE
-            pygame.draw.circle(substract_surface, (255, 255, 255, 255), (int(enemy.x), int(enemy.y)), vision)
+            self.all_sprites.draw_mask(enemy, substract_surface, vertices, mask_surface)
 
         mask = pygame.mask.from_surface(mask_surface)
         subtract = pygame.mask.from_surface(substract_surface)
@@ -181,8 +174,7 @@ class GameManager:
         bar_percentage = round(self.death_counter / (LIFE * FPS), 2)
         bar_y = self.player.rect.y - self.player.size - bar_height
         bar_x = self.player.rect.x - bar_width/bar_size
-        pygame.draw.rect(surface, GREEN, (bar_x, bar_y, bar_width, bar_height))
-        pygame.draw.rect(surface, RED, (bar_x, bar_y, bar_width*bar_percentage, bar_height))
+        self.all_sprites.draw_bar((bar_x, bar_y), bar_width, bar_height, bar_percentage)
 
     def open_menu(self, menu):
         if self.menu_manager.active_menu is not None:

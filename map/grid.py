@@ -68,7 +68,7 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, show_id=False):
+    def draw(self, offset, show_id=False):
         """
         Draws the grid on the pygame window surface.
 
@@ -80,7 +80,7 @@ class Grid:
         self.update()
         for row in self.nodes:
             for spot in row:
-                spot.draw(self.win)
+                spot.draw(self.win, offset)
                 if spot.is_border():
                     spot.make_barrier()
                 elif spot.id != 0 and show_id:
@@ -197,7 +197,7 @@ class Grid:
                 if character == 'X':
                     node.make_barrier()
                 elif character.isnumeric():
-                    node.set_id(int(character))
+                    node.make_room(int(character))
                 else:
                     node.reset()
         print("Map imported successfully.")
