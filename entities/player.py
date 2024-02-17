@@ -1,16 +1,17 @@
-from map.grid import Grid
 from utils.constants import *
+from utils.enums import *
+from map.grid import Grid
+
 import math
 import pygame
-from utils.enums import Direction
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PLAYER CLASS                                           #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-class Player:
-    def __init__(self, x: int, y: int, movement_speed: float, grid: Grid, win):
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int, movement_speed: float, grid: Grid, movement_option: Controls):
         """
         Initialize an Enemy object.
 
@@ -19,41 +20,34 @@ class Player:
             y (int): Y coordinate of the enemy.
             movement_speed (float): Speed of movement.
             grid (Grid): Grid for pathfinding.
-            win: Surface for drawing.
+            movement_option (Controls): Controller option.
         """
+        super().__init__()
         self.x = x
         self.y = y
+        self.groups = []
         self.size = NPC_SIZE
 
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.rect = pygame.Rect(x, y, NPC_SIZE, NPC_SIZE)
-        self.screen = win
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
+        self.rect = pygame.Rect(x, y, NPC_SIZE, NPC_SIZE)
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.grid = grid
         self.angle = NPC_ANGLE
         self.speed = movement_speed
+        self.last_direction = Direction.NORTH
+        self.movement_option = movement_option
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
-        self.grid = grid
-        self.last_direction = Direction.NORTH
 
-        self.is_alive = True
-
-    # ####################################################################### #
-    #                                   DRAW                                  #
-    # ####################################################################### #
-
-    def draw(self):
-        """
-        Draw the player.
-        """
+    def draw(self, surface):
         # Draw the square
-        pygame.draw.rect(self.screen, BLUE, self.rect)
+        pygame.draw.rect(surface, BLUE, self.rect)
 
         # Draw the rotated triangle
         end_point = (self.rect.centerx - self.delta_x * 10, self.rect.centery - self.delta_y * 10)
@@ -70,21 +64,14 @@ class Player:
                 end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
             ),
         ]
-        pygame.draw.polygon(self.screen, (255, 0, 0), triangle_points)
+        pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
 
-    # ####################################################################### #
-    #                                   MOVE                                  #
-    # ####################################################################### #
-
-    def move(self, keys, movement_option='WASD'):
-        """
-        Update the player's position and orientation.
-        """
+    def update(self, keys):
         direction_x = 0
         direction_y = 0
         direction = Direction.STOPPED
 
-        if movement_option == 'WASD':
+        if self.movement_option == Controls.WASD:
             if keys[pygame.K_w]:
                 direction_y -= 1
             if keys[pygame.K_s]:
@@ -93,7 +80,7 @@ class Player:
                 direction_x += 1
             if keys[pygame.K_a]:
                 direction_x -= 1
-        else:
+        elif self.movement_option == Controls.Arrows:
             if keys[pygame.K_UP]:
                 direction_y -= 1
             if keys[pygame.K_DOWN]:
@@ -175,3 +162,20 @@ class Player:
         # Update player's position
         self.x = new_x
         self.y = new_y
+
+    def kill(self):
+        for group in self.groups:
+            group.remove(self)
+        del self
+
+    def add(self, *groups):
+        for group in groups:
+            group.add(self)
+            if group not in self.groups:
+                self.groups.append(group)
+
+    def remove(self, *groups):
+        for group in groups:
+            group.remove(self)
+            if group in self.groups:
+                self.groups.remove(group)

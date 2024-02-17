@@ -9,7 +9,7 @@ from entities.enemy import Enemy
 from map.grid import Grid
 from entities.player import Player
 from utils.constants import *
-from menu import main_menu
+from ui.menu import main_menu
 
 PAUSE_MENU_ID = "pause_menu"
 DIE_MENU_ID = "die_menu"
@@ -28,7 +28,7 @@ def play_game(movement_option):
 
     # Initialize variables for the menus
     menu_manager = MenuManager(screen)
-    pause_menu, die_menu = get_menus()
+    pause_menu, die_menu = get_menus(movement_option)
 
     # Create the game grid
     grid = Grid(GRID_SIZE, screen)
@@ -76,7 +76,7 @@ def play_game(movement_option):
             enemy.draw(screen)
 
         # Update and draw the player
-        player.move(pygame.key.get_pressed(), )
+        player.move(pygame.key.get_pressed(), movement_option)
         player.draw()
 
         # Update the display
@@ -96,7 +96,7 @@ def play_game(movement_option):
         sys.exit()
 
 
-def get_menus():
+def get_menus(movement_option):
     pause_menu = InfoBox("Pause menu",
                          [
                              [Button(
@@ -106,7 +106,7 @@ def get_menus():
                              )],
                              [Button(
                                  title="Restart",
-                                 callback=lambda: play_game(),
+                                 callback=lambda: play_game(movement_option),
                                  size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                              )],
                          ],
@@ -123,7 +123,7 @@ def get_menus():
                            )],
                            [Button(
                                title="Restart",
-                               callback=lambda: play_game(),
+                               callback=lambda: play_game(movement_option),
                                size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                            )],
                        ],
@@ -162,5 +162,3 @@ def menu_loop(menu_manager, clock):
         menu_manager.display()
         pygame.display.update()
         clock.tick(FPS)
-
-

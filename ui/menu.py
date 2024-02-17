@@ -27,7 +27,7 @@ def splash_screen(screen, wait_seconds):
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
     # Loads the image
-    splash_image = pygame.image.load("assets/splash_screen_placeholder.jpeg")
+    splash_image = pygame.image.load("../assets/splash_screen_placeholder.jpeg")
     splash_image = pygame.transform.scale(splash_image, (screen_width, screen_height))
 
     # Draws the splash screen image
@@ -52,12 +52,12 @@ def splash_screen(screen, wait_seconds):
 
 # Function to create a custom theme for menus
 def create_theme(font_size, title_font_size, font_color):
-    font_path = "assets/pixel.regular.ttf"
+    font_path = "../assets/pixel.regular.ttf"
     my_font = pygame.font.Font(font_path, font_size)
     title_font = pygame.font.Font(font_path, title_font_size)
 
     # Load the image
-    background_img_path = "assets/desert-pixel-placeholder.png"
+    background_img_path = "../assets/desert-pixel-placeholder.png"
     image = pygame.image.load(background_img_path)
 
     # Get user screen size
@@ -139,7 +139,7 @@ def main_menu():
     pygame.mixer.init()
 
     # Loads and reproduce music 
-    pygame.mixer.music.load('assets/Fall-From-Grace(chosic.com).mp3')
+    pygame.mixer.music.load('../assets/fall-from-grace.mp3')
     pygame.mixer.music.play(-1)  # -1 to infinity music
 
     # Get user screen size
@@ -170,7 +170,3 @@ def main_menu():
     menu.add.button("Quit", pygame_menu.events.EXIT)
 
     menu.mainloop(screen)
-
-
-if __name__ == "__main__":
-    main_menu()

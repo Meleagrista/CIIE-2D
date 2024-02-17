@@ -14,18 +14,18 @@ from utils.constants import *
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, movement_speed, rotation_speed, grid: Grid, window):
         """
-                Initializes the Enemy sprite.
+            Initializes the Enemy sprite.
 
-                Args:
-                    pos (tuple): The initial position (x, y) of the sprite.
-                    movement_speed (float): The movement speed of the sprite.
-                    rotation_speed (float): The rotation speed of the sprite.
-                    grid (Grid): The grid object for pathfinding.
-                    window (pygame.Surface): The game window surface.
+            Args:
+                pos (tuple): The initial position (x, y) of the sprite.
+                movement_speed (float): The movement speed of the sprite.
+                rotation_speed (float): The rotation speed of the sprite.
+                grid (Grid): The grid object for pathfinding.
+                window (pygame.Surface): The game window surface.
 
-                Returns:
-                    None
-                """
+            Returns:
+                None
+            """
         super().__init__()
         self.groups = []
 
@@ -62,7 +62,8 @@ class Enemy(pygame.sprite.Sprite):
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.ray_cone = FIELD_OF_VISION
         self.ray_reach = REACH_OF_VISION
-        self.mask = None
+        self.corners = []
+        self.mask = None # Deprecated parameter
         self.win_height = window.get_height()
         self.win_width = window.get_width()
 
@@ -324,39 +325,7 @@ class Enemy(pygame.sprite.Sprite):
         # FINALIZING CORNER LIST AND UPDATING MASK
         ##############################
         corner_list.append((contact_point, (self.x, self.y)))
-        self.update_mask(corner_list)
-
-    def update_mask(self, corners):
-        ##############################
-        # COLLECT VERTICES
-        ##############################
-        vertices = []
-        for pair in corners:
-            point1, point2 = pair
-            vertices.append(point1)
-            vertices.append(point2)
-
-        ##############################
-        # CREATE MASK SURFACE
-        ##############################
-        mask_surface = pygame.Surface((self.win_width, self.win_height), pygame.SRCALPHA)
-
-        ##############################
-        # CREATE LIMIT CIRCLE MASK
-        ##############################
-        pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)),
-                           REACH_OF_VISION * SQUARE_SIZE)
-        limit_circle_mask = pygame.mask.from_surface(mask_surface)
-
-        ##############################
-        # CREATE MASK
-        ##############################
-        mask_surface.fill((0, 0, 0, 0))
-        if len(vertices) > 2:
-            pygame.draw.polygon(mask_surface, (255, 255, 255), vertices)
-        pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)), self.size * 3)
-        self.mask = pygame.mask.from_surface(mask_surface)
-        self.mask = self.mask.overlap_mask(limit_circle_mask, (0, 0))
+        self.corners = corner_list
 
     # ####################################################################### #
     #                                 ROTATION                                #
@@ -422,6 +391,39 @@ class Enemy(pygame.sprite.Sprite):
     # ####################################################################### #
     #                                DEPRECATED                               #
     # ####################################################################### #
+
+    @deprecated("This method is too expensive.")
+    def update_mask(self, corners):
+        ##############################
+        # COLLECT VERTICES
+        ##############################
+        vertices = []
+        for pair in corners:
+            point1, point2 = pair
+            vertices.append(point1)
+            vertices.append(point2)
+
+        ##############################
+        # CREATE MASK SURFACE
+        ##############################
+        mask_surface = pygame.Surface((self.win_width, self.win_height), pygame.SRCALPHA)
+
+        ##############################
+        # CREATE LIMIT CIRCLE MASK
+        ##############################
+        pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)),
+                           REACH_OF_VISION * SQUARE_SIZE)
+        limit_circle_mask = pygame.mask.from_surface(mask_surface)
+
+        ##############################
+        # CREATE MASK
+        ##############################
+        mask_surface.fill((0, 0, 0, 0))
+        if len(vertices) > 2:
+            pygame.draw.polygon(mask_surface, (255, 255, 255), vertices)
+        pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)), self.size * 3)
+        self.mask = pygame.mask.from_surface(mask_surface)
+        self.mask = self.mask.overlap_mask(limit_circle_mask, (0, 0))
 
     @deprecated("This method is too expensive.")
     def draw_mask(self, surface):

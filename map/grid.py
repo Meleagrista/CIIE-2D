@@ -1,10 +1,10 @@
+from utils.constants import GRID_BACKGROUND, MAP
+from map.square import Square
+
 import math
 import os
 import random
-from utils.constants import GRID_BACKGROUND
 import pygame
-
-from map.square import Square
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -44,6 +44,7 @@ class Grid:
         self.hover = None
 
         self.create_array()
+        self.read_map(MAP)
 
     # ####################################################################### #
     #                                  TRIVIAL                                #

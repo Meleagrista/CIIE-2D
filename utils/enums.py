@@ -1,5 +1,9 @@
-from enum import Enum
+from enum import Enum, auto
 
+
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        DIRECTIONS                                             #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Direction(Enum):
     NORTH = (0, -1)
@@ -70,3 +74,19 @@ class Direction(Enum):
 
     def __str__(self):
         return self.name
+
+
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        CONTROLLERS                                            #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+class Controls(Enum):
+    WASD = "WASD"
+    Arrows = "Arrows"
+
+    @staticmethod
+    def from_string(s):
+        for control in Controls:
+            if s == control.value:
+                return control
+        raise ValueError("Invalid control string")
+
