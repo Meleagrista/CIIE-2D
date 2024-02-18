@@ -35,5 +35,5 @@ class Camera(pygame.sprite.Group):
 
         # Sort ensures grid is drawn on background
         for sprite in sorted(self.sprites(), key=lambda sprite: 0 - sprite.rect.width):
-            offset_position = sprite.rect.topleft - self.offset
-            self.surface.blit(sprite.image, offset_position)
+            # offset_position = sprite.rect.topleft - self.offset
+            sprite.draw(self.surface, self.offset)

@@ -48,12 +48,12 @@ class Player(pygame.sprite.Sprite):
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
-    def draw(self, surface):
+    def draw(self, surface, offset):
         # Draw the square
-        pygame.draw.rect(surface, BLUE, self.rect)
+        pygame.draw.rect(surface, BLUE, (self.rect.x-offset.x, self.rect.y-offset.y, self.size, self.size))
 
         # Draw the rotated triangle
-        end_point = (self.rect.centerx - self.delta_x * 10, self.rect.centery - self.delta_y * 10)
+        end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
         triangle_size = NPC_SIZE // 2
         triangle_points = [

@@ -71,7 +71,7 @@ class Enemy(pygame.sprite.Sprite):
         self.win_height = window.get_height()
         self.win_width = window.get_width()
 
-    def draw(self, surface):
+    def draw(self, surface, offset):
         ##############################
         # DRAWING RECTANGLE
         ##############################
@@ -80,12 +80,12 @@ class Enemy(pygame.sprite.Sprite):
         rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
         rect = rotated_rect.get_rect()
         rect.center = (self.x, self.y)
-        surface.blit(rotated_rect, rect)
+        surface.blit(rotated_rect, (rect.x - offset.x, rect.y - offset.y))
 
         ##############################
         # DRAWING TRIANGLE
         ##############################
-        end_point = (self.x - self.delta_x * 10, self.y - self.delta_y * 10)
+        end_point = (self.x - self.delta_x * 10 - offset.x, self.y - self.delta_y * 10 - offset.y)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
         triangle_size = self.size // 2
         triangle_points = [
