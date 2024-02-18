@@ -88,19 +88,24 @@ class Square():
 
            Args:
             win (pygame.Surface): The pygame window surface.
+            offset: offset to be drawn on the pygame surface
+
            Returns:
             None
          """
 
+        position_x = offset.x + self.size // 2
+        position_y = offset.y + self.size // 2
+
         # Calculate the top-left corner of the rectangle
-        top_left_x = (self.x - self.size / 2) - offset.x - (self.size // 2)
-        top_left_y = (self.y - self.size / 2) - offset.y - (self.size // 2)
+        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
 
         # Draw the rectangle with the adjusted coordinates
         if GRID_SHOW:
             pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
         else:
-            pygame.draw.rect(win, self.color, ((self.x - offset.x), (self.y - offset.y), self.size, self.size))
+            pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
     # ####################################################################### #
     #                                POSITION                                 #

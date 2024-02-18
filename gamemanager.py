@@ -81,7 +81,7 @@ class GameManager:
                 if self.death_counter > 0:
                     self.death_counter = self.death_counter - 1
 
-            self.draw_bar(self.win)
+            self.draw_bar()
 
             pygame.display.flip()
             self.clock.tick(FPS)
@@ -161,13 +161,13 @@ class GameManager:
         pygame.draw.rect(mask_surface, (255, 255, 255, 255), self.player.rect)
         mask = pygame.mask.from_surface(mask_surface)
         enemy_sight = self.mask_vision()
-        return mask.overlap_area(enemy_sight, (0, 0)) > 0
+        return mask.overlap_area(enemy_sight, self.all_sprites.offset) > 0
 
     # ####################################################################### #
     #                             USER INTERFACE                              #
     # ####################################################################### #
 
-    def draw_bar(self, surface):
+    def draw_bar(self):
         bar_size = 3
         bar_width = self.player.size * 3
         bar_height = self.player.size * 0.5
