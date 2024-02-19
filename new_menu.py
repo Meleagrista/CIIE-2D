@@ -3,7 +3,6 @@ from pygame.locals import *
 from ui.director import *
 from ui.escena import *
 from ui.gestorRecursos import *
-from ui.fase import Fase
 from gamemanager import GameManager
 
 # -------------------------------------------------
@@ -49,13 +48,13 @@ class Boton(ElementoGUI):
 
 class BotonJugar(Boton):
     def __init__(self, pantalla):
-        Boton.__init__(self, pantalla, 'boton_verde.png', (580,530))
+        Boton.__init__(self, pantalla, 'imagenes/boton_verde.png', (580,530))
     def accion(self):
         self.pantalla.menu.ejecutarJuego()
 
 class BotonSalir(Boton):
     def __init__(self, pantalla):
-        Boton.__init__(self, pantalla, 'boton_rojo.png', (580,560))
+        Boton.__init__(self, pantalla, 'imagenes/boton_rojo.png', (580,560))
     def accion(self):
         self.pantalla.menu.salirPrograma()
 
@@ -123,7 +122,7 @@ class PantallaGUI:
 
 class PantallaInicialGUI(PantallaGUI):
     def __init__(self, menu):
-        PantallaGUI.__init__(self, menu, 'portada.jpg')
+        PantallaGUI.__init__(self, menu, 'imagenes/portada.jpg')
         # Creamos los botones y los metemos en la lista
         botonJugar = BotonJugar(self)
         botonSalir = BotonSalir(self)
