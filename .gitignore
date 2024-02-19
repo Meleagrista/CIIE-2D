@@ -1,0 +1,10 @@
+__pycache__/
+entities/__pycache__/
+map/__pycache__/
+utils/__pycache__/
+.idea
+*.pyc
+*.pyc
+*.pyc
+*.pyc
+__pycache__/loop.cpython-312.pyc
