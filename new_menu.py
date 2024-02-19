@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
-from director import *
-from escena import *
-from gestorRecursos import *
-from fase import Fase
+from ui.director import *
+from ui.escena import *
+from ui.gestorRecursos import *
+from ui.fase import Fase
+from gamemanager import GameManager
 
 # -------------------------------------------------
 # Clase abstracta ElementoGUI
@@ -176,8 +177,8 @@ class Menu(Escena):
         self.director.salirPrograma()
 
     def ejecutarJuego(self):
-        fase = Fase(self.director)
-        self.director.apilarEscena(fase)
+        game = GameManager()
+        game.run()
 
     def mostrarPantallaInicial(self):
         self.pantallaActual = 0

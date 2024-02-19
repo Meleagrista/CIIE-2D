@@ -1,7 +1,7 @@
-import pygame, sys, os
+import pygame
 from pygame.locals import *
-from escena import *
-from gestorRecursos import *
+from ui.escena import *
+from ui.gestorRecursos import *
 
 # -------------------------------------------------
 # -------------------------------------------------

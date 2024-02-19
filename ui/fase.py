@@ -1,6 +1,6 @@
-import pygame, escena
-from escena import *
-from personajes import *
+import pygame
+from ui.escena import *
+from ui.personajes import *
 from pygame.locals import *
 
 # -------------------------------------------------

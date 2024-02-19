@@ -1,7 +1,7 @@
 import pygame
 import sys
 #import escena
-from escena import *
+from ui.escena import *
 from pygame.locals import *
 
 
