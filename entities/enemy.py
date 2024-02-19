@@ -100,6 +100,8 @@ class Enemy(pygame.sprite.Sprite):
             ),
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
+        # nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
+        # self.draw_path(surface, nodes, offset)
 
     def update(self):
         ##############################
@@ -458,6 +460,6 @@ class Enemy(pygame.sprite.Sprite):
         pygame.draw.polygon(surface, PASTEL_RED, vertices)
 
     @deprecated("This method is a debugging tool.")
-    def draw_path(self, surface, point_list, point_size=1, point_color=(255, 0, 0)):
+    def draw_path(self, surface, point_list, offset, point_size=1, point_color=(255, 0, 0)):
         for point in point_list:
-            pygame.draw.circle(surface, point_color, point, point_size)
+            pygame.draw.circle(surface, point_color, point-offset, point_size)

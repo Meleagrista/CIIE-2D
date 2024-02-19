@@ -25,6 +25,9 @@ class Camera(pygame.sprite.Group):
         vision = enemy.ray_reach * SQUARE_SIZE
         pygame.draw.circle(surface, (255, 255, 255, 255), (position_x, position_y), vision)
 
+    def mask_overlap(self, mask, enemy_sight):
+        return mask.overlap_area(enemy_sight, self.offset) > 0
+
     def custom_draw(self, player, grid):
 
         self.surface.fill((255, 255, 255))

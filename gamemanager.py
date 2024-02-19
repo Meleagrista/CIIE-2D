@@ -47,7 +47,6 @@ class GameManager:
     def start(self):
         self.spawn_enemies()
         self.spawn_player()
-        #self.add_grid()
 
     def restart(self):
         self.death_counter = 0
@@ -161,7 +160,7 @@ class GameManager:
         pygame.draw.rect(mask_surface, (255, 255, 255, 255), self.player.rect)
         mask = pygame.mask.from_surface(mask_surface)
         enemy_sight = self.mask_vision()
-        return mask.overlap_area(enemy_sight, self.all_sprites.offset) > 0
+        return self.all_sprites.mask_overlap(mask, enemy_sight)
 
     # ####################################################################### #
     #                             USER INTERFACE                              #

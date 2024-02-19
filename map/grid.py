@@ -46,6 +46,7 @@ class Grid:
 
         self.create_array()
         self.read_map(MAP)
+        self.update()
 
     # ####################################################################### #
     #                                  TRIVIAL                                #
