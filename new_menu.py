@@ -1,9 +1,12 @@
 import pygame
+import time
 from pygame.locals import *
 from ui.director import *
 from ui.escena import *
 from ui.gestorRecursos import *
 from gamemanager import GameManager
+
+movement_option = 'WASD'
 
 # -------------------------------------------------
 # Clase abstracta ElementoGUI
@@ -176,7 +179,9 @@ class Menu(Escena):
         self.director.salirPrograma()
 
     def ejecutarJuego(self):
-        game = GameManager()
+        global movement_option
+        pygame.mixer.music.stop()
+        game = GameManager(mov_opt=movement_option)
         game.run()
 
     def mostrarPantallaInicial(self):
@@ -184,6 +189,49 @@ class Menu(Escena):
 
     # def mostrarPantallaConfiguracion(self):
     #    self.pantallaActual = ...
+        
+    # Function for the Splash Screen
+    def splash_screen(self, screen, wait_seconds):
+        # Get user screen size
+        screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+
+        # Loads the image
+        splash_image = pygame.image.load("assets\splash_screen_placeholder.jpeg")
+        splash_image = pygame.transform.scale(splash_image, (screen_width, screen_height))
+
+        # Draws the splash screen image
+        screen.blit(splash_image, (0, 0))
+
+        # Updates the screen
+        pygame.display.flip()
+
+        # Waits until the user interacts (or the time ends)
+        start_time = time.time()
+        running = True
+        while running and time.time() - start_time < wait_seconds:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    running = False
+
+            # Limits to 60fps
+            pygame.time.delay(1000 // 60)
+
+
+    # Function that allows to change between WASD and Arrows movement
+    def change_movement_option(self, value, index):
+        global movement_option
+        movement_option = value
+        print(f'User selected {value} at index {index}')
+
+
+    # Function that changes the volume
+    def change_volume(self, value):
+        if value:
+            pygame.mixer.music.set_volume(1.0)  # Max volume
+        else:
+            pygame.mixer.music.set_volume(0.0)  # Mute
         
 if __name__ == '__main__':
 
@@ -195,6 +243,13 @@ if __name__ == '__main__':
     escena = Menu(director)
     # Le decimos al director que apile esta escena
     director.apilarEscena(escena)
+    # Inicialize the music mixer
+    pygame.mixer.init()
+    # Loads and reproduce music 
+    pygame.mixer.music.load('assets/fall-from-grace.mp3')   #HAY QUE METER EL COPYRIGHT EN CREDITOS
+    pygame.mixer.music.play(-1)  # -1 to infinity music
+    # Ejecutamos la Splash Screen
+    escena.splash_screen(director.screen, 10)
     # Y ejecutamos el juego
     director.ejecutar()
     # Cuando se termine la ejecución, finaliza la librería
