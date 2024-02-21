@@ -51,13 +51,25 @@ class Boton(ElementoGUI):
 
 class BotonJugar(Boton):
     def __init__(self, pantalla):
-        Boton.__init__(self, pantalla, 'imagenes/boton_verde.png', (580,530))
+        Boton.__init__(self, pantalla, 'controller.png', (500,50))
     def accion(self):
         self.pantalla.menu.ejecutarJuego()
 
+class BotonConfiguracion(Boton):
+    def __init__(self, pantalla):
+        Boton.__init__(self, pantalla, 'config.png', (500,90))
+    def accion(self):
+        self.pantalla.menu.salirPrograma()
+
+class BotonCreditos(Boton):
+    def __init__(self, pantalla):
+        Boton.__init__(self, pantalla, 'corona.png', (500,130))
+    def accion(self):
+        self.pantalla.menu.salirPrograma()
+
 class BotonSalir(Boton):
     def __init__(self, pantalla):
-        Boton.__init__(self, pantalla, 'imagenes/boton_rojo.png', (580,560))
+        Boton.__init__(self, pantalla, 'exit.png', (500,170))
     def accion(self):
         self.pantalla.menu.salirPrograma()
 
@@ -78,16 +90,33 @@ class TextoGUI(ElementoGUI):
 class TextoJugar(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
-        fuente = pygame.font.SysFont('arial', 26);
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Jugar', (610, 535))
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Play', (530, 55))
     def accion(self):
         self.pantalla.menu.ejecutarJuego()
+
+
+class TextoConfiguracion(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Settings', (530, 95))
+    def accion(self):
+        self.pantalla.menu.salirPrograma()
+
+class TextoCreditos(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Credits', (530, 135))
+    def accion(self):
+        self.pantalla.menu.salirPrograma()
 
 class TextoSalir(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
-        fuente = pygame.font.SysFont('arial', 26);
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Salir', (610, 565))
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Exit', (530, 175))
     def accion(self):
         self.pantalla.menu.salirPrograma()
 
@@ -125,16 +154,24 @@ class PantallaGUI:
 
 class PantallaInicialGUI(PantallaGUI):
     def __init__(self, menu):
-        PantallaGUI.__init__(self, menu, 'imagenes/portada.jpg')
+        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
         # Creamos los botones y los metemos en la lista
         botonJugar = BotonJugar(self)
+        botonConfiguracion = BotonConfiguracion(self)
+        botonCreditos = BotonCreditos(self)
         botonSalir = BotonSalir(self)
         self.elementosGUI.append(botonJugar)
+        self.elementosGUI.append(botonConfiguracion)
+        self.elementosGUI.append(botonCreditos)
         self.elementosGUI.append(botonSalir)
         # Creamos el texto y lo metemos en la lista
         textoJugar = TextoJugar(self)
+        textoConfiguracion = TextoConfiguracion(self)
+        textoCreditos = TextoCreditos(self)
         textoSalir = TextoSalir(self)
         self.elementosGUI.append(textoJugar)
+        self.elementosGUI.append(textoConfiguracion)
+        self.elementosGUI.append(textoCreditos)
         self.elementosGUI.append(textoSalir)
 
 # -------------------------------------------------
