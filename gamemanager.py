@@ -50,11 +50,14 @@ class GameManager:
 
     def restart(self):
         self.death_counter = 0
+        if self.player is not None:
+            self.remove_player(self.player)
         self.close_menu()
         self.start()
         self.run()
 
     def run(self):
+        self.close_menu()
         running = True
         while running:
             for event in pygame.event.get():
