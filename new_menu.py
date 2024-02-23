@@ -78,6 +78,35 @@ class BotonVolverMenuInicial(Boton):
         Boton.__init__(self, pantalla, 'return_pixel3.png', (500,170))
     def accion(self):
         self.pantalla.menu.mostrarPantallaInicial()
+
+class BotonSwitch(Boton):
+    def __init__(self, pantalla, nombreImagen1, nombreImagen2, posicion):
+        # Se cargan las imagenes del boton
+        self.imagen1 = GestorRecursos.CargarImagen(nombreImagen1,-1)
+        self.imagen1 = pygame.transform.scale(self.imagen1, (50, 50))
+        self.imagen2 = GestorRecursos.CargarImagen(nombreImagen2,-1)
+        self.imagen2 = pygame.transform.scale(self.imagen2, (50, 50))
+        # Se llama al método de la clase padre con el rectángulo que ocupa el botón
+        ElementoGUI.__init__(self, pantalla, self.imagen1.get_rect())
+        # Se coloca el rectangulo en su posicion
+        self.establecerPosicion(posicion)
+        # Estado inicial
+        self.estado = 'On'
+        self.imagen = self.imagen2
+
+class SwitchVolumen(BotonSwitch):
+    def __init__(self, pantalla):
+        BotonSwitch.__init__(self, pantalla, 'switch_off.jpg', "switch_on.png", (500,90))
+    def accion(self):
+        # Cambiar el estado del interruptor
+        if self.estado == 'Off':
+            pygame.mixer.music.set_volume(1.0)  # Max volume
+            self.estado = 'On'
+            self.imagen = self.imagen2
+        else:
+            pygame.mixer.music.set_volume(0.0)  # Mute
+            self.estado = 'Off'
+            self.imagen = self.imagen1
 # -------------------------------------------------
 # Clase TextoGUI y los distintos textos
 
@@ -99,7 +128,6 @@ class TextoJugar(TextoGUI):
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Play', (530, 55))
     def accion(self):
         self.pantalla.menu.ejecutarJuego()
-
 
 class TextoConfiguracion(TextoGUI):
     def __init__(self, pantalla):
@@ -132,6 +160,14 @@ class TextoVolverMenuPrincipal(TextoGUI):
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Return', (530, 175))
     def accion(self):
         self.pantalla.menu.mostrarPantallaInicial()
+
+class TextoMusicaMenu(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Menu music', (560, 80))
+    def accion(self):
+        pass
 
 # -------------------------------------------------
 # Clase PantallaGUI y las distintas pantallas
@@ -191,10 +227,14 @@ class PantallaConfiguracionGUI(PantallaGUI):
     def __init__(self, menu):
         PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
         # Creamos los botones y los metemos en la lista
+        switchVolumen = SwitchVolumen(self)
         botonVolverAtras = BotonVolverMenuInicial(self)
+        self.elementosGUI.append(switchVolumen)
         self.elementosGUI.append(botonVolverAtras)
         # Creamos el texto y lo metemos en la lista
+        textoVolumen = TextoMusicaMenu(self)
         textVolverAtras = TextoVolverMenuPrincipal(self)
+        self.elementosGUI.append(textoVolumen)
         self.elementosGUI.append(textVolverAtras)
         
 
@@ -288,12 +328,13 @@ class Menu(Escena):
         print(f'User selected {value} at index {index}')
 
 
-    # Function that changes the volume
-    def change_volume(self, value):
-        if value:
-            pygame.mixer.music.set_volume(1.0)  # Max volume
-        else:
+    # Function que mutea/desmutea la musica
+    def cambiar_volumen(self):
+        if pygame.mixer.music.get_volume() != 0.0:
             pygame.mixer.music.set_volume(0.0)  # Mute
+        else:
+            pygame.mixer.music.set_volume(1.0)  # Max volume
+        
         
 if __name__ == '__main__':
 
