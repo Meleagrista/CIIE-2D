@@ -5,8 +5,9 @@ from ui.director import *
 from ui.escena import *
 from ui.gestorRecursos import *
 from gamemanager import GameManager
+from utils.enums import Controls as Ctl
 
-movement_option = 'WASD'
+movement_option = Ctl.WASD
 
 # -------------------------------------------------
 # Clase abstracta ElementoGUI
@@ -80,7 +81,7 @@ class BotonVolverMenuInicial(Boton):
         self.pantalla.menu.mostrarPantallaInicial()
 
 class BotonSwitch(Boton):
-    def __init__(self, pantalla, nombreImagen1, nombreImagen2, posicion):
+    def __init__(self, pantalla, nombreImagen1, nombreImagen2, posicion, estado_inicial):
         # Se cargan las imagenes del boton
         self.imagen1 = GestorRecursos.CargarImagen(nombreImagen1,-1)
         self.imagen1 = pygame.transform.scale(self.imagen1, (50, 50))
@@ -91,12 +92,12 @@ class BotonSwitch(Boton):
         # Se coloca el rectangulo en su posicion
         self.establecerPosicion(posicion)
         # Estado inicial
-        self.estado = 'On'
+        self.estado = estado_inicial
         self.imagen = self.imagen2
 
 class SwitchVolumen(BotonSwitch):
     def __init__(self, pantalla):
-        BotonSwitch.__init__(self, pantalla, 'switch_off.jpg', "switch_on.png", (500,90))
+        BotonSwitch.__init__(self, pantalla, 'switch_off.jpg', "switch_on.png", (500,90), "On")
     def accion(self):
         # Cambiar el estado del interruptor
         if self.estado == 'Off':
@@ -106,6 +107,21 @@ class SwitchVolumen(BotonSwitch):
         else:
             pygame.mixer.music.set_volume(0.0)  # Mute
             self.estado = 'Off'
+            self.imagen = self.imagen1
+
+class SwitchControles(BotonSwitch):
+    def __init__(self, pantalla):
+        BotonSwitch.__init__(self, pantalla, 'arrows.png', "wasd.png", (500,130), "WASD")
+    def accion(self):
+        global movement_option
+        # Cambiar el estado del interruptor
+        if self.estado == 'Arrows':
+            movement_option = Ctl.WASD
+            self.estado = 'WASD'
+            self.imagen = self.imagen2
+        else:
+            movement_option = Ctl.Arrows
+            self.estado = 'Arrows'
             self.imagen = self.imagen1
 # -------------------------------------------------
 # Clase TextoGUI y los distintos textos
@@ -169,6 +185,14 @@ class TextoMusicaMenu(TextoGUI):
     def accion(self):
         pass
 
+class TextoMusicaMenu(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Controls', (560, 120))
+    def accion(self):
+        pass
+
 # -------------------------------------------------
 # Clase PantallaGUI y las distintas pantallas
 
@@ -228,7 +252,9 @@ class PantallaConfiguracionGUI(PantallaGUI):
         PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
         # Creamos los botones y los metemos en la lista
         switchVolumen = SwitchVolumen(self)
+        switchControles = SwitchControles(self)
         botonVolverAtras = BotonVolverMenuInicial(self)
+        self.elementosGUI.append(switchControles)
         self.elementosGUI.append(switchVolumen)
         self.elementosGUI.append(botonVolverAtras)
         # Creamos el texto y lo metemos en la lista
@@ -318,23 +344,7 @@ class Menu(Escena):
                     running = False
 
             # Limits to 60fps
-            pygame.time.delay(1000 // 60)
-
-
-    # Function that allows to change between WASD and Arrows movement
-    def change_movement_option(self, value, index):
-        global movement_option
-        movement_option = value
-        print(f'User selected {value} at index {index}')
-
-
-    # Function que mutea/desmutea la musica
-    def cambiar_volumen(self):
-        if pygame.mixer.music.get_volume() != 0.0:
-            pygame.mixer.music.set_volume(0.0)  # Mute
-        else:
-            pygame.mixer.music.set_volume(1.0)  # Max volume
-        
+            pygame.time.delay(1000 // 60)       
         
 if __name__ == '__main__':
 
