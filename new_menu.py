@@ -59,7 +59,7 @@ class BotonConfiguracion(Boton):
     def __init__(self, pantalla):
         Boton.__init__(self, pantalla, 'config.png', (500,90))
     def accion(self):
-        self.pantalla.menu.salirPrograma()
+        self.pantalla.menu.mostrarPantallaConfiguracion()
 
 class BotonCreditos(Boton):
     def __init__(self, pantalla):
@@ -72,7 +72,12 @@ class BotonSalir(Boton):
         Boton.__init__(self, pantalla, 'exit.png', (500,170))
     def accion(self):
         self.pantalla.menu.salirPrograma()
-
+        
+class BotonVolverMenuInicial(Boton):
+    def __init__(self, pantalla):
+        Boton.__init__(self, pantalla, 'return_pixel3.png', (500,170))
+    def accion(self):
+        self.pantalla.menu.mostrarPantallaInicial()
 # -------------------------------------------------
 # Clase TextoGUI y los distintos textos
 
@@ -102,7 +107,7 @@ class TextoConfiguracion(TextoGUI):
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Settings', (530, 95))
     def accion(self):
-        self.pantalla.menu.salirPrograma()
+        self.pantalla.menu.mostrarPantallaConfiguracion()
 
 class TextoCreditos(TextoGUI):
     def __init__(self, pantalla):
@@ -119,6 +124,14 @@ class TextoSalir(TextoGUI):
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Exit', (530, 175))
     def accion(self):
         self.pantalla.menu.salirPrograma()
+
+class TextoVolverMenuPrincipal(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Return', (530, 175))
+    def accion(self):
+        self.pantalla.menu.mostrarPantallaInicial()
 
 # -------------------------------------------------
 # Clase PantallaGUI y las distintas pantallas
@@ -174,6 +187,17 @@ class PantallaInicialGUI(PantallaGUI):
         self.elementosGUI.append(textoCreditos)
         self.elementosGUI.append(textoSalir)
 
+class PantallaConfiguracionGUI(PantallaGUI):
+    def __init__(self, menu):
+        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
+        # Creamos los botones y los metemos en la lista
+        botonVolverAtras = BotonVolverMenuInicial(self)
+        self.elementosGUI.append(botonVolverAtras)
+        # Creamos el texto y lo metemos en la lista
+        textVolverAtras = TextoVolverMenuPrincipal(self)
+        self.elementosGUI.append(textVolverAtras)
+        
+
 # -------------------------------------------------
 # Clase Menu, la escena en sí
 
@@ -187,6 +211,7 @@ class Menu(Escena):
         # Creamos las pantallas que vamos a tener
         #   y las metemos en la lista
         self.listaPantallas.append(PantallaInicialGUI(self))
+        self.listaPantallas.append(PantallaConfiguracionGUI(self))
         # En que pantalla estamos actualmente
         self.mostrarPantallaInicial()
 
@@ -224,8 +249,8 @@ class Menu(Escena):
     def mostrarPantallaInicial(self):
         self.pantallaActual = 0
 
-    # def mostrarPantallaConfiguracion(self):
-    #    self.pantallaActual = ...
+    def mostrarPantallaConfiguracion(self):
+        self.pantallaActual = 1
         
     # Function for the Splash Screen
     def splash_screen(self, screen, wait_seconds):
