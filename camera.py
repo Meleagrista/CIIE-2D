@@ -36,8 +36,9 @@ class Camera(pygame.sprite.Group):
         position = position - self.offset
         pygame.draw.rect(self.internal_surface, GREEN, (position.x, position.y, width, height))
         pygame.draw.rect(self.internal_surface, RED, (position.x, position.y, width * percentage, height))
+        self.update_surface()
 
-    def draw_mask(self, enemy, surface, vertices, mask):
+    def draw_vision(self, enemy, surface, vertices, mask):
         vertices = list(map(lambda point: point - self.offset, vertices))
         position_x = int(enemy.x) - self.offset[0]
         position_y = int(enemy.y) - self.offset[1]
@@ -49,6 +50,10 @@ class Camera(pygame.sprite.Group):
 
     def mask_overlap(self, mask, enemy_sight):
         return mask.overlap_area(enemy_sight, self.offset) > 0
+
+    def draw_mask(self, result_surface):
+        self.internal_surface.blit(result_surface, (0, 0))
+        self.update_surface()
 
     def custom_draw(self, player, grid):
 
@@ -81,6 +86,10 @@ class Camera(pygame.sprite.Group):
         boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
         pygame.draw.rect(self.surface, 'yellow', boundary, 4)
 
+        self.update_surface()
+
+    def update_surface(self):
         scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * 2)
         scaled_rectangle = scaled_surface.get_rect(center = self.center)
+
         self.surface.blit(scaled_surface, scaled_rectangle)

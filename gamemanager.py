@@ -144,7 +144,7 @@ class GameManager:
                 point1, point2 = pair
                 vertices.append(point1)
                 vertices.append(point2)
-            self.all_sprites.draw_mask(enemy, substract_surface, vertices, mask_surface)
+            self.all_sprites.draw_vision(enemy, substract_surface, vertices, mask_surface)
 
         mask = pygame.mask.from_surface(mask_surface)
         subtract = pygame.mask.from_surface(substract_surface)
@@ -152,7 +152,7 @@ class GameManager:
 
         result_surface = mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100))
 
-        self.win.blit(result_surface, (0, 0))
+        self.all_sprites.draw_mask(result_surface)
         return mask
 
     def detect_player(self):
