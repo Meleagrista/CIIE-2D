@@ -15,7 +15,7 @@ class Camera(pygame.sprite.Group):
         self.internal_surface = pygame.Surface(self.internal_size)
         self.internal_rectangle = self.internal_surface.get_rect(center = self.center)
 
-        self.zoom = 2
+        self.zoom = 1
 
         # offset from screen to camera border
         self.boundary_corners = {
@@ -58,6 +58,15 @@ class Camera(pygame.sprite.Group):
     def custom_draw(self, player, grid):
 
         self.surface.fill((255, 255, 255))
+
+        # zoom controls
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_z]:
+            if not self.zoom == 1:
+                self.zoom -= 0.1
+        if keys[pygame.K_x]:
+            if not self.zoom == 2:
+                self.zoom += 0.1
 
         # update boundary if player is outside
         if player.rect.left < self.boundary.left:
