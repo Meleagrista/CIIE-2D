@@ -76,7 +76,7 @@ class BotonSalir(Boton):
         
 class BotonVolverMenuInicial(Boton):
     def __init__(self, pantalla):
-        Boton.__init__(self, pantalla, 'return_pixel3.png', (500,170))
+        Boton.__init__(self, pantalla, 'return_pixel3.png', (520,160))
     def accion(self):
         self.pantalla.menu.mostrarPantallaInicial()
 
@@ -141,7 +141,7 @@ class TextoJugar(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Play', (530, 55))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'PLAY', (530, 55))
     def accion(self):
         self.pantalla.menu.ejecutarJuego()
 
@@ -149,7 +149,7 @@ class TextoConfiguracion(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Settings', (530, 95))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'SETTINGS', (530, 95))
     def accion(self):
         self.pantalla.menu.mostrarPantallaConfiguracion()
 
@@ -157,7 +157,7 @@ class TextoCreditos(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Credits', (530, 135))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'CREDITS', (530, 135))
     def accion(self):
         self.pantalla.menu.salirPrograma()
 
@@ -165,15 +165,23 @@ class TextoSalir(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Exit', (530, 175))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'EXIT', (530, 175))
     def accion(self):
         self.pantalla.menu.salirPrograma()
+
+class TextoTituloMenuPrincipal(TextoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 50)
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'GAME TITLE', (50, 100))
+    def accion(self):
+        pass
 
 class TextoVolverMenuPrincipal(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Return', (530, 175))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'RETURN', (560, 160))
     def accion(self):
         self.pantalla.menu.mostrarPantallaInicial()
 
@@ -181,15 +189,15 @@ class TextoMusicaMenu(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Menu music', (560, 80))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'MENU MUSIC', (560, 80))
     def accion(self):
         pass
 
-class TextoMusicaMenu(TextoGUI):
+class TextoArrowsWASDMenu(TextoGUI):
     def __init__(self, pantalla):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
-        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'Controls', (560, 120))
+        TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'CONTROLS', (560, 120))
     def accion(self):
         pass
 
@@ -242,10 +250,12 @@ class PantallaInicialGUI(PantallaGUI):
         textoConfiguracion = TextoConfiguracion(self)
         textoCreditos = TextoCreditos(self)
         textoSalir = TextoSalir(self)
+        textoTitulo = TextoTituloMenuPrincipal(self)
         self.elementosGUI.append(textoJugar)
         self.elementosGUI.append(textoConfiguracion)
         self.elementosGUI.append(textoCreditos)
         self.elementosGUI.append(textoSalir)
+        self.elementosGUI.append(textoTitulo)
 
 class PantallaConfiguracionGUI(PantallaGUI):
     def __init__(self, menu):
@@ -259,8 +269,10 @@ class PantallaConfiguracionGUI(PantallaGUI):
         self.elementosGUI.append(botonVolverAtras)
         # Creamos el texto y lo metemos en la lista
         textoVolumen = TextoMusicaMenu(self)
+        textoArrowsWASD = TextoArrowsWASDMenu(self)
         textVolverAtras = TextoVolverMenuPrincipal(self)
         self.elementosGUI.append(textoVolumen)
+        self.elementosGUI.append(textoArrowsWASD)
         self.elementosGUI.append(textVolverAtras)
         
 
@@ -317,6 +329,9 @@ class Menu(Escena):
 
     def mostrarPantallaConfiguracion(self):
         self.pantallaActual = 1
+
+    def mostrarPantallaCreditos(self):
+        self.pantallaActual = 2
         
     # Function for the Splash Screen
     def splash_screen(self, screen, wait_seconds):
