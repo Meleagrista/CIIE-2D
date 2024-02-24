@@ -34,7 +34,7 @@ class GameManager:
         self.enemies = pygame.sprite.Group()
         self.all_sprites = Camera()
 
-        self.start()
+        self.start(mov_opt)
         self.death_counter = 0
 
         self.mv_opt = mov_opt
@@ -44,9 +44,9 @@ class GameManager:
 
         self.create_menus()
 
-    def start(self):
+    def start(self, mov_opt):
         self.spawn_enemies()
-        self.spawn_player()
+        self.spawn_player(mov_opt)
 
     def restart(self):
         self.death_counter = 0
@@ -99,9 +99,9 @@ class GameManager:
     #                                  ENTITIES                               #
     # ####################################################################### #
 
-    def spawn_player(self):
+    def spawn_player(self, mov_opt):
         center = self.win_size // 2 - SQUARE_SIZE
-        player = Player(center, center, 2, self.grid, Ctl.WASD)
+        player = Player(center, center, 2, self.grid, mov_opt)
         self.add_player(player)
 
     def add_player(self, player):
