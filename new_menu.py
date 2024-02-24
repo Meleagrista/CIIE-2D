@@ -216,10 +216,15 @@ class TextoContenidoCreditos(ElementoGUI):
         self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- David Garcia Ramallal:", (50, 280)))
         self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- Pelayo Vieites Perez", (50, 310)))
         
-
     def dibujar(self, pantalla):
         for texto in self.textos:
             texto.dibujar(pantalla)
+
+    def posicionEnElemento(self, posicion):
+        for texto in self.textos:
+            if texto.posicionEnElemento(posicion):
+                return True
+        return False
 
     def accion(self):
         pass
