@@ -69,7 +69,7 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, offset, show_id=False):
+    def draw(self, surface, offset, show_id=False):
         """
         Draws the grid on the pygame window surface.
 
@@ -81,12 +81,12 @@ class Grid:
         self.update()
         for row in self.nodes:
             for spot in row:
-                spot.draw(self.win, offset)
+                spot.draw(surface, offset)
                 if spot.is_border():
                     spot.make_barrier()
                 elif spot.id != 0 and show_id:
                     text = font.render(str(spot.id), True, (0, 0, 0))
-                    self.win.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
+                    surface.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
 
     def add(self, group):
         for row in self.nodes:

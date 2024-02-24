@@ -7,14 +7,15 @@ class Camera(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.surface = pygame.display.get_surface()
+        self.center = (self.surface.get_width() // 2, self.surface.get_height() // 2,)
         self.offset = pygame.math.Vector2(0, 0)
 
         # offset from screen to camera border
         self.boundary_corners = {
-            'left': 200,
-            'right': 200,
-            'top': 200,
-            'bottom': 200
+            'left': 300,
+            'right': 300,
+            'top': 300,
+            'bottom': 300
         }
 
         # camera boundaries
@@ -24,10 +25,17 @@ class Camera(pygame.sprite.Group):
         boundary_height = self.surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         self.boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
 
+        # zoom
+        self.internal_size = pygame.math.Vector2(1000, 1000)
+        self.internal_surface = pygame.Surface(self.internal_size)
+        self.internal_rectangle = self.internal_surface.get_rect(center = self.center)
+
+        self.zoom = 1
+
     def draw_bar(self, position, width, height, percentage):
         position = position - self.offset
-        pygame.draw.rect(self.surface, GREEN, (position.x, position.y, width, height))
-        pygame.draw.rect(self.surface, RED, (position.x, position.y, width * percentage, height))
+        pygame.draw.rect(self.internal_surface, GREEN, (position.x, position.y, width, height))
+        pygame.draw.rect(self.internal_surface, RED, (position.x, position.y, width * percentage, height))
 
     def draw_mask(self, enemy, surface, vertices, mask):
         vertices = list(map(lambda point: point - self.offset, vertices))
@@ -59,11 +67,11 @@ class Camera(pygame.sprite.Group):
         self.offset.x = self.boundary.left - self.boundary_corners['left']
         self.offset.y = self.boundary.top - self.boundary_corners['top']
 
-        grid.draw(self.offset)
+        grid.draw(self.internal_surface, self.offset)
 
         # Sort ensures grid is drawn on background
         for sprite in sorted(self.sprites(), key=lambda sprite: 0 - sprite.rect.width):
-            sprite.draw(self.surface, self.offset)
+            sprite.draw(self.internal_surface, self.offset)
 
         # draw camera (for testing)
         left_corner = self.boundary_corners['left']
@@ -72,3 +80,7 @@ class Camera(pygame.sprite.Group):
         boundary_height = self.surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
         pygame.draw.rect(self.surface, 'yellow', boundary, 4)
+
+        scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * 2)
+        scaled_rectangle = scaled_surface.get_rect(center = self.center)
+        self.surface.blit(scaled_surface, scaled_rectangle)
