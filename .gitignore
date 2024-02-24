@@ -1,10 +1,8 @@
 __pycache__/
-entities/__pycache__/
-map/__pycache__/
-utils/__pycache__/
+game/entities/__pycache__/
+game/map/__pycache__/
+game/utils/__pycache__/
+venv/
 .idea
 *.pyc
-*.pyc
-*.pyc
-*.pyc
-__pycache__/loop.cpython-312.pyc
+
