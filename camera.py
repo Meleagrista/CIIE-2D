@@ -10,6 +10,13 @@ class Camera(pygame.sprite.Group):
         self.center = (self.surface.get_width() // 2, self.surface.get_height() // 2,)
         self.offset = pygame.math.Vector2(0, 0)
 
+        # zoom
+        self.internal_size = pygame.math.Vector2(self.surface.get_width(), self.surface.get_height())
+        self.internal_surface = pygame.Surface(self.internal_size)
+        self.internal_rectangle = self.internal_surface.get_rect(center = self.center)
+
+        self.zoom = 2
+
         # offset from screen to camera border
         self.boundary_corners = {
             'left': 300,
@@ -21,16 +28,9 @@ class Camera(pygame.sprite.Group):
         # camera boundaries
         left_corner = self.boundary_corners['left']
         top_corner = self.boundary_corners['top']
-        boundary_width = self.surface.get_width() - (self.boundary_corners['left'] + self.boundary_corners['right'])
-        boundary_height = self.surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
+        boundary_width = self.internal_surface.get_width() - (self.boundary_corners['left'] + self.boundary_corners['right'])
+        boundary_height = self.internal_surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         self.boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
-
-        # zoom
-        self.internal_size = pygame.math.Vector2(1000, 1000)
-        self.internal_surface = pygame.Surface(self.internal_size)
-        self.internal_rectangle = self.internal_surface.get_rect(center = self.center)
-
-        self.zoom = 1
 
     def draw_bar(self, position, width, height, percentage):
         position = position - self.offset
@@ -89,7 +89,7 @@ class Camera(pygame.sprite.Group):
         self.update_surface()
 
     def update_surface(self):
-        scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * 2)
+        scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * self.zoom)
         scaled_rectangle = scaled_surface.get_rect(center = self.center)
 
         self.surface.blit(scaled_surface, scaled_rectangle)
