@@ -6,6 +6,7 @@ from ui.escena import *
 from ui.gestorRecursos import *
 from gamemanager import GameManager
 from utils.enums import Controls as Ctl
+from utils.constants import *
 
 movement_option = Ctl.WASD
 
@@ -66,7 +67,7 @@ class BotonCreditos(Boton):
     def __init__(self, pantalla):
         Boton.__init__(self, pantalla, 'corona.png', (500,130))
     def accion(self):
-        self.pantalla.menu.salirPrograma()
+        self.pantalla.menu.mostrarPantallaCreditos()
 
 class BotonSalir(Boton):
     def __init__(self, pantalla):
@@ -159,7 +160,7 @@ class TextoCreditos(TextoGUI):
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'CREDITS', (530, 135))
     def accion(self):
-        self.pantalla.menu.salirPrograma()
+        self.pantalla.menu.mostrarPantallaCreditos()
 
 class TextoSalir(TextoGUI):
     def __init__(self, pantalla):
@@ -198,6 +199,28 @@ class TextoArrowsWASDMenu(TextoGUI):
         # La fuente la debería cargar el estor de recursos
         fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
         TextoGUI.__init__(self, pantalla, fuente, (0, 0, 0), 'CONTROLS', (560, 120))
+    def accion(self):
+        pass
+
+class TextoContenidoCreditos(ElementoGUI):
+    def __init__(self, pantalla):
+        # La fuente la debería cargar el estor de recursos
+        fuente = pygame.font.Font('assets\pixel.regular.ttf', 20)
+        self.textos = []
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "Contornos Inmersivos, Interactivos e de Entretemento", (40, 100)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "Grao en Enxeneria Informatica", (40, 130)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "UDC", (40, 160)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "Authors:", (40, 190)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- Martin do Rio Rico", (50, 220)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- Yago Fernandez Rego", (50, 250)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- David Garcia Ramallal:", (50, 280)))
+        self.textos.append(TextoGUI(pantalla, fuente, (0, 0, 0), "- Pelayo Vieites Perez", (50, 310)))
+        
+
+    def dibujar(self, pantalla):
+        for texto in self.textos:
+            texto.dibujar(pantalla)
+
     def accion(self):
         pass
 
@@ -274,6 +297,19 @@ class PantallaConfiguracionGUI(PantallaGUI):
         self.elementosGUI.append(textoVolumen)
         self.elementosGUI.append(textoArrowsWASD)
         self.elementosGUI.append(textVolverAtras)
+
+
+class PantallaCreditosGUI(PantallaGUI):
+    def __init__(self, menu):
+        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
+        # Creamos los botones y los metemos en la lista
+        botonVolverAtras = BotonVolverMenuInicial(self)
+        self.elementosGUI.append(botonVolverAtras)
+        # Creamos el texto y lo metemos en la lista
+        textoCreditos = TextoContenidoCreditos(self)
+        textVolverAtras = TextoVolverMenuPrincipal(self)
+        self.elementosGUI.append(textoCreditos)
+        self.elementosGUI.append(textVolverAtras)
         
 
 # -------------------------------------------------
@@ -290,6 +326,7 @@ class Menu(Escena):
         #   y las metemos en la lista
         self.listaPantallas.append(PantallaInicialGUI(self))
         self.listaPantallas.append(PantallaConfiguracionGUI(self))
+        self.listaPantallas.append(PantallaCreditosGUI(self))
         # En que pantalla estamos actualmente
         self.mostrarPantallaInicial()
 
