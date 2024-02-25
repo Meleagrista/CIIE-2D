@@ -50,26 +50,28 @@ class GameManager(Scene):
                     self.open_menu(self.pause_menu)
 
     def draw(self, screen):
-        if self.is_open_menu():
-            self.menu_manager.display()
         # TODO: Use native method when we incorporate Sprite deprecated_images
         self.all_sprites.draw(screen, player=self.player, grid=self.grid)
         self.draw_bar()
 
+        if self.is_open_menu():
+            self.menu_manager.display()
+
         pygame.display.update()
 
     def update(self, *args):
-        self.all_sprites.update(*args)
+        if not self.is_open_menu():
+            self.all_sprites.update(*args)
 
-        if self.detect_player():
-            if self.death_counter >= LIFE * FPS:
-                self.remove_player(self.player)
-                self.open_menu(self.death_menu)
+            if self.detect_player():
+                if self.death_counter >= LIFE * FPS:
+                    self.remove_player(self.player)
+                    self.open_menu(self.death_menu)
+                else:
+                    self.death_counter = self.death_counter + 1
             else:
-                self.death_counter = self.death_counter + 1
-        else:
-            if self.death_counter > 0:
-                self.death_counter = self.death_counter - 1
+                if self.death_counter > 0:
+                    self.death_counter = self.death_counter - 1
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
@@ -78,8 +80,9 @@ class GameManager(Scene):
     def exit(self):
         self.manager.exit()
 
-    def do_nothing(self):
-        pass
+    def close(self):
+        self.restart()
+        self.manager.change_scene()
 
     def start(self):
         self.spawn_enemies()
@@ -214,7 +217,7 @@ class GameManager(Scene):
                 [
                     Button(
                         title="Go to main menu",
-                        callback=lambda: self.do_nothing(),
+                        callback=lambda: self.close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                     )
                 ],
@@ -236,7 +239,7 @@ class GameManager(Scene):
                 [
                     Button(
                         title="Go to main menu",
-                        callback=lambda: self.do_nothing(),
+                        callback=lambda: self.close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                     )
                 ],
