@@ -130,10 +130,25 @@ class GameManager(Scene):
 
     def spawn_enemies(self):
         self.remove_all_enemies()
-        for i in range(2):
-            x, y = self.grid.get_random_node().get_pos()
-            enemy = Enemy((x, y), 0.5, 1, self.grid, self.win)
-            self.add_enemy(enemy)
+
+        # Generar 2 guardias (entidad asociada a varias zonas)
+        x, y = self.grid.get_random_node_from_zones([1, 2]).get_pos()
+        enemy = Enemy((x, y), 0.5, 1, self.grid, self.win, [1, 2])
+        self.add_enemy(enemy)
+
+        x, y = self.grid.get_random_node_from_zones([2, 3]).get_pos()
+        enemy = Enemy((x, y), 0.5, 1, self.grid, self.win, [2, 3])
+        self.add_enemy(enemy)
+
+        # Generar 1 científico (entidad asociada a una única zona)
+        x, y = self.grid.get_random_node_from_zones([3]).get_pos()
+        enemy = Enemy((x, y), 0.5, 1, self.grid, self.win, [3])
+        self.add_enemy(enemy)
+
+        # Generar 1 explorador (entidad que puede recorrer cualquier zona)
+        x, y = self.grid.get_random_node().get_pos()
+        enemy = Enemy((x, y), 0.5, 1, self.grid, self.win, [])
+        self.add_enemy(enemy)
 
     def mask_vision(self):
         mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)

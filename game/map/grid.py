@@ -175,17 +175,18 @@ class Grid:
     def get_random_node_from_zones(self, zone_ids):
         """
         Gets a random node from a list of possible ids.
-        
+
         Returns:
             Square: A random node having one of the specified zone ids.
         """
 
         # Es un explorador: seleccionar un nodo cualquiera que no sea barrera
-        if zone_ids is None:
+        if not zone_ids:
             return self.get_random_node()
 
         # Si no, escoger uno de la zona (o zonas) que pueda recorrer
-        possible_nodes = list(filter(lambda node: node.id in set(zone_ids), self.nodes))
+        flattened_nodes = [node for row in self.nodes for node in row]
+        possible_nodes = [node for node in flattened_nodes if node.id in set(zone_ids)]
         i = random.randint(0, len(possible_nodes) - 1)
         return possible_nodes[i]
 

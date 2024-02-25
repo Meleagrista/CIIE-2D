@@ -12,7 +12,7 @@ from utils.constants import *
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, movement_speed, rotation_speed, grid: Grid, window):
+    def __init__(self, pos, movement_speed, rotation_speed, grid: Grid, window, areas):
         """
             Initializes the Enemy sprite.
 
@@ -50,6 +50,7 @@ class Enemy(pygame.sprite.Sprite):
         self.setting_path = False
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
+        self.areas = areas
 
         # 3. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ PATHFINDING ALGORITHM ~~
@@ -198,7 +199,7 @@ class Enemy(pygame.sprite.Sprite):
         self.end_node = node
 
     def set_random_end(self):
-        self.end_node = self.grid.get_random_node()
+        self.end_node = self.grid.get_random_node_from_zones(self.areas)
 
     def set_next_point(self):
         try:
