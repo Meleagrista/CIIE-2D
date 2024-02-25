@@ -3,7 +3,7 @@ from pygamepopup.components import InfoBox, Button
 from pygamepopup.constants import BUTTON_SIZE
 from pygamepopup.menu_manager import MenuManager
 
-from game.camera import Camera
+from game.groups.camera import Camera
 from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.map.grid import Grid
@@ -142,7 +142,7 @@ class GameManager(Scene):
                 point1, point2 = pair
                 vertices.append(point1)
                 vertices.append(point2)
-            self.all_sprites.draw_vision(enemy, subtract_surface, vertices, mask_surface)
+            self.all_sprites.mask_update(enemy, subtract_surface, vertices, mask_surface)
 
         mask = pygame.mask.from_surface(mask_surface)
         subtract = pygame.mask.from_surface(subtract_surface)
@@ -150,7 +150,7 @@ class GameManager(Scene):
 
         result_surface = mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100))
 
-        self.all_sprites.draw_mask(result_surface)
+        self.all_sprites.mask_draw(result_surface)
         return mask
 
     def detect_player(self):

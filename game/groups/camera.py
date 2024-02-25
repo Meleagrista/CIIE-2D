@@ -6,12 +6,31 @@ import pygame
 
 
 class Camera(pygame.sprite.Group):
+    """
+    Class representing a camera view in a Pygame environment.
+
+    Attributes:
+        surface (pygame.Surface): The surface of the Pygame display.
+        center (tuple): The center coordinates of the camera view.
+        offset (pygame.math.Vector2): The offset of the camera view.
+        internal_size (pygame.math.Vector2): The size of the internal surface of the camera.
+        internal_surface (pygame.Surface): The internal surface of the camera.
+        internal_rectangle (pygame.Rect): The rectangle representing the internal surface.
+        zoom (float): The zoom factor of the camera.
+        boundary_corners (dict): Dictionary containing the boundary offsets from the screen to the camera border.
+        boundary (pygame.Rect): The boundary rectangle of the camera view.
+    """
 
     def __init__(self):
+        """
+        Initializes the Camera object.
+        """
         super().__init__()
         self.surface = pygame.display.get_surface()
         self.center = (self.surface.get_width() // 2, self.surface.get_height() // 2,)
         self.offset = pygame.math.Vector2(0, 0)
+
+        self.mask_surface = None
 
         # Zoom
         self.internal_size = pygame.math.Vector2(self.surface.get_width(), self.surface.get_height())
@@ -36,12 +55,30 @@ class Camera(pygame.sprite.Group):
         self.boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
 
     def draw_bar(self, position, width, height, percentage):
+        """
+        Draw a bar on the camera's internal surface.
+
+        Args:
+            position (pygame.math.Vector2): The position of the bar.
+            width (int): The width of the bar.
+            height (int): The height of the bar.
+            percentage (float): The percentage filled of the bar.
+        """
         position = position - self.offset
         pygame.draw.rect(self.internal_surface, GREEN, (position.x, position.y, width, height))
         pygame.draw.rect(self.internal_surface, RED, (position.x, position.y, width * percentage, height))
-        self.update_surface()
+        self._update()
 
-    def draw_vision(self, enemy, surface, vertices, mask):
+    def mask_update(self, enemy, surface, vertices, mask):
+        """
+        Draw vision for an enemy on the camera's internal surface.
+
+        Args:
+            enemy (Enemy): The enemy object.
+            surface (pygame.Surface): The surface to draw on.
+            vertices (list): List of vertices representing the vision area.
+            mask (pygame.Surface): The mask surface.
+        """
         vertices = list(map(lambda point: point - self.offset, vertices))
         position_x = int(enemy.x) - self.offset[0]
         position_y = int(enemy.y) - self.offset[1]
@@ -54,11 +91,18 @@ class Camera(pygame.sprite.Group):
     def mask_overlap(self, mask, enemy_sight):
         return mask.overlap_area(enemy_sight, self.offset) > 0
 
-    def draw_mask(self, result_surface):
-        self.internal_surface.blit(result_surface, (0, 0))
-        self.update_surface()
+    def mask_draw(self, result_surface):
+        self.mask_surface = result_surface
 
     def draw(self, surface, *args, **kwargs):
+        """
+        Draw objects on the camera's surface.
+
+        Args:
+            surface (pygame.Surface): The surface to draw on.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         player = kwargs.pop('player', None)
         if player is not None:
             if not isinstance(player, Player):
@@ -75,45 +119,45 @@ class Camera(pygame.sprite.Group):
         if keys[pygame.K_z]:
             if not self.zoom == 1:
                 self.zoom -= 0.1
-        if keys[pygame.K_x]:
+        elif keys[pygame.K_x]:
             if not self.zoom == 2:
                 self.zoom += 0.1
 
-        if player and grid:
-            # update boundary if player is outside
-            if player.rect.left < self.boundary.left:
-                self.boundary.left = player.rect.left
-            if player.rect.right > self.boundary.right:
-                self.boundary.right = player.rect.right
-            if player.rect.top < self.boundary.top:
-                self.boundary.top = player.rect.top
-            if player.rect.bottom > self.boundary.bottom:
-                self.boundary.bottom = player.rect.bottom
+        if player.rect.left < self.boundary.left:
+            self.boundary.left = player.rect.left
+        elif player.rect.right > self.boundary.right:
+            self.boundary.right = player.rect.right
+        if player.rect.top < self.boundary.top:
+            self.boundary.top = player.rect.top
+        elif player.rect.bottom > self.boundary.bottom:
+            self.boundary.bottom = player.rect.bottom
 
-            self.offset.x = self.boundary.left - self.boundary_corners['left']
-            self.offset.y = self.boundary.top - self.boundary_corners['top']
+        self.offset.x = self.boundary.left - self.boundary_corners['left']
+        self.offset.y = self.boundary.top - self.boundary_corners['top']
 
-            grid.draw(self.internal_surface, self.offset)
+        grid.draw(self.internal_surface, self.offset)
 
         # Sort ensures grid is drawn on background
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
             sprite.draw(self.internal_surface, self.offset)
 
-        # draw camera (for testing)
-        left_corner = self.boundary_corners['left']
+        # Draw camera for debugging purposes
+        """left_corner = self.boundary_corners['left']
         top_corner = self.boundary_corners['top']
         boundary_width = self.surface.get_width() - (self.boundary_corners['left'] + self.boundary_corners['right'])
         boundary_height = self.surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
-        pygame.draw.rect(self.surface, 'yellow', boundary, 4)
+        pygame.draw.rect(self.surface, 'yellow', boundary, 4)"""
 
-        self.update_surface()
+        # TODO: This is where the vision is drawm.
+        self.internal_surface.blit(self.mask_surface, (0, 0))
+
+        self._update()
 
         # Call the base class draw method
-        super().draw(surface, *args, **kwargs)
+        # super().draw(surface, *args, **kwargs)
 
-    def update_surface(self):
+    def _update(self):
         scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * self.zoom)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)
-
         self.surface.blit(scaled_surface, scaled_rectangle)
