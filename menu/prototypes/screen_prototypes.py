@@ -36,4 +36,4 @@ class PantallaGUI:
     def draw(self, screen):
         screen.blit(self.image, self.image.get_rect())
         for element in self.elements:
-            element.draw(screen)
+            element.draw(screen, )

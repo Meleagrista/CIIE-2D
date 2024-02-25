@@ -1,5 +1,5 @@
 from menu.prototypes.gui_prototypes import Button, ButtonSwitch
-from game.utils.enums import Controls as Ctl
+from utils.enums import Controls as Ctl
 from utils.filepaths import *
 
 import pygame
@@ -63,16 +63,15 @@ class SwitchVolume(ButtonSwitch):
 
 class SwitchController(ButtonSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_PLAY, (500, 130), "WASD")
+        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_WASD, (500, 130), "WASD")
 
     def activate(self):
-        # global movement_option TODO: This shit needs to connect to somewhere.
         # Cambiar el estado del interruptor
         if self.state == 'Arrows':
-            movement_option = Ctl.WASD
+            self.screen.menu.set_movement_option(Ctl.WASD)
             self.state = 'WASD'
             self.image = self.image_2
         else:
-            movement_option = Ctl.Arrows
+            self.screen.menu.set_movement_option(Ctl.Arrows)
             self.state = 'Arrows'
             self.image = self.image_1

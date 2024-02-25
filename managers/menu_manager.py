@@ -1,6 +1,6 @@
 from pygame import KEYDOWN, K_ESCAPE
-from managers.game_scene import Scene
-from menu.elements.screens import *
+from managers.prototypes.scene_prototype import Scene
+from menu.screens import *
 
 import time
 
@@ -42,18 +42,15 @@ class MenuManager(Scene):
         pass
 
     # ####################################################################### #
-    #                               PATHFINDING                               #
+    #                               CLASS METHODS                             #
     # ####################################################################### #
 
     def exit(self):
         self.manager.exit()
 
     def run(self):
-        """global movement_option
-        pygame.mixer.music.stop()
-        game = GameManager(mov_opt=movement_option)
-        game.run()"""
-        pass
+        print('Starting game...')
+        self.manager.change_scene()
 
     def show_starting_screen(self):
         self.current_screen = 0
@@ -63,6 +60,9 @@ class MenuManager(Scene):
 
     def show_credits_screen(self):
         self.current_screen = 2
+
+    def set_movement_option(self, option):
+        self.manager.set_movement_option(option)
 
     @staticmethod
     def splash_screen(screen, wait_seconds):

@@ -1,10 +1,10 @@
 from scipy.interpolate import CubicSpline
 from typing_extensions import deprecated
 
-from grid import Grid
-from algorithms import *
-from auxiliar import *
-from constants import *
+from game.map.grid import Grid
+from utils.algorithms import *
+from utils.auxiliar import *
+from utils.constants import *
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#

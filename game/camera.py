@@ -1,5 +1,8 @@
+from utils.constants import *
+from game.entities.player import Player
+from game.map.grid import Grid
+
 import pygame
-from constants import *
 
 
 class Camera(pygame.sprite.Group):
@@ -10,14 +13,14 @@ class Camera(pygame.sprite.Group):
         self.center = (self.surface.get_width() // 2, self.surface.get_height() // 2,)
         self.offset = pygame.math.Vector2(0, 0)
 
-        # zoom
+        # Zoom
         self.internal_size = pygame.math.Vector2(self.surface.get_width(), self.surface.get_height())
         self.internal_surface = pygame.Surface(self.internal_size)
-        self.internal_rectangle = self.internal_surface.get_rect(center = self.center)
+        self.internal_rectangle = self.internal_surface.get_rect(center=self.center)
 
         self.zoom = 1
 
-        # offset from screen to camera border
+        # Offset from screen to camera border
         self.boundary_corners = {
             'left': 300,
             'right': 300,
@@ -25,7 +28,7 @@ class Camera(pygame.sprite.Group):
             'bottom': 300
         }
 
-        # camera boundaries
+        # Camera boundaries
         left_corner = self.boundary_corners['left']
         top_corner = self.boundary_corners['top']
         boundary_width = self.internal_surface.get_width() - (self.boundary_corners['left'] + self.boundary_corners['right'])
@@ -55,7 +58,15 @@ class Camera(pygame.sprite.Group):
         self.internal_surface.blit(result_surface, (0, 0))
         self.update_surface()
 
-    def custom_draw(self, player, grid):
+    def draw(self, surface, *args, **kwargs):
+        player = kwargs.pop('player', None)
+        if player is not None:
+            if not isinstance(player, Player):
+                raise TypeError("player must be an instance of Player class")
+        grid = kwargs.pop('grid', None)
+        if grid is not None:
+            if not isinstance(grid, Grid):
+                raise TypeError("grid must be an instance of Grid class")
 
         self.surface.fill((255, 255, 255))
 
@@ -68,23 +79,24 @@ class Camera(pygame.sprite.Group):
             if not self.zoom == 2:
                 self.zoom += 0.1
 
-        # update boundary if player is outside
-        if player.rect.left < self.boundary.left:
-            self.boundary.left = player.rect.left
-        if player.rect.right > self.boundary.right:
-            self.boundary.right = player.rect.right
-        if player.rect.top < self.boundary.top:
-            self.boundary.top = player.rect.top
-        if player.rect.bottom > self.boundary.bottom:
-            self.boundary.bottom = player.rect.bottom
+        if player and grid:
+            # update boundary if player is outside
+            if player.rect.left < self.boundary.left:
+                self.boundary.left = player.rect.left
+            if player.rect.right > self.boundary.right:
+                self.boundary.right = player.rect.right
+            if player.rect.top < self.boundary.top:
+                self.boundary.top = player.rect.top
+            if player.rect.bottom > self.boundary.bottom:
+                self.boundary.bottom = player.rect.bottom
 
-        self.offset.x = self.boundary.left - self.boundary_corners['left']
-        self.offset.y = self.boundary.top - self.boundary_corners['top']
+            self.offset.x = self.boundary.left - self.boundary_corners['left']
+            self.offset.y = self.boundary.top - self.boundary_corners['top']
 
-        grid.draw(self.internal_surface, self.offset)
+            grid.draw(self.internal_surface, self.offset)
 
         # Sort ensures grid is drawn on background
-        for sprite in sorted(self.sprites(), key=lambda sprite: 0 - sprite.rect.width):
+        for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
             sprite.draw(self.internal_surface, self.offset)
 
         # draw camera (for testing)
@@ -97,8 +109,11 @@ class Camera(pygame.sprite.Group):
 
         self.update_surface()
 
+        # Call the base class draw method
+        super().draw(surface, *args, **kwargs)
+
     def update_surface(self):
         scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * self.zoom)
-        scaled_rectangle = scaled_surface.get_rect(center = self.center)
+        scaled_rectangle = scaled_surface.get_rect(center=self.center)
 
         self.surface.blit(scaled_surface, scaled_rectangle)

@@ -1,7 +1,7 @@
 from menu.prototypes.gui_prototypes import CreditsText
 from menu.prototypes.screen_prototypes import PantallaGUI
-from menu.elements.gui_texts import *
-from menu.elements.gui_buttons import *
+from menu.gui_texts import *
+from menu.gui_buttons import *
 
 
 class StartingScreen(PantallaGUI):

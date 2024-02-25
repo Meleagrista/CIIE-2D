@@ -1,6 +1,6 @@
-from constants import *
-from enums import *
-from grid import Grid
+from utils.constants import *
+from utils.enums import *
+from game.map.grid import Grid
 
 import math
 import pygame
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
 
     def draw(self, surface, offset):
         # Draw the square
-        pygame.draw.rect(surface, BLUE, (self.rect.x-offset.x, self.rect.y-offset.y, self.size, self.size))
+        pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
 
         # Draw the rotated triangle
         end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
@@ -68,7 +68,6 @@ class Player(pygame.sprite.Sprite):
             ),
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
-
 
     def update(self):
         direction_x = 0
@@ -171,7 +170,6 @@ class Player(pygame.sprite.Sprite):
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)
-
 
     def kill(self):
         for group in self.groups:

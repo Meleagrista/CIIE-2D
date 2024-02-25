@@ -19,7 +19,7 @@ REACH_OF_VISION = 6
 GRID_SIZE = 35  # Represents the number of squares in the grid.
 GRID_BACKGROUND = (0, 0, 0)
 SQUARE_SIZE = 20  # Represents the size of each square in pixels on the grid.
-MAP = 'map/files/map-1.txt'  # Represents the path to the file containing the map information.
+MAP = 'game/map/files/map-1.txt'  # Represents the path to the file containing the map information.
 GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 
 # ####################################################################### #

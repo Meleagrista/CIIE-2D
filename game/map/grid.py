@@ -1,5 +1,5 @@
-from constants import GRID_BACKGROUND, MAP
-from square import Square
+from utils.constants import GRID_BACKGROUND, MAP
+from game.map.square import Square
 
 import math
 import os
