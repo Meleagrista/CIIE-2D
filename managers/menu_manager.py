@@ -68,7 +68,7 @@ class MenuManager(Scene):
     def splash_screen(screen, wait_seconds):
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
-        splash_image = pygame.image.load("assets/images/backgrounds/splash_screen_placeholder.jpeg")
+        splash_image = pygame.image.load(SPLASH_IMAGE)
         splash_image = pygame.transform.scale(splash_image, (screen_width, screen_height))
 
         screen.blit(splash_image, (0, 0))

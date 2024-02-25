@@ -15,8 +15,7 @@ class ResourceManager(object):
         if name in cls.resources:
             return cls.resources[name]
         else:
-            full_name = os.path.join('assets', name)
-
+            full_name = os.path.join(name)
             try:
                 image = pygame.image.load(full_name)
             except pygame.error as e:

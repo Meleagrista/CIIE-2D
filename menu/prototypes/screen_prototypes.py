@@ -15,7 +15,7 @@ ALTO_PANTALLA = 600
 class PantallaGUI:
     def __init__(self, menu, image_name):
         self.menu = menu
-        self.image = ResourceManager.load_image('images/backgrounds/' + image_name)
+        self.image = ResourceManager.load_image(image_name)
         self.image = pygame.transform.scale(self.image, (ANCHO_PANTALLA, ALTO_PANTALLA))
         self.elements = []
         self.click = None

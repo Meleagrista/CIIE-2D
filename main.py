@@ -4,6 +4,8 @@ from managers.menu_manager import MenuManager
 
 import pygame
 
+from utils.filepaths import MUSIC
+
 if __name__ == "__main__":
     # game = GameManager()
     # game.run()
@@ -15,7 +17,7 @@ if __name__ == "__main__":
 
     pygame.mixer.init()
 
-    pygame.mixer.music.load('assets/music/fall-from-grace.mp3')
+    pygame.mixer.music.load(MUSIC)
     pygame.mixer.music.play(-1)
 
     menu_scene.splash_screen(manager.screen, 10)

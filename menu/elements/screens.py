@@ -6,7 +6,7 @@ from menu.elements.gui_buttons import *
 
 class StartingScreen(PantallaGUI):
     def __init__(self, menu):
-        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
+        PantallaGUI.__init__(self, menu, BACKGROUND_IMAGE)
 
         button_play = ButtonPlay(self)
         button_configuration = ButtonConfiguration(self)
@@ -33,7 +33,7 @@ class StartingScreen(PantallaGUI):
 
 class ConfigurationScreen(PantallaGUI):
     def __init__(self, menu):
-        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
+        PantallaGUI.__init__(self, menu, BACKGROUND_IMAGE)
 
         switch_volumen = SwitchVolume(self)
         switch_controles = SwitchController(self)
@@ -54,7 +54,7 @@ class ConfigurationScreen(PantallaGUI):
 
 class CreditsScreen(PantallaGUI):
     def __init__(self, menu):
-        PantallaGUI.__init__(self, menu, 'desert-pixel-placeholder.png')
+        PantallaGUI.__init__(self, menu, BACKGROUND_IMAGE)
 
         button_go_back = ButtonBackToMenu(self)
 

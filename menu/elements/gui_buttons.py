@@ -1,12 +1,13 @@
 from menu.prototypes.gui_prototypes import Button, ButtonSwitch
 from game.utils.enums import Controls as Ctl
+from utils.filepaths import *
 
 import pygame
 
 
 class ButtonPlay(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, 'controller.png', (500, 50))
+        Button.__init__(self, screen, BUTTON_PLAY, (500, 50))
 
     def activate(self):
         self.screen.menu.run()
@@ -14,7 +15,7 @@ class ButtonPlay(Button):
 
 class ButtonConfiguration(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, 'config.png', (500, 90))
+        Button.__init__(self, screen, BUTTON_CONFIGURATION, (500, 90))
 
     def activate(self):
         self.screen.menu.show_configuration_screen()
@@ -22,7 +23,7 @@ class ButtonConfiguration(Button):
 
 class ButtonCredits(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, 'corona.png', (500, 130))
+        Button.__init__(self, screen, BUTTON_CREDITS, (500, 130))
 
     def activate(self):
         self.screen.menu.show_credits_screen()
@@ -30,7 +31,7 @@ class ButtonCredits(Button):
 
 class ButtonExit(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, 'exit.png', (500, 170))
+        Button.__init__(self, screen, BUTTON_EXIT, (500, 170))
 
     def activate(self):
         self.screen.menu.exit()
@@ -38,7 +39,7 @@ class ButtonExit(Button):
 
 class ButtonBackToMenu(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, 'return_pixel3.png', (520, 160))
+        Button.__init__(self, screen, BUTTON_BACK, (520, 160))
 
     def activate(self):
         self.screen.menu.show_starting_screen()
@@ -46,7 +47,7 @@ class ButtonBackToMenu(Button):
 
 class SwitchVolume(ButtonSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, 'switch_off.jpg', "switch_on.png", (500, 90), "On")
+        ButtonSwitch.__init__(self, screen, SWITCH_OFF, SWITCH_ON, (500, 90), "On")
 
     def activate(self):
         # Cambiar el estado del interruptor
@@ -62,7 +63,7 @@ class SwitchVolume(ButtonSwitch):
 
 class SwitchController(ButtonSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, 'arrows.png', "wasd.png", (500, 130), "WASD")
+        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_PLAY, (500, 130), "WASD")
 
     def activate(self):
         # global movement_option TODO: This shit needs to connect to somewhere.

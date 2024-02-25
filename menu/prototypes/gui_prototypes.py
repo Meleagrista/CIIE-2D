@@ -2,6 +2,8 @@ from managers.resource_manager import ResourceManager
 
 import pygame
 
+from utils.filepaths import FONT
+
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        GUI ELEMENT PROTOTYPE                                  #
@@ -40,7 +42,7 @@ class ElementoGUI:
 
 class Button(ElementoGUI):
     def __init__(self, screen, image_name, position):
-        self.image = ResourceManager.load_image('images/icons/' + image_name, -1)
+        self.image = ResourceManager.load_image(image_name, -1)
         self.image = pygame.transform.scale(self.image, (20, 20))
 
         ElementoGUI.__init__(self, screen, self.image.get_rect())
@@ -53,9 +55,9 @@ class Button(ElementoGUI):
 
 class ButtonSwitch(Button):
     def __init__(self, screen, image_name_1, image_name_2, position, initial_state):
-        self.image_1 = ResourceManager.load_image('images/icons/' + image_name_1, -1)
+        self.image_1 = ResourceManager.load_image(image_name_1, -1)
         self.image_1 = pygame.transform.scale(self.image_1, (50, 50))
-        self.image_2 = ResourceManager.load_image('images/icons/' + image_name_2, -1)
+        self.image_2 = ResourceManager.load_image(image_name_2, -1)
         self.image_2 = pygame.transform.scale(self.image_2, (50, 50))
         
         ElementoGUI.__init__(self, screen, self.image_1.get_rect())
@@ -86,7 +88,7 @@ class Text(ElementoGUI):
 
 class CreditsText:
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', 20)
+        fuente = pygame.font.Font(FONT, 20)
         self.texts = []
         self.texts.append(Text(screen, fuente, (0, 0, 0), "Contornos Inmersivos, Interactivos e de Entretemento", (40, 100)))
         self.texts.append(Text(screen, fuente, (0, 0, 0), "Grao en Enxeneria Informatica", (40, 130)))
