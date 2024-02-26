@@ -61,16 +61,14 @@ class GameManager(Scene):
 
     def update(self, **kwargs):
         if not self.is_open_menu():
+            kwargs['surface'] = self.win
+            kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
+            kwargs['enemy_mask'] = self.update_camera()
             self.all_sprites.update(**kwargs)
 
-            if self.detect_player():
-                if self.death_counter >= LIFE * FPS:
-                    self.open_menu(self.death_menu)
-                else:
-                    self.death_counter = self.death_counter + 1
-            else:
-                if self.death_counter > 0:
-                    self.death_counter = self.death_counter - 1
+    def notified(self):
+        if not self.player.alive():
+            self.open_menu(self.death_menu)
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
@@ -112,6 +110,7 @@ class GameManager(Scene):
     def spawn_player(self):
         center = self.win_size // 2 - SQUARE_SIZE
         player = Player(center, center, 2, self.grid)
+        player.add_observer(self)
         self.add_player(player)
 
     def add_enemy(self, enemy):
@@ -149,7 +148,7 @@ class GameManager(Scene):
         enemy = Enemy((x, y), 0.5, 1, self.grid, self.win, [])
         self.add_enemy(enemy)
 
-    def mask_vision(self):
+    def update_camera(self):
         mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
         subtract_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
 
@@ -159,23 +158,22 @@ class GameManager(Scene):
                 point1, point2 = pair
                 vertices.append(point1)
                 vertices.append(point2)
-            self.all_sprites.mask_update(enemy, subtract_surface, vertices, mask_surface)
+            self.all_sprites.enemy_mask(enemy, subtract_surface, vertices, mask_surface)
 
         mask = pygame.mask.from_surface(mask_surface)
         subtract = pygame.mask.from_surface(subtract_surface)
         mask = mask.overlap_mask(subtract, (0, 0))
 
-        result_surface = mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100))
+        self.all_sprites.mask_surface = mask
 
-        self.all_sprites.mask_draw(result_surface)
-        return mask
+        return self.all_sprites.mask_surface
 
-    def detect_player(self):
+    """def detect_player(self):
         mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
         pygame.draw.rect(mask_surface, (255, 255, 255, 255), self.player.rect)
         mask = pygame.mask.from_surface(mask_surface)
         enemy_sight = self.mask_vision()
-        return self.all_sprites.mask_overlap(mask, enemy_sight)
+        return self.all_sprites.mask_overlap(mask, enemy_sight)"""
 
     # ####################################################################### #
     #                             BAR METHODS                                 #
