@@ -16,8 +16,8 @@ class Player(pygame.sprite.Sprite):
         Initialize an Enemy object.
 
         Args:
-            x (int): X coordinate of the enemy.
-            y (int): Y coordinate of the enemy.
+            x (int): X coordinate of the player.
+            y (int): Y coordinate of the player.
             movement_speed (float): Speed of movement.
             grid (Grid): Grid for pathfinding.
         """
@@ -77,6 +77,9 @@ class Player(pygame.sprite.Sprite):
         if movement_option is not None:
             if not isinstance(movement_option, Controls):
                 raise TypeError("player must be an instance of Player class")
+
+        prev_x = self.x
+        prev_y = self.y
 
         direction_x = 0
         direction_y = 0
@@ -175,6 +178,12 @@ class Player(pygame.sprite.Sprite):
         # Update player's position
         self.x = new_x
         self.y = new_y
+
+        # If the player entered or exited the square with the key, toggle the controls for picking it up
+        if self.grid.is_key_square(prev_x, prev_y) != self.grid.is_key_square(new_x, new_y):
+            # TODO: Show pick up the key menu and implement behavior
+            # Notify game_manager to turn on new controls for the player
+            pass
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)

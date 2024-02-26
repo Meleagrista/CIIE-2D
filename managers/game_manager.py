@@ -23,6 +23,10 @@ class GameManager(Scene):
         self.enemies = pygame.sprite.Group()
         self.all_sprites = Camera()
 
+        # Set the key and exit squares (dummy)
+        self.grid.set_key_square(2, 18)
+        self.grid.set_exit_square(33, 1)
+
         self.start()
         self.death_counter = 0
 

@@ -67,6 +67,9 @@ class Square():
         self.rect.center = (self.x, self.y)
         self.rect = pygame.Rect((row * size), (col * size), size + 1, size + 1)
 
+        self.is_key = False
+        self.is_exit = False
+
     # ####################################################################### #
     #                                VARIABLES                                #
     # ####################################################################### #
@@ -202,6 +205,16 @@ class Square():
         """
         self.barrier = True
         self.color = BLACK
+        self.image.fill((0, 0, 0))
+
+    def toggle_key(self):
+        self.is_key = not self.is_key
+        self.color = YELLOW if self.is_key else WHITE  # Funcionará?
+        self.image.fill((0, 0, 0))
+
+    def make_exit(self):
+        self.is_exit = True
+        self.color = GREEN
         self.image.fill((0, 0, 0))
 
     def make_room(self, id):
