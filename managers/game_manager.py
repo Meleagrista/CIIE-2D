@@ -168,13 +168,6 @@ class GameManager(Scene):
 
         return self.all_sprites.mask_surface
 
-    """def detect_player(self):
-        mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
-        pygame.draw.rect(mask_surface, (255, 255, 255, 255), self.player.rect)
-        mask = pygame.mask.from_surface(mask_surface)
-        enemy_sight = self.mask_vision()
-        return self.all_sprites.mask_overlap(mask, enemy_sight)"""
-
     # ####################################################################### #
     #                             BAR METHODS                                 #
     # ####################################################################### #
