@@ -38,7 +38,7 @@ class MenuManager(Scene):
     def draw(self, screen):
         self.screen_list[self.current_screen].draw(screen)
 
-    def update(self, *args):
+    def update(self, **kwargs):
         pass
 
     # ####################################################################### #

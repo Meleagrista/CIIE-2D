@@ -3,7 +3,7 @@ import pygame
 from utils.constants import FPS
 from utils.enums import Controls as Ctl
 
-# TODO: Extact these into a constants file.
+# TODO: Extract these into a constants file.
 ANCHO_PANTALLA = 800
 ALTO_PANTALLA = 600
 
@@ -29,7 +29,7 @@ class SceneManager:
             self.clock.tick(FPS)
             events = pygame.event.get()
             scene.events(events)
-            scene.update()
+            scene.update(movement_option=self.movement_option)
             scene.draw(self.screen)
 
             pygame.display.flip()

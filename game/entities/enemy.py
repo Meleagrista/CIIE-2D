@@ -104,7 +104,7 @@ class Enemy(pygame.sprite.Sprite):
         # nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
         # self.draw_path(surface, nodes, offset)
 
-    def update(self):
+    def update(self, **kwargs):
         ##############################
         # PATHFINDING AND ROTATION
         ##############################

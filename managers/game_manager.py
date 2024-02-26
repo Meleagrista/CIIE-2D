@@ -59,9 +59,9 @@ class GameManager(Scene):
 
         pygame.display.update()
 
-    def update(self, *args):
+    def update(self, **kwargs):
         if not self.is_open_menu():
-            self.all_sprites.update(*args)
+            self.all_sprites.update(**kwargs)
 
             if self.detect_player():
                 if self.death_counter >= LIFE * FPS:
@@ -86,7 +86,7 @@ class GameManager(Scene):
 
     def start(self):
         self.spawn_enemies()
-        self.spawn_player(self.manager.get_movement_option())
+        self.spawn_player()
 
     def resume(self):
         self.close_menu()
@@ -110,9 +110,9 @@ class GameManager(Scene):
         self.player = None
         player.kill()
 
-    def spawn_player(self, mov_opt):
+    def spawn_player(self):
         center = self.win_size // 2 - SQUARE_SIZE
-        player = Player(center, center, 2, self.grid, mov_opt)
+        player = Player(center, center, 2, self.grid)
         self.add_player(player)
 
     def add_enemy(self, enemy):

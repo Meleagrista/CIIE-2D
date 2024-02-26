@@ -11,7 +11,7 @@ import pygame
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, movement_speed: float, grid: Grid, movement_option: Controls):
+    def __init__(self, x: int, y: int, movement_speed: float, grid: Grid):
         """
         Initialize an Enemy object.
 
@@ -20,7 +20,6 @@ class Player(pygame.sprite.Sprite):
             y (int): Y coordinate of the enemy.
             movement_speed (float): Speed of movement.
             grid (Grid): Grid for pathfinding.
-            movement_option (Controls): Controller option.
         """
         super().__init__()
         self.x = x
@@ -44,7 +43,6 @@ class Player(pygame.sprite.Sprite):
         self.angle = NPC_ANGLE
         self.speed = movement_speed
         self.last_direction = Direction.NORTH
-        self.movement_option = movement_option
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
@@ -69,14 +67,19 @@ class Player(pygame.sprite.Sprite):
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
 
-    def update(self):
+    def update(self, **kwargs):
+        movement_option = kwargs.pop('movement_option', None)
+        if movement_option is not None:
+            if not isinstance(movement_option, Controls):
+                raise TypeError("player must be an instance of Player class")
+
         direction_x = 0
         direction_y = 0
         direction = Direction.STOPPED
 
         keys = pygame.key.get_pressed()
 
-        if self.movement_option == Controls.WASD:
+        if movement_option == Controls.WASD:
             if keys[pygame.K_w]:
                 direction_y -= 1
             if keys[pygame.K_s]:
@@ -85,7 +88,7 @@ class Player(pygame.sprite.Sprite):
                 direction_x += 1
             if keys[pygame.K_a]:
                 direction_x -= 1
-        elif self.movement_option == Controls.Arrows:
+        elif movement_option == Controls.Arrows:
             if keys[pygame.K_UP]:
                 direction_y -= 1
             if keys[pygame.K_DOWN]:
