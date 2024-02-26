@@ -1,3 +1,5 @@
+from typing_extensions import deprecated
+
 from utils.constants import *
 from game.entities.player import Player
 from game.map.grid import Grid
@@ -53,21 +55,6 @@ class Camera(pygame.sprite.Group):
         boundary_width = self.internal_surface.get_width() - (self.boundary_corners['left'] + self.boundary_corners['right'])
         boundary_height = self.internal_surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         self.boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
-
-    def draw_bar(self, position, width, height, percentage):
-        """
-        Draw a bar on the camera's internal surface.
-
-        Args:
-            position (pygame.math.Vector2): The position of the bar.
-            width (int): The width of the bar.
-            height (int): The height of the bar.
-            percentage (float): The percentage filled of the bar.
-        """
-        position = position - self.offset
-        pygame.draw.rect(self.internal_surface, GREEN, (position.x, position.y, width, height))
-        pygame.draw.rect(self.internal_surface, RED, (position.x, position.y, width * percentage, height))
-        self._update()
 
     def mask_update(self, enemy, surface, vertices, mask):
         """
@@ -161,3 +148,19 @@ class Camera(pygame.sprite.Group):
         scaled_surface = pygame.transform.scale(self.internal_surface, self.internal_size * self.zoom)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)
         self.surface.blit(scaled_surface, scaled_rectangle)
+
+    @deprecated("This method is deprecated.")
+    def draw_bar(self, position, width, height, percentage):
+        """
+        Draw a bar on the camera's internal surface.
+
+        Args:
+            position (pygame.math.Vector2): The position of the bar.
+            width (int): The width of the bar.
+            height (int): The height of the bar.
+            percentage (float): The percentage filled of the bar.
+        """
+        position = position - self.offset
+        pygame.draw.rect(self.internal_surface, GREEN, (position.x, position.y, width, height))
+        pygame.draw.rect(self.internal_surface, RED, (position.x, position.y, width * percentage, height))
+        self._update()

@@ -65,7 +65,6 @@ class GameManager(Scene):
 
             if self.detect_player():
                 if self.death_counter >= LIFE * FPS:
-                    self.remove_player(self.player)
                     self.open_menu(self.death_menu)
                 else:
                     self.death_counter = self.death_counter + 1

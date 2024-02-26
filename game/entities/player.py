@@ -46,6 +46,11 @@ class Player(pygame.sprite.Sprite):
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
 
+        # 3. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ OBSERVER PATTERN LIST ~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._observers = []
+
     def draw(self, surface, offset):
         # Draw the square
         pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
@@ -190,3 +195,24 @@ class Player(pygame.sprite.Sprite):
             group.remove(self)
             if group in self.groups:
                 self.groups.remove(group)
+
+    # ####################################################################### #
+    #                                OBSERVER                                 #
+    # ####################################################################### #
+
+    def add_observer(self, observer):
+        self._observers.append(observer)
+
+    def remove_observer(self, observer):
+        self._observers.remove(observer)
+
+    def set_temperature(self, temperature):
+        self._temperature = temperature
+        self.notify_observers()
+
+    def get_temperature(self):
+        return self._temperature
+
+    def notify_observers(self):
+        for observer in self._observers:
+            observer.update()
