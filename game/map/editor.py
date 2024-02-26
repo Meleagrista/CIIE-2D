@@ -9,8 +9,8 @@ GRID_SIZE = 35
 SQUARE_SIZE = 20
 FPS = 60
 
-path_to_folder = 'game/map/files/'
-path_to_map = 'game/map/files/map-1.txt'
+path_to_folder = './files/'
+path_to_map = './files/map-2.txt'
 
 if __name__ == '__main__':
     pygame.init()
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((GRID_SIZE * SQUARE_SIZE, GRID_SIZE * SQUARE_SIZE))
     pygame.display.set_caption("Map editor")
     clock = pygame.time.Clock()
-    grid = Grid(GRID_SIZE, screen)
+    grid = Grid(GRID_SIZE, screen, path=path_to_map)
     grid.create_array()
 
     dragging = False    # Flag to track if the left mouse button is being dragged
@@ -69,7 +69,7 @@ if __name__ == '__main__':
                 clicked_node.reset()
 
         # TODO: Fixed visibility issues
-        grid.draw(show_id=True)
+        grid.draw(screen, show_id=True)
         pygame.display.flip()
         clock.tick(FPS)
 

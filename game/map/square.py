@@ -81,7 +81,7 @@ class Square():
     #                                  DRAW                                   #
     # ####################################################################### #
 
-    def draw(self, win, offset):
+    def draw(self, win, offset=None):
         """
         Draw the square on the pygame window surface.
 
@@ -92,19 +92,26 @@ class Square():
            Returns:
             None
          """
+        if offset is None:
+            # Calculate the top-left corner of the rectangle
+            top_left_x = self.x - self.size / 2
+            top_left_y = self.y - self.size / 2
 
-        position_x = offset.x + self.size // 2
-        position_y = offset.y + self.size // 2
-
-        # Calculate the top-left corner of the rectangle
-        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
-        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
-
-        # Draw the rectangle with the adjusted coordinates
-        if GRID_SHOW:
+            # Draw the rectangle with the adjusted coordinates
             pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
         else:
-            pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
+            position_x = offset.x + self.size // 2
+            position_y = offset.y + self.size // 2
+
+            # Calculate the top-left corner of the rectangle
+            top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+            top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+
+            # Draw the rectangle with the adjusted coordinates
+            if GRID_SHOW:
+                pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
+            else:
+                pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
     # ####################################################################### #
     #                                POSITION                                 #
@@ -174,6 +181,17 @@ class Square():
         """
         self.barrier = False
         self.color = GRID_BACKGROUND
+
+    def reset_for_editor(self):
+        """
+        Reset the state of the square, setting white.
+
+        Returns:
+            None
+        """
+        self.barrier = False
+        self.color = WHITE
+        self.id = 0
 
     def make_barrier(self):
         """

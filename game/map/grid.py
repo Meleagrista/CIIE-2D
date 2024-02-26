@@ -24,7 +24,7 @@ class Grid:
         hover (Square): The grid cell currently being hovered over by the mouse cursor.
     """
 
-    def __init__(self, size, win):
+    def __init__(self, size, win, path=None):
         self.groups = []
         """
         Initializes the Grid object with the given size and window.
@@ -45,7 +45,7 @@ class Grid:
         self.hover = None
 
         self.create_array()
-        self.read_map(MAP)
+        self.read_map(MAP if path is None else path)
         self.update()
 
     # ####################################################################### #
@@ -69,24 +69,37 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, surface, offset, show_id=False):
+    def draw(self, surface, offset=None, show_id=False):
         """
         Draws the grid on the pygame window surface.
 
         Returns:
             None
         """
-        font = pygame.font.SysFont('arial', 20)
-        self.win.fill(GRID_BACKGROUND)
-        self.update()
-        for row in self.nodes:
-            for spot in row:
-                spot.draw(surface, offset)
-                if spot.is_border():
-                    spot.make_barrier()
-                elif spot.id != 0 and show_id:
-                    text = font.render(str(spot.id), True, (0, 0, 0))
-                    surface.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
+        if offset is None:
+            self.win.fill((125, 125, 125))
+            self.update()
+            for row in self.nodes:
+                for spot in row:
+                    spot.draw(self.win)
+                    if spot.is_border():
+                        spot.make_barrier()
+                    elif spot.id != 0:
+                        font = pygame.font.SysFont('arial', 20)
+                        text = font.render(str(spot.id), True, (0, 0, 0))
+                        self.win.blit(text, (spot.row * spot.size, spot.col * spot.size))
+        else:
+            font = pygame.font.SysFont('arial', 20)
+            self.win.fill(GRID_BACKGROUND)
+            self.update()
+            for row in self.nodes:
+                for spot in row:
+                    spot.draw(surface, offset)
+                    if spot.is_border():
+                        spot.make_barrier()
+                    elif spot.id != 0 and show_id:
+                        text = font.render(str(spot.id), True, (0, 0, 0))
+                        surface.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
 
     def add(self, group):
         for row in self.nodes:
