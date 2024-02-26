@@ -4,13 +4,13 @@ from utils.constants import FPS
 from utils.enums import Controls as Ctl
 
 # TODO: Extract these into a constants file.
-ANCHO_PANTALLA = 800
-ALTO_PANTALLA = 600
+ANCHO_PANTALLA = 400
+ALTO_PANTALLA = 300
 
 
 class SceneManager:
     def __init__(self):
-        self.screen = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
+        self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.FULLSCREEN)
         self.scene_stack = []
         self.clock = pygame.time.Clock()
 

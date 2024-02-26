@@ -16,7 +16,7 @@ class GameManager(Scene):
         Scene.__init__(self, manager)
 
         self.win_size = GRID_SIZE * SQUARE_SIZE
-        self.win = pygame.display.set_mode((self.win_size, self.win_size))
+        self.win = pygame.display.set_mode((self.win_size, self.win_size), pygame.FULLSCREEN)
 
         self.player = None
         self.grid = Grid(GRID_SIZE, self.win)
