@@ -7,7 +7,7 @@ import pygame
 
 class ButtonPlay(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_PLAY, (500, 50))
+        Button.__init__(self, screen, BUTTON_PLAY, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.40))
 
     def activate(self):
         self.screen.menu.run()
@@ -15,7 +15,7 @@ class ButtonPlay(Button):
 
 class ButtonConfiguration(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_CONFIGURATION, (500, 90))
+        Button.__init__(self, screen, BUTTON_CONFIGURATION, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.50))
 
     def activate(self):
         self.screen.menu.show_configuration_screen()
@@ -23,7 +23,7 @@ class ButtonConfiguration(Button):
 
 class ButtonCredits(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_CREDITS, (500, 130))
+        Button.__init__(self, screen, BUTTON_CREDITS, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.60))
 
     def activate(self):
         self.screen.menu.show_credits_screen()
@@ -31,7 +31,7 @@ class ButtonCredits(Button):
 
 class ButtonExit(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_EXIT, (500, 170))
+        Button.__init__(self, screen, BUTTON_EXIT, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.70))
 
     def activate(self):
         self.screen.menu.exit()
@@ -39,7 +39,7 @@ class ButtonExit(Button):
 
 class ButtonBackToMenu(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_BACK, (520, 160))
+        Button.__init__(self, screen, BUTTON_BACK, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.80))
 
     def activate(self):
         self.screen.menu.show_starting_screen()
@@ -47,7 +47,7 @@ class ButtonBackToMenu(Button):
 
 class SwitchVolume(ButtonSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, SWITCH_OFF, SWITCH_ON, (500, 90), "On")
+        ButtonSwitch.__init__(self, screen, SWITCH_OFF, SWITCH_ON, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.60), "On")
 
     def activate(self):
         # Cambiar el estado del interruptor
@@ -63,7 +63,7 @@ class SwitchVolume(ButtonSwitch):
 
 class SwitchController(ButtonSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_WASD, (500, 130), "WASD")
+        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_WASD, (pygame.display.Info().current_w * 0.35, pygame.display.Info().current_h * 0.40), "WASD")
 
     def activate(self):
         # Cambiar el estado del interruptor

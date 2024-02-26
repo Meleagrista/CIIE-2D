@@ -43,7 +43,7 @@ class ElementoGUI:
 class Button(ElementoGUI):
     def __init__(self, screen, image_name, position):
         self.image = ResourceManager.load_image(image_name, -1)
-        self.image = pygame.transform.scale(self.image, (20, 20))
+        self.image = pygame.transform.scale(self.image, (pygame.display.Info().current_h / 10, pygame.display.Info().current_h / 10))
 
         ElementoGUI.__init__(self, screen, self.image.get_rect())
         
@@ -56,9 +56,9 @@ class Button(ElementoGUI):
 class ButtonSwitch(Button):
     def __init__(self, screen, image_name_1, image_name_2, position, initial_state):
         self.image_1 = ResourceManager.load_image(image_name_1, -1)
-        self.image_1 = pygame.transform.scale(self.image_1, (50, 50))
+        self.image_1 = pygame.transform.scale(self.image_1, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
         self.image_2 = ResourceManager.load_image(image_name_2, -1)
-        self.image_2 = pygame.transform.scale(self.image_2, (50, 50))
+        self.image_2 = pygame.transform.scale(self.image_2, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
         
         ElementoGUI.__init__(self, screen, self.image_1.get_rect())
         
