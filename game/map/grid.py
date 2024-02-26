@@ -219,6 +219,12 @@ class Grid:
 
         return self.nodes[x][y].is_key
 
+    def is_exit_square(self, x, y):
+        if x < 0 or y < 0 or x >= self.size or y >= self.size:
+            return False
+
+        return self.nodes[x][y].is_exit
+
     # ####################################################################### #
     #                                    MAP                                  #
     # ####################################################################### #
