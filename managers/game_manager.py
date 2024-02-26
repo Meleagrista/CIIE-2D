@@ -61,7 +61,6 @@ class GameManager(Scene):
 
     def update(self, **kwargs):
         if not self.is_open_menu():
-            kwargs['surface'] = self.win
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self.update_camera()
             self.all_sprites.update(**kwargs)

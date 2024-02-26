@@ -82,11 +82,6 @@ class Player(pygame.sprite.Sprite):
             if not isinstance(movement_option, Controls):
                 raise TypeError("movement_option must be an isntance of Controls enum,")
 
-        surface = kwargs.pop('surface', None)
-        if surface is not None:
-            if not isinstance(surface, Surface):
-                raise TypeError("surface must be an isntance of Surface type,")
-
         player_mask = kwargs.pop('player_mask', None)
         if player_mask is not None:
             if not isinstance(player_mask, Mask):
@@ -97,7 +92,7 @@ class Player(pygame.sprite.Sprite):
             if not isinstance(enemy_mask, Mask):
                 raise TypeError("enemy_mask must be an isntance of Mask type,")
 
-        if self.is_detected(surface=surface, player_mask=player_mask, enemy_mask=enemy_mask):
+        if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
             if self._health > 0:
                 self._health = self._health - 1
             else:
@@ -238,7 +233,8 @@ class Player(pygame.sprite.Sprite):
         for observer in self._observers:
             observer.notified()
 
-    def is_detected(self, surface: Surface, player_mask: Mask, enemy_mask: Mask):
+    @staticmethod
+    def is_detected(player_mask: Mask, enemy_mask: Mask):
         return player_mask.overlap_area(enemy_mask, (0, 0)) > 0
 
     def alive(self):
