@@ -79,6 +79,9 @@ class GameManager(Scene):
                 print("Player won the game!")
             else:
                 print("Player tried to escape without the key!")
+        elif self.player.picked_up_key():
+            print("Player picked up the key!")
+
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
