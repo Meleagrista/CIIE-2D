@@ -1,3 +1,5 @@
+from pygame import Surface, Mask
+
 from utils.constants import *
 from utils.enums import *
 from game.map.grid import Grid
@@ -50,6 +52,8 @@ class Player(pygame.sprite.Sprite):
         #    ~~ OBSERVER PATTERN LIST ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._observers = []
+        self._health = LIFE * FPS
+        self._is_alive = True
 
     def draw(self, surface, offset):
         # Draw the square
@@ -76,7 +80,26 @@ class Player(pygame.sprite.Sprite):
         movement_option = kwargs.pop('movement_option', None)
         if movement_option is not None:
             if not isinstance(movement_option, Controls):
-                raise TypeError("player must be an instance of Player class")
+                raise TypeError("movement_option must be an instance of Controls enum,")
+
+        player_mask = kwargs.pop('player_mask', None)
+        if player_mask is not None:
+            if not isinstance(player_mask, Mask):
+                raise TypeError("player_mask must be an instance of Mask type,")
+
+        enemy_mask = kwargs.pop('enemy_mask', None)
+        if enemy_mask is not None:
+            if not isinstance(enemy_mask, Mask):
+                raise TypeError("enemy_mask must be an instance of Mask type,")
+
+        if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
+            if self._health > 0:
+                self._health = self._health - 1
+            else:
+                self._is_alive = False
+            self.notify_observers()
+        elif self._is_alive:
+            self._health = self._health + 1
 
         prev_x = self.x
         prev_y = self.y
@@ -215,13 +238,13 @@ class Player(pygame.sprite.Sprite):
     def remove_observer(self, observer):
         self._observers.remove(observer)
 
-    def set_temperature(self, temperature):
-        self._temperature = temperature
-        self.notify_observers()
-
-    def get_temperature(self):
-        return self._temperature
-
     def notify_observers(self):
         for observer in self._observers:
-            observer.update()
+            observer.notified()
+
+    @staticmethod
+    def is_detected(player_mask: Mask, enemy_mask: Mask):
+        return player_mask.overlap_area(enemy_mask, (0, 0)) > 0
+
+    def alive(self):
+        return self._is_alive

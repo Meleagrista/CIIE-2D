@@ -56,7 +56,7 @@ class Camera(pygame.sprite.Group):
         boundary_height = self.internal_surface.get_height() - (self.boundary_corners['top'] + self.boundary_corners['bottom'])
         self.boundary = pygame.Rect(left_corner, top_corner, boundary_width, boundary_height)
 
-    def mask_update(self, enemy, surface, vertices, mask):
+    def enemy_mask(self, enemy, surface, vertices, mask):
         """
         Draw vision for an enemy on the camera's internal surface.
 
@@ -75,11 +75,11 @@ class Camera(pygame.sprite.Group):
         vision = enemy.ray_reach * SQUARE_SIZE
         pygame.draw.circle(surface, (255, 255, 255, 255), (position_x, position_y), vision)
 
-    def mask_overlap(self, mask, enemy_sight):
-        return mask.overlap_area(enemy_sight, self.offset) > 0
-
-    def mask_draw(self, result_surface):
-        self.mask_surface = result_surface
+    def player_mask(self, player):
+        mask_surface = pygame.Surface((self.surface.get_width(),self.surface.get_height()), pygame.SRCALPHA)
+        player_rect = (player.rect.x - self.offset[0], player.rect.y - self.offset[1], player.rect.width, player.rect.height)
+        pygame.draw.rect(mask_surface, (255, 255, 255, 255), player_rect)
+        return pygame.mask.from_surface(mask_surface)
 
     def draw(self, surface, *args, **kwargs):
         """
@@ -137,7 +137,7 @@ class Camera(pygame.sprite.Group):
         pygame.draw.rect(self.surface, 'yellow', boundary, 4)"""
 
         # TODO: This is where the vision is drawm.
-        self.internal_surface.blit(self.mask_surface, (0, 0))
+        self.internal_surface.blit(self.mask_surface.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
 
         self._update()
 
