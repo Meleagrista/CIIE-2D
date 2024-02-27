@@ -54,6 +54,9 @@ class Player(pygame.sprite.Sprite):
         self._observers = []
         self._health = LIFE * FPS
         self._is_alive = True
+        self._has_key = False
+        self._toggle_key_controls = False
+        self._in_exit = False
 
     def draw(self, surface, offset):
         # Draw the square
@@ -204,9 +207,11 @@ class Player(pygame.sprite.Sprite):
 
         # If the player entered or exited the square with the key, toggle the controls for picking it up
         if self.grid.is_key_square(prev_x, prev_y) != self.grid.is_key_square(new_x, new_y):
-            # TODO: Show pick up the key menu and implement behavior
-            # Notify game_manager to turn on new controls for the player
-            pass
+            self._toggle_key_controls = True
+            self.notify_observers()
+        if self.grid.is_exit_square(prev_x, prev_y) != self.grid.is_exit_square(new_x, new_y):
+            self._in_exit = not self._in_exit
+            self.notify_observers()  # Message indicating necessary key must be displayed
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)
@@ -248,3 +253,16 @@ class Player(pygame.sprite.Sprite):
 
     def alive(self):
         return self._is_alive
+
+    def key_controls(self):
+        if self._toggle_key_controls:
+            self._toggle_key_controls = False
+            return True
+        else:
+            return False
+
+    def in_exit_cell(self):
+        return self._in_exit
+
+    def has_key(self):
+        return self._has_key

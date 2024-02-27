@@ -72,6 +72,13 @@ class GameManager(Scene):
     def notified(self):
         if not self.player.alive():
             self.open_menu(self.death_menu)
+        elif self.player.key_controls():
+            print("Player entered/exited the key cell!")
+        elif self.player.in_exit_cell():
+            if self.player.has_key():
+                print("Player won the game!")
+            else:
+                print("Player tried to escape without the key!")
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
