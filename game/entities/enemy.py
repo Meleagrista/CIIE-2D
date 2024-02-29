@@ -211,7 +211,12 @@ class Enemy(pygame.sprite.Sprite):
         self.end_node = node
 
     def set_random_end(self):
-        self.end_node = self.grid.get_random_node_from_zones(self.areas)
+        current_node = self.grid.get_node((self.x, self.y))
+        # Solve problem in pathfinding when start node equals end node
+        end_node = self.grid.get_random_node_from_zones(self.areas)
+        while current_node.compare_node(end_node):
+            end_node = self.grid.get_random_node_from_zones(self.areas)
+        self.end_node = end_node
 
     def set_next_point(self):
         try:

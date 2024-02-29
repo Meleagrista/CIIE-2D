@@ -32,6 +32,10 @@ class GameManager(Scene):
         self.interface = Interface()
         self._set_interface()
 
+        # Set the key and exit squares
+        self.grid.set_key_square(2, 18)
+        self.grid.set_exit_square(33, 1)
+
         self.menu_manager = MenuManager(self.win)
         self._set_menus()
 
@@ -70,6 +74,16 @@ class GameManager(Scene):
     def notified(self):
         if not self.player.alive():
             self.open_menu(self.death_menu)
+        elif self.player.key_controls():
+            print("Player entered/exited the key cell!")
+        elif self.player.in_exit_cell():
+            if self.player.has_key():
+                print("Player won the game!")
+            else:
+                print("Player tried to escape without the key!")
+        elif self.player.picked_up_key():
+            print("Player picked up the key!")
+
 
     # ####################################################################### #
     #                               CLASS METHODS                             #

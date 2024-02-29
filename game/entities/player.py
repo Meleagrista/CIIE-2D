@@ -19,8 +19,8 @@ class Player(pygame.sprite.Sprite):
         Initialize an Enemy object.
 
         Args:
-            x (int): X coordinate of the enemy.
-            y (int): Y coordinate of the enemy.
+            x (int): X coordinate of the player.
+            y (int): Y coordinate of the player.
             movement_speed (float): Speed of movement.
             grid (Grid): Grid for pathfinding.
         """
@@ -59,6 +59,12 @@ class Player(pygame.sprite.Sprite):
         self._cooldown = self._max_cooldown
         self._is_alive = True
         self._is_exposed = False
+        
+        self._in_exit = False
+        self._in_key = False
+        self._has_key = False
+        self._toggle_key_controls = False
+        self._picked_up_key = False
 
     def draw(self, surface, offset):
         # Draw the square
@@ -174,6 +180,16 @@ class Player(pygame.sprite.Sprite):
         self.x = new_x
         self.y = new_y
 
+        # If the player entered or exited the square with the key, toggle the controls for picking it up
+        if self.grid.is_key_square(prev_x, prev_y) != self.grid.is_key_square(new_x, new_y):
+            self._in_key = not self._in_key
+            self._toggle_key_controls = True
+            self.notify_observers()
+        # If the player entered or exited the exit square, toggle the variable of that position
+        if self.grid.is_exit_square(prev_x, prev_y) != self.grid.is_exit_square(new_x, new_y):
+            self._in_exit = not self._in_exit
+            self.notify_observers()  # Message indicating necessary key must be displayed
+
         # Update sprite
         self.rect.topleft = (self.x, self.y)
 
@@ -220,3 +236,24 @@ class Player(pygame.sprite.Sprite):
 
     def health(self):
         return self._health, self._max_health
+    def key_controls(self):
+        if self._toggle_key_controls:
+            # Set the control variable to False so that game manager does not get confused
+            self._toggle_key_controls = False
+            return True
+        else:
+            return False
+
+    def in_exit_cell(self):
+        return self._in_exit
+
+    def has_key(self):
+        return self._has_key
+
+    def picked_up_key(self):
+        if self._picked_up_key:
+            # Set the control variable to False so that game manager does not get confused
+            self._picked_up_key = False
+            return True
+        else:
+            return False
