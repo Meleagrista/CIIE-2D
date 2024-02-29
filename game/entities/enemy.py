@@ -1,6 +1,7 @@
+import numpy as np
+
 from scipy.interpolate import CubicSpline
 from typing_extensions import deprecated
-
 from game.map.grid import Grid
 from utils.algorithms import *
 from utils.auxiliar import *
@@ -12,27 +13,21 @@ from utils.constants import *
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, movement_speed, rotation_speed, grid: Grid, window, areas):
-        """
-            Initializes the Enemy sprite.
-
-            Args:
-                pos (tuple): The initial position (x, y) of the sprite.
-                movement_speed (float): The movement speed of the sprite.
-                rotation_speed (float): The rotation speed of the sprite.
-                grid (Grid): The grid object for pathfinding.
-                window (pygame.Surface): The game window surface.
-
-            Returns:
-                None
-            """
+    def __init__(self,
+                 position,
+                 movement_speed,
+                 rotation_speed,
+                 grid: Grid,
+                 window: pygame.Surface,
+                 areas
+                 ):
         super().__init__()
         self.groups = []
 
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.x, self.y = pos
+        self.x, self.y = position
         self.size = NPC_SIZE
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
         self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
@@ -67,17 +62,23 @@ class Enemy(pygame.sprite.Sprite):
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.ray_cone = FIELD_OF_VISION
         self.ray_reach = REACH_OF_VISION
+        self.ray_radius = self.ray_reach * SQUARE_SIZE
         self.corners = []
-        self.mask = None # Deprecated parameter
+        self.mask = None  # Deprecated parameter
         self.win_height = window.get_height()
         self.win_width = window.get_width()
+
+        # 5. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ PLAYER STATUS OBSERVER ~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._status = GREEN
 
     def draw(self, surface, offset):
         ##############################
         # DRAWING RECTANGLE
         ##############################
         rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        pygame.draw.rect(rect_surface, GREEN, (0, 0, self.size, self.size))
+        pygame.draw.rect(rect_surface, self._status, (0, 0, self.size, self.size))
         rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
         rect = rotated_rect.get_rect()
         rect.center = (self.x, self.y)
@@ -162,6 +163,17 @@ class Enemy(pygame.sprite.Sprite):
         # Update sprite
         self.rect.center = (self.x, self.y)
 
+    def notified(self, player):
+        if player.detected():
+            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
+                                 (player.rect.centery - self.rect.centery) ** 2)
+            if distance <= self.ray_radius + player.size:
+                self._status = RED
+            elif distance <= (self.ray_radius + player.size) * 2:
+                self._status = ORANGE
+            else:
+                self._status = GREEN
+
     def kill(self):
         for group in self.groups:
             group.remove(self)
@@ -221,6 +233,10 @@ class Enemy(pygame.sprite.Sprite):
 
     def interpolate_points(self, segments):
         points = np.array(self.points_from_path())
+
+        if len(points) < 2:
+            return points  # Return points back if there aren't enough points
+
         t = np.arange(len(points))
         x = points[:, 0]
         y = points[:, 1]
@@ -463,4 +479,4 @@ class Enemy(pygame.sprite.Sprite):
     @deprecated("This method is a debugging tool.")
     def draw_path(self, surface, point_list, offset, point_size=1, point_color=(255, 0, 0)):
         for point in point_list:
-            pygame.draw.circle(surface, point_color, point-offset, point_size)
+            pygame.draw.circle(surface, point_color, point - offset, point_size)

@@ -1,11 +1,12 @@
-from pygame import Surface, Mask
+import math
 
+import pygame
+from pygame import Mask
+
+from game.map.grid import Grid
+from utils.auxiliar import get_direction, increase, decrease
 from utils.constants import *
 from utils.enums import *
-from game.map.grid import Grid
-
-import math
-import pygame
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -52,8 +53,12 @@ class Player(pygame.sprite.Sprite):
         #    ~~ OBSERVER PATTERN LIST ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._observers = []
-        self._health = LIFE * FPS
+        self._max_health = LIFE * FPS
+        self._health = self._max_health
+        self._max_cooldown = FPS
+        self._cooldown = self._max_cooldown
         self._is_alive = True
+        self._is_exposed = False
 
     def draw(self, surface, offset):
         # Draw the square
@@ -80,74 +85,40 @@ class Player(pygame.sprite.Sprite):
         movement_option = kwargs.pop('movement_option', None)
         if movement_option is not None:
             if not isinstance(movement_option, Controls):
-                raise TypeError("movement_option must be an isntance of Controls enum,")
+                raise TypeError("movement_option must be an instance of Controls enum,")
 
         player_mask = kwargs.pop('player_mask', None)
         if player_mask is not None:
             if not isinstance(player_mask, Mask):
-                raise TypeError("player_mask must be an isntance of Mask type,")
+                raise TypeError("player_mask must be an instance of Mask type,")
 
         enemy_mask = kwargs.pop('enemy_mask', None)
         if enemy_mask is not None:
             if not isinstance(enemy_mask, Mask):
-                raise TypeError("enemy_mask must be an isntance of Mask type,")
+                raise TypeError("enemy_mask must be an instance of Mask type,")
+
+        ##############################
+        # ENEMY DETECTION
+        ##############################
 
         if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
-            if self._health > 0:
-                self._health = self._health - 1
-            else:
+            self._is_exposed = True
+            self._health = decrease(self._health)
+            self._cooldown = 0
+            if self._health <= 0:
                 self._is_alive = False
             self.notify_observers()
         elif self._is_alive:
-            self._health = self._health + 1
+            self._is_exposed = False
+            self._cooldown = increase(self._cooldown, self._max_cooldown)
+            if self._cooldown >= self._max_cooldown:
+                self._health = increase(self._health, self._max_health)
 
-        direction_x = 0
-        direction_y = 0
-        direction = Direction.STOPPED
+        ##############################
+        # MOVEMENT AND DIRECTION
+        ##############################
 
-        keys = pygame.key.get_pressed()
-
-        if movement_option == Controls.WASD:
-            if keys[pygame.K_w]:
-                direction_y -= 1
-            if keys[pygame.K_s]:
-                direction_y += 1
-            if keys[pygame.K_d]:
-                direction_x += 1
-            if keys[pygame.K_a]:
-                direction_x -= 1
-        elif movement_option == Controls.Arrows:
-            if keys[pygame.K_UP]:
-                direction_y -= 1
-            if keys[pygame.K_DOWN]:
-                direction_y += 1
-            if keys[pygame.K_RIGHT]:
-                direction_x += 1
-            if keys[pygame.K_LEFT]:
-                direction_x -= 1
-
-        # Handle diagonal movement
-        if direction_x != 0 and direction_y != 0:
-            if direction_x == 1 and direction_y == -1:
-                direction = Direction.NORTHEAST
-            elif direction_x == 1 and direction_y == 1:
-                direction = Direction.SOUTHEAST
-            elif direction_x == -1 and direction_y == 1:
-                direction = Direction.SOUTHWEST
-            elif direction_x == -1 and direction_y == -1:
-                direction = Direction.NORTHWEST
-        # Handle opposite directions
-        elif direction_x != 0 or direction_y != 0:
-            if direction_x == 1:
-                direction = Direction.EAST
-            elif direction_x == -1:
-                direction = Direction.WEST
-            elif direction_y == -1:
-                direction = Direction.NORTH
-            elif direction_y == 1:
-                direction = Direction.SOUTH
-        else:
-            direction = Direction.STOPPED
+        direction, direction_x, direction_y = get_direction(movement_option)
 
         if direction == Direction.STOPPED:
             self.angle = self.last_direction.angle()
@@ -169,6 +140,10 @@ class Player(pygame.sprite.Sprite):
 
         # Update player's position
         self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
+
+        ##############################
+        # COLLISION DETECTION
+        ##############################
 
         collisions = self.grid.has_collision(self.rect)
 
@@ -239,3 +214,9 @@ class Player(pygame.sprite.Sprite):
 
     def alive(self):
         return self._is_alive
+
+    def detected(self):
+        return self._is_exposed
+
+    def health(self):
+        return self._health, self._max_health
