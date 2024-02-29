@@ -74,10 +74,13 @@ class Camera(pygame.sprite.Group):
         self.offset.x = self._boundary.left - self._boundary_corners['left']
         self.offset.y = self._boundary.top - self._boundary_corners['top']
 
-        grid.draw(self._internal_surface, self.offset)
+        kwargs['internal_surface'] = self._internal_surface
+        kwargs['offset'] = self.offset
+
+        grid.draw(*args, **kwargs)
 
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
-            sprite.draw(self._internal_surface, self.offset)
+            sprite.draw(*args, **kwargs)
 
         self._update()
 

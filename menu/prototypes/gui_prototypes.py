@@ -19,9 +19,12 @@ class ElementoGUI:
         self.rect.left = x
         self.rect.bottom = y
 
+    def set_rect(self, new_rect):
+        self.rect = new_rect
+
     def position_in_element(self, position):
         (x, y) = position
-        if ((x >= self.rect.left) 
+        if ((x >= self.rect.left)
                 and (x <= self.rect.right)
                 and (y >= self.rect.top)
                 and (y <= self.rect.bottom)):
@@ -46,7 +49,7 @@ class Button(ElementoGUI):
         self.image = pygame.transform.scale(self.image, (20, 20))
 
         ElementoGUI.__init__(self, screen, self.image.get_rect())
-        
+
         self.set_position(position)
 
     def draw(self, screen):
@@ -59,9 +62,9 @@ class ButtonSwitch(Button):
         self.image_1 = pygame.transform.scale(self.image_1, (50, 50))
         self.image_2 = ResourceManager.load_image(image_name_2, -1)
         self.image_2 = pygame.transform.scale(self.image_2, (50, 50))
-        
+
         ElementoGUI.__init__(self, screen, self.image_1.get_rect())
-        
+
         self.set_position(position)
         self.state = initial_state
         self.image = self.image_2
@@ -73,11 +76,16 @@ class ButtonSwitch(Button):
 
 class Text(ElementoGUI):
     def __init__(self, screen, font, color, text, position):
-        self.image = font.render(text, True, color)
+        self.color = color
+        self.font = font
+        self.text = text
+        self.position = position
+
+        self.image = self.font.render(self.text, True, self.color)
 
         ElementoGUI.__init__(self, screen, self.image.get_rect())
 
-        self.set_position(position)
+        self.set_position(self.position)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -85,12 +93,18 @@ class Text(ElementoGUI):
     def activate(self):
         pass
 
+    def set_text(self, new_text):
+        self.text = new_text
+        self.image = self.font.render(new_text, True, self.color)
+        self.rect = self.image.get_rect()
+
 
 class CreditsText:
     def __init__(self, screen):
         fuente = pygame.font.Font(FONT, 20)
         self.texts = []
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "Contornos Inmersivos, Interactivos e de Entretemento", (40, 100)))
+        self.texts.append(
+            Text(screen, fuente, (0, 0, 0), "Contornos Inmersivos, Interactivos e de Entretemento", (40, 100)))
         self.texts.append(Text(screen, fuente, (0, 0, 0), "Grao en Enxeneria Informatica", (40, 130)))
         self.texts.append(Text(screen, fuente, (0, 0, 0), "UDC", (40, 160)))
         self.texts.append(Text(screen, fuente, (0, 0, 0), "Authors:", (40, 190)))

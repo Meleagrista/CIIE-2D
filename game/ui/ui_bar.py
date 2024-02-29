@@ -1,11 +1,12 @@
 import pygame
+from pygame import Surface
 
 from game.entities.player import Player
 from utils.constants import GREEN, RED
 
 
 class Bar(pygame.sprite.Sprite):
-    def __init__(self, screen: pygame.Surface, player: Player):
+    def __init__(self, screen: pygame.Surface):
         super().__init__()
         self._width = screen.get_width() * 0.25
         self._height = screen.get_height() * 0.02
@@ -14,13 +15,27 @@ class Bar(pygame.sprite.Sprite):
         self._percentage = 0
 
         self._groups = []
-        self._player = player
 
-    def draw(self, surface):
-        hp_value, hp_max = self._player.health()
+    def update(self, *args, **kwargs):
+        player = kwargs.pop('player', None)
+        if player is not None:
+            if not isinstance(player, Player):
+                raise TypeError("player must be an instance of Player class")
+
+        hp_value, hp_max = player.health()
         self._percentage = round(hp_value / hp_max, 2)
+
+    def draw(self, **kwargs):
+        surface = kwargs.pop('surface', None)
+        if surface is not None:
+            if not isinstance(surface, Surface):
+                raise TypeError("surface must be an instance of pyagme.Surface class")
+
         pygame.draw.rect(surface, RED, (self._x, self._y, self._width, self._height))
         pygame.draw.rect(surface, GREEN, (self._x, self._y, self._width * self._percentage, self._height))
+
+    def notified(self, **kwargs):
+        pass
 
     def kill(self):
         for group in self._groups:

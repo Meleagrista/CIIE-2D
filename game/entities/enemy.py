@@ -1,4 +1,5 @@
 import numpy as np
+from pygame import Surface
 
 from scipy.interpolate import CubicSpline
 from typing_extensions import deprecated
@@ -73,7 +74,17 @@ class Enemy(pygame.sprite.Sprite):
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._status = GREEN
 
-    def draw(self, surface, offset):
+    def draw(self, **kwargs):
+        surface = kwargs.pop('internal_surface', None)
+        if surface is not None:
+            if not isinstance(surface, Surface):
+                raise TypeError("surface must be an instance of pyagme.Surface class")
+
+        offset = kwargs.pop('offset', None)
+        if offset is not None:
+            if not isinstance(offset, pygame.math.Vector2):
+                raise TypeError("offset must be an instance of Vector2 class")
+
         ##############################
         # DRAWING RECTANGLE
         ##############################
@@ -299,8 +310,10 @@ class Enemy(pygame.sprite.Sprite):
             while ray_distance < self.ray_reach and ray_distance < self.grid.size:
                 map_x = int(ray_x // self.grid.gap)
                 map_y = int(ray_y // self.grid.gap - (1 if up else 0))
-                if 0 <= map_x < self.grid.size and 0 <= map_y < self.grid.size and self.grid.nodes[map_x][
-                    map_y].is_barrier():
+                if (0 <= map_x < self.grid.size and
+                        0 <= map_y < self.grid.size and
+                        self.grid.nodes[map_x][map_y].is_barrier()
+                ):
                     ray_distance = self.ray_reach
                 else:
                     ray_x = ray_x + offset_x
@@ -328,8 +341,10 @@ class Enemy(pygame.sprite.Sprite):
             while ray_distance < self.ray_reach and ray_distance < self.grid.size:
                 map_x = int(ray_x // self.grid.gap - (0 if right else 1))
                 map_y = int(ray_y // self.grid.gap)
-                if 0 <= map_x < self.grid.size and 0 <= map_y < self.grid.size and self.grid.nodes[map_x][
-                    map_y].is_barrier():
+                if (0 <= map_x < self.grid.size and
+                        0 <= map_y < self.grid.size and
+                        self.grid.nodes[map_x][map_y].is_barrier()
+                ):
                     ray_distance = self.ray_reach
                 else:
                     ray_x += offset_x

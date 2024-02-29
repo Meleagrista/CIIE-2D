@@ -1,3 +1,5 @@
+from pygame import Surface
+
 from utils.constants import GRID_BACKGROUND, MAP
 from game.map.square import Square
 
@@ -69,13 +71,22 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, surface, offset=None, show_id=False):
-        """
-        Draws the grid on the pygame window surface.
+    def draw(self, **kwargs):
+        surface = kwargs.pop('internal_surface', None)
+        if surface is not None:
+            if not isinstance(surface, Surface):
+                raise TypeError("surface must be an instance of pyagme.Surface class")
 
-        Returns:
-            None
-        """
+        offset = kwargs.pop('offset', None)
+        if offset is not None:
+            if not isinstance(offset, pygame.math.Vector2):
+                raise TypeError("offset must be an instance of Vector2 class")
+
+        show_id = kwargs.pop('id', None)
+        if show_id is not None:
+            if not isinstance(show_id, bool):
+                raise TypeError("show_id must be an instance of Boolean class")
+
         if offset is None:
             self.win.fill((125, 125, 125))
             self.update()
@@ -99,7 +110,8 @@ class Grid:
                         spot.make_barrier()
                     elif spot.id != 0 and show_id:
                         text = font.render(str(spot.id), True, (0, 0, 0))
-                        surface.blit(text, (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
+                        surface.blit(text,
+                                     (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
 
     def add(self, group):
         for row in self.nodes:

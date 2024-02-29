@@ -17,6 +17,10 @@ def decrease(value):
     return max(value - 1, 0)
 
 
+def has_changed(new, old):
+    return new != old
+
+
 def get_direction(movement_option):
     direction_x = 0
     direction_y = 0

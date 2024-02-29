@@ -1,10 +1,11 @@
 import math
 
 import pygame
-from pygame import Mask
+from pygame import Mask, Surface
+from typing_extensions import deprecated
 
 from game.map.grid import Grid
-from utils.auxiliar import get_direction, increase, decrease
+from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
 
@@ -63,10 +64,20 @@ class Player(pygame.sprite.Sprite):
         self._in_exit = False
         self._in_key = False
         self._has_key = False
-        self._toggle_key_controls = False
-        self._picked_up_key = False
+        # self._toggle_key_controls = False
+        # self._picked_up_key = False
 
-    def draw(self, surface, offset):
+    def draw(self, **kwargs):
+        surface = kwargs.pop('internal_surface', None)
+        if surface is not None:
+            if not isinstance(surface, Surface):
+                raise TypeError("surface must be an instance of pyagme.Surface class")
+
+        offset = kwargs.pop('offset', None)
+        if offset is not None:
+            if not isinstance(offset, pygame.math.Vector2):
+                raise TypeError("offset must be an instance of Vector2 class")
+
         # Draw the square
         pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
 
@@ -176,19 +187,27 @@ class Player(pygame.sprite.Sprite):
                 self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
                 collisions = self.grid.has_collision(self.rect)
 
+        ##############################
+        # KEY COLLECTION
+        ##############################
+
+        if has_changed(self.grid.is_key_square(new_x, new_y), self._in_key):
+            self._in_key = self.grid.is_key_square(new_x, new_y)
+            self.notify_observers()
+
+        if self._in_key:
+            self._interact()
+
+        if has_changed(self.grid.is_exit_square(new_x, new_y), self._in_exit):
+            self._in_exit = self.grid.is_exit_square(new_x, new_y)
+            self.notify_observers()
+
+        self._in_key = self.grid.is_key_square(new_x, new_y)
+        self._in_exit = self.grid.is_exit_square(new_x, new_y)
+
         # Update player's position
         self.x = new_x
         self.y = new_y
-
-        # If the player entered or exited the square with the key, toggle the controls for picking it up
-        if self.grid.is_key_square(prev_x, prev_y) != self.grid.is_key_square(new_x, new_y):
-            self._in_key = not self._in_key
-            self._toggle_key_controls = True
-            self.notify_observers()
-        # If the player entered or exited the exit square, toggle the variable of that position
-        if self.grid.is_exit_square(prev_x, prev_y) != self.grid.is_exit_square(new_x, new_y):
-            self._in_exit = not self._in_exit
-            self.notify_observers()  # Message indicating necessary key must be displayed
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)
@@ -209,6 +228,17 @@ class Player(pygame.sprite.Sprite):
             group.remove(self)
             if group in self.groups:
                 self.groups.remove(group)
+
+    # ####################################################################### #
+    #                                INTERACTION                              #
+    # ####################################################################### #
+
+    def _interact(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            if self._in_key:
+                self._has_key = True
+                self.notify_observers()
 
     # ####################################################################### #
     #                                OBSERVER                                 #
@@ -236,24 +266,30 @@ class Player(pygame.sprite.Sprite):
 
     def health(self):
         return self._health, self._max_health
-    def key_controls(self):
-        if self._toggle_key_controls:
-            # Set the control variable to False so that game manager does not get confused
-            self._toggle_key_controls = False
-            return True
-        else:
-            return False
 
-    def in_exit_cell(self):
+    def in_door(self):
         return self._in_exit
+
+    def in_key(self):
+        return self._in_key
 
     def has_key(self):
         return self._has_key
 
+    @deprecated("This method is no longer used.")
     def picked_up_key(self):
-        if self._picked_up_key:
+        """if self._picked_up_key:
             # Set the control variable to False so that game manager does not get confused
             self._picked_up_key = False
             return True
         else:
-            return False
+            return False"""
+
+    @deprecated("This method is no longer used.")
+    def key_controls(self):
+        """if self._toggle_key_controls:
+            # Set the control variable to False so that game manager does not get confused
+            self._toggle_key_controls = False
+            return True
+        else:
+            return False"""

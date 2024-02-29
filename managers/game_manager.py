@@ -10,7 +10,8 @@ from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.map.grid import Grid
-from game.ui.bar import Bar
+from game.ui.ui_bar import Bar
+from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 
@@ -26,10 +27,10 @@ class GameManager(Scene):
         self.grid = Grid(GRID_SIZE, self.win)
         self.enemies = Enemies()
         self.all_sprites = Camera()
+        self.interface = Interface()
 
         self._start()
 
-        self.interface = Interface()
         self._set_interface()
 
         # Set the key and exit squares
@@ -70,20 +71,15 @@ class GameManager(Scene):
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
             self.all_sprites.update(**kwargs)
+            self.interface.update()
 
     def notified(self):
         if not self.player.alive():
             self.open_menu(self.death_menu)
-        elif self.player.key_controls():
-            print("Player entered/exited the key cell!")
-        elif self.player.in_exit_cell():
-            if self.player.has_key():
-                print("Player won the game!")
-            else:
-                print("Player tried to escape without the key!")
-        elif self.player.picked_up_key():
-            print("Player picked up the key!")
 
+        if self.player.in_door():
+            if self.player.has_key():
+                self.exit()
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
@@ -146,9 +142,11 @@ class GameManager(Scene):
         player = Player(center, center, 2, self.grid)
         self._add_player(player)
         self.enemies.set_player(self.player)
+        self.interface.set_player(self.player)
 
         self.player.add_observer(self)
         self.player.add_observer(self.enemies)
+        self.player.add_observer(self.interface)
 
     def _spawn_enemies(self):
         enemies = self.enemies.spawn(self.grid, self.win)
@@ -160,8 +158,10 @@ class GameManager(Scene):
     # ####################################################################### #
 
     def _set_interface(self):
-        bar = Bar(self.win, self.player)
+        bar = Bar(self.win)
         bar.add(self.interface)
+        message = Message(self.win)
+        message.add(self.interface)
 
     def is_open_menu(self):
         return self.menu_manager.active_menu is not None
