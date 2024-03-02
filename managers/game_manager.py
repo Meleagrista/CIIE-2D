@@ -14,6 +14,7 @@ from game.ui.ui_bar import Bar
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
+from utils.filepaths import FINISH_LEVEL_SOUND
 
 
 class GameManager(Scene):
@@ -79,6 +80,9 @@ class GameManager(Scene):
 
         if self.player.in_door():
             if self.player.has_key():
+                sound_finish_level = pygame.mixer.Sound(FINISH_LEVEL_SOUND)
+                sound_finish_level.play()
+                pygame.time.wait(3500) #ESTO ES TEMPORAL PARA PROBAR EL SONIDO
                 self.exit()
 
     # ####################################################################### #
@@ -193,7 +197,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="Go to main menu",
+                        title="wGo to main menu",
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                     )

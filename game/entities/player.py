@@ -8,6 +8,7 @@ from game.map.grid import Grid
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
+from utils.filepaths import MOVEMENT_SOUND, PICK_UP_KEY_SOUND
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -205,6 +206,10 @@ class Player(pygame.sprite.Sprite):
         self._in_key = self.grid.is_key_square(new_x, new_y)
         self._in_exit = self.grid.is_exit_square(new_x, new_y)
 
+        #if (self.x != new_x or self.y != new_y):
+        #  sound = pygame.mixer.Sound(MOVEMENT_SOUND)
+        #  channel = sound.play()
+
         # Update player's position
         self.x = new_x
         self.y = new_y
@@ -238,6 +243,8 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             if self._in_key:
                 self._has_key = True
+                sound_pick_up_key = pygame.mixer.Sound(PICK_UP_KEY_SOUND)
+                sound_pick_up_key.play()
                 self.notify_observers()
 
     # ####################################################################### #

@@ -6,6 +6,7 @@ FONT_PATH = "assets/fonts/"
 IMAGES_BACKGROUND = "assets/images/backgrounds/"
 IMAGES_BUTTONS = "assets/images/icons/"
 MUSIC_PATH = "assets/music/"
+SOUNDS_PATH = "assets/sounds/"
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
@@ -32,3 +33,7 @@ SWITCH_OFF = IMAGES_BUTTONS + 'switch_off.jpg'
 
 SPAIN = IMAGES_BUTTONS + 'spain.png'
 UNITED_KINGDOM = IMAGES_BUTTONS + 'uk.png'
+
+MOVEMENT_SOUND = SOUNDS_PATH + 'concrete-footsteps-6752.mp3'
+PICK_UP_KEY_SOUND = SOUNDS_PATH + 'interface-124464.mp3'
+FINISH_LEVEL_SOUND = SOUNDS_PATH + 'positive-notification-new-level-152480.mp3'
