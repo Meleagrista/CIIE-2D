@@ -1,3 +1,4 @@
+import pygame.mixer
 from pygame import KEYDOWN, K_ESCAPE
 from managers.prototypes.scene_prototype import Scene
 from menu.screens import *
@@ -49,6 +50,7 @@ class MenuManager(Scene):
         self.manager.exit()
 
     def run(self):
+        pygame.mixer.music.stop()
         print('Starting game...')
         self.manager.change_scene()
 

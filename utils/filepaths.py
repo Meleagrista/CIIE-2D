@@ -14,7 +14,8 @@ MUSIC_PATH = "assets/music/"
 SPLASH_IMAGE = IMAGES_BACKGROUND + 'splash_screen_placeholder.jpeg'
 BACKGROUND_IMAGE = IMAGES_BACKGROUND + 'desert-pixel-placeholder.png'
 
-MUSIC = MUSIC_PATH + 'fall-from-grace.mp3'
+MUSIC_FALL_FROM_GRACE = MUSIC_PATH + 'fall-from-grace.mp3'
+MUSIC_MEDIEVAL = MUSIC_PATH + 'Medieval-Fantasy(chosic.com).mp3'
 
 FONT = FONT_PATH + 'pixel.regular.ttf'
 
