@@ -66,6 +66,9 @@ class MenuManager(Scene):
     def set_movement_option(self, option):
         self.manager.set_movement_option(option)
 
+    def set_language(self, language):
+        self.manager.set_language(language)
+
     @staticmethod
     def splash_screen(screen, wait_seconds):
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h

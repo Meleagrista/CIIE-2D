@@ -37,18 +37,22 @@ class ConfigurationScreen(PantallaGUI):
 
         switch_volumen = SwitchVolume(self)
         switch_controles = SwitchController(self)
+        switch_languages = SwitchLanguage(self)
         button_go_back = ButtonBackToMenu(self)
 
         self.elements.append(switch_controles)
         self.elements.append(switch_volumen)
+        self.elements.append(switch_languages)
         self.elements.append(button_go_back)
 
         texto_volumen = TextoMenuMusic(self)
         texto_arrows_wasd = TextoMenuController(self)
+        texto_languages = TextoMenuLanguages(self)
         text_go_back = TextoBackToMenu(self)
 
         self.elements.append(texto_volumen)
         self.elements.append(texto_arrows_wasd)
+        self.elements.append(texto_languages)
         self.elements.append(text_go_back)
 
 

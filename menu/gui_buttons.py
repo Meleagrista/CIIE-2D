@@ -39,7 +39,7 @@ class ButtonExit(Button):
 
 class ButtonBackToMenu(Button):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_BACK, (520, 160))
+        Button.__init__(self, screen, BUTTON_BACK, (520, 200))
 
     def activate(self):
         self.screen.menu.show_starting_screen()
@@ -74,4 +74,19 @@ class SwitchController(ButtonSwitch):
         else:
             self.screen.menu.set_movement_option(Ctl.Arrows)
             self.state = 'Arrows'
+            self.image = self.image_1
+
+class SwitchLanguage(ButtonSwitch):
+    def __init__(self, screen):
+        ButtonSwitch.__init__(self, screen, SPAIN, UNITED_KINGDOM, (500, 170), "en")
+
+    def activate(self):
+        # Cambiar el estado del interruptor
+        if self.state == 'es':
+            self.screen.menu.set_language('en')
+            self.state = 'en'
+            self.image = self.image_2
+        else:
+            self.screen.menu.set_language('es')
+            self.state = 'es'
             self.image = self.image_1
