@@ -63,7 +63,7 @@ class Enemy(pygame.sprite.Sprite):
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.ray_cone = FIELD_OF_VISION
         self.ray_reach = REACH_OF_VISION
-        self.ray_radius = self.ray_reach * SQUARE_SIZE
+        self.ray_radius = self.ray_reach * self.grid.gap
         self.corners = []
         self.mask = None  # Deprecated parameter
         self.win_height = window.get_height()
@@ -458,7 +458,7 @@ class Enemy(pygame.sprite.Sprite):
         # CREATE LIMIT CIRCLE MASK
         ##############################
         pygame.draw.circle(mask_surface, (255, 255, 255, 255), (int(self.x), int(self.y)),
-                           REACH_OF_VISION * SQUARE_SIZE)
+                           REACH_OF_VISION * self.grid.gap)
         limit_circle_mask = pygame.mask.from_surface(mask_surface)
 
         ##############################

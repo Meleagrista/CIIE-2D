@@ -20,11 +20,11 @@ class GameManager(Scene):
     def __init__(self, manager):
         Scene.__init__(self, manager)
 
-        self.win_size = GRID_SIZE * SQUARE_SIZE
-        self.win = pygame.display.set_mode((self.win_size, self.win_size))
+        self.win = pygame.display.get_surface()
+        self.win_size = self.win.get_width()
 
         self.player = None
-        self.grid = Grid(GRID_SIZE, self.win)
+        self.grid = Grid(100, self.win)
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
@@ -34,8 +34,8 @@ class GameManager(Scene):
         self._set_interface()
 
         # Set the key and exit squares
-        self.grid.set_key_square(2, 18)
-        self.grid.set_exit_square(33, 1)
+        # self.grid.set_key_square(2, 18)
+        # self.grid.set_exit_square(33, 1)
 
         self.menu_manager = MenuManager(self.win)
         self._set_menus()
@@ -59,7 +59,7 @@ class GameManager(Scene):
 
     def draw(self, screen):
         self.all_sprites.draw(player=self.player, grid=self.grid)
-        self.interface.draw(surface=screen)
+        # self.interface.draw(surface=screen)
 
         if self.is_open_menu():
             self.menu_manager.display()
@@ -67,11 +67,12 @@ class GameManager(Scene):
         pygame.display.update()
 
     def update(self, **kwargs):
-        if not self.is_open_menu():
+        self.all_sprites.update(**kwargs)
+        """if not self.is_open_menu():
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
             self.all_sprites.update(**kwargs)
-            self.interface.update()
+            self.interface.update()"""
 
     def notified(self):
         if not self.player.alive():
@@ -94,7 +95,7 @@ class GameManager(Scene):
 
     def _start(self):
         self._spawn_player()
-        self._spawn_enemies()
+        # self._spawn_enemies()
 
     def _resume(self):
         self.close_menu()
@@ -138,8 +139,8 @@ class GameManager(Scene):
         player.kill()
 
     def _spawn_player(self):
-        center = self.win_size // 2 - SQUARE_SIZE
-        player = Player(center, center, 2, self.grid)
+        center = self.win_size // 2
+        player = Player(center, center, 6, self.grid)
         self._add_player(player)
         self.enemies.set_player(self.player)
         self.interface.set_player(self.player)

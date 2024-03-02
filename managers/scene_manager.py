@@ -10,7 +10,12 @@ ALTO_PANTALLA = 600
 
 class SceneManager:
     def __init__(self):
-        self.screen = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
+        info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
+        screen_width, screen_height = info.current_w, info.current_h
+        window_width, window_height = screen_width - 30, screen_height - 90
+        # window_width, window_height = 800, 800
+
+        self.screen = pygame.display.set_mode((window_width, window_height))
         self.scene_stack = []
         self.clock = pygame.time.Clock()
 
@@ -21,6 +26,9 @@ class SceneManager:
 
     def get_movement_option(self):
         return self.movement_option
+
+    def get_screen(self):
+        return self.screen
 
     def loop(self, scene):
         pygame.event.clear()

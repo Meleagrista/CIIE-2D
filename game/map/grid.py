@@ -1,6 +1,6 @@
 from pygame import Surface
 
-from utils.constants import GRID_BACKGROUND, MAP
+from utils.constants import GRID_BACKGROUND, MAP, SQUARE_SIZE
 from game.map.square import Square
 
 import math
@@ -39,7 +39,7 @@ class Grid:
             None
         """
         w, _ = win.get_size()
-        self.gap = w // size
+        self.gap = SQUARE_SIZE  # w // size
         self.size = size
         self.win = win
         self.font = pygame.font.SysFont('Arial', self.gap)
@@ -71,16 +71,20 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, **kwargs):
+    def draw(self, *args, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pyagme.Surface class")
+        else:
+            print('An argument is missing.')
 
         offset = kwargs.pop('offset', None)
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
+        else:
+            print('An argument is missing.')
 
         show_id = kwargs.pop('id', None)
         if show_id is not None:
@@ -89,7 +93,6 @@ class Grid:
 
         if offset is None:
             self.win.fill((125, 125, 125))
-            self.update()
             for row in self.nodes:
                 for spot in row:
                     spot.draw(self.win)
@@ -102,7 +105,6 @@ class Grid:
         else:
             font = pygame.font.SysFont('arial', 20)
             self.win.fill(GRID_BACKGROUND)
-            self.update()
             for row in self.nodes:
                 for spot in row:
                     spot.draw(surface, offset)
