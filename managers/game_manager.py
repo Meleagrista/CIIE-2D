@@ -11,6 +11,7 @@ from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.map.grid import Grid
 from game.ui.ui_bar import Bar
+from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
@@ -166,6 +167,8 @@ class GameManager(Scene):
         bar.add(self.interface)
         message = Message(self.win)
         message.add(self.interface)
+        keys_box = Keys(self.win)
+        keys_box.add(self.interface)
 
     def is_open_menu(self):
         return self.menu_manager.active_menu is not None
@@ -197,7 +200,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="wGo to main menu",
+                        title="Go to main menu",
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                     )

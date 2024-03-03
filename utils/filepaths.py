@@ -32,6 +32,8 @@ BUTTON_WASD = IMAGES_BUTTONS + "wasd.png"
 SWITCH_ON = IMAGES_BUTTONS + 'switch_on.png'
 SWITCH_OFF = IMAGES_BUTTONS + 'switch_off.jpg'
 
+KEYS_IMG = IMAGES_BUTTONS + 'key.png    '
+
 SPAIN = IMAGES_BUTTONS + 'spain.png'
 UNITED_KINGDOM = IMAGES_BUTTONS + 'uk.png'
 
