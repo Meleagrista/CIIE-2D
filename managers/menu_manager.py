@@ -51,6 +51,7 @@ class MenuManager(Scene):
 
     def run(self):
         pygame.mixer.music.stop()
+        pygame.mixer.quit()
         print('Starting game...')
         self.manager.change_scene()
 

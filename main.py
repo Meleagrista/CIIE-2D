@@ -27,6 +27,7 @@ if __name__ == "__main__":
     menu_scene.splash_screen(manager.screen, 10)
 
     pygame.mixer.music.stop()
+    pygame.mixer.quit()
 
     # parametros: frecuencia, nº bits (calidad), mono(1)/estereo(2), buffer
     pygame.mixer.pre_init(44100, 16, 2, 4096)
