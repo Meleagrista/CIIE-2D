@@ -118,28 +118,27 @@ class Player(pygame.sprite.Sprite):
         ##############################
         # ENEMY DETECTION
         ##############################
-        #pygame.mixer.pre_init(44100, 16, 2, 4096)
-        #pygame.mixer.init()
+        pygame.mixer.pre_init(44100, 16, 2, 4096)
+        pygame.mixer.init()
 
-        #sound_detected = pygame.mixer.Sound(DETECTED_SOUND)
+        sound_detected = pygame.mixer.Sound(DETECTED_SOUND)
         if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
             self._is_exposed = True
             self._health = decrease(self._health)
             self._cooldown = 0
             if self._health <= 0:
-                #sound_detected.stop()
+                sound_detected.stop()
                 pygame.mixer.quit()
                 pygame.mixer.pre_init(44100, 16, 2, 4096)
                 pygame.mixer.init()
                 sound_death = pygame.mixer.Sound(DEATH_SOUND)
                 sound_death.play()
                 self._is_alive = False
-            #else:
-                #sound_detected.play(-1)
+            else:
+                sound_detected.play(-1)
             self.notify_observers()
         elif self._is_alive:
-            #sound_detected.stop()
-            pygame.mixer.quit()
+            sound_detected.stop()
             self._is_exposed = False
             self._cooldown = increase(self._cooldown, self._max_cooldown)
             if self._cooldown >= self._max_cooldown:
