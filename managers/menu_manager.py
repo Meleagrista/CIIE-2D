@@ -29,7 +29,7 @@ class MenuManager(Scene):
     def events(self, event_list):
         for event in event_list:
             if event.type == KEYDOWN:
-                if event.has_key == K_ESCAPE:
+                if event.key == K_ESCAPE:
                     self.exit()
             elif event.type == pygame.QUIT:
                 self.exit()
