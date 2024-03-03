@@ -19,15 +19,7 @@ class Keys(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self._width, self._width))
         self.rect = self.image.get_rect()
 
-        self._groups = []
-
-    def update(self, *args, **kwargs):
-        player = kwargs.pop('player', None)
-        if player is not None:
-            if not isinstance(player, Player):
-                raise TypeError("player must be an instance of Player class")
-        if player.has_key():
-            self.key_obtained = True
+        self.groups = []
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
@@ -41,21 +33,28 @@ class Keys(pygame.sprite.Sprite):
             surface.blit(self.image, self.rect)
 
     def notified(self, **kwargs):
-        pass
+        player = kwargs.pop('player', None)
+
+        if player is not None:
+            if not isinstance(player, Player):
+                raise TypeError("player must be an instance of Player class")
+            
+        if player.has_key():
+            self.key_obtained = True
 
     def kill(self):
-        for group in self._groups:
-            group.remove(self)
+        self.remove(self.groups)
         del self
 
     def add(self, *groups):
         for group in groups:
             group.add(self)
-            if group not in self._groups:
-                self._groups.append(group)
+            if group not in self.groups:
+                self.groups.append(group)
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
-            if group in self._groups:
-                self._groups.remove(group)
+            if self in group:
+                group.remove(self)
+            if group in self.groups:
+                self.groups.remove(group)

@@ -14,7 +14,7 @@ class Bar(pygame.sprite.Sprite):
         self._y = self._height
         self._percentage = 0
 
-        self._groups = []
+        self.groups = []
 
     def update(self, *args, **kwargs):
         player = kwargs.pop('player', None)
@@ -38,18 +38,18 @@ class Bar(pygame.sprite.Sprite):
         pass
 
     def kill(self):
-        for group in self._groups:
-            group.remove(self)
+        self.remove(self.groups)
         del self
 
     def add(self, *groups):
         for group in groups:
             group.add(self)
-            if group not in self._groups:
-                self._groups.append(group)
+            if group not in self.groups:
+                self.groups.append(group)
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
-            if group in self._groups:
-                self._groups.remove(group)
+            if self in group:
+                group.remove(self)
+            if group in self.groups:
+                self.groups.remove(group)

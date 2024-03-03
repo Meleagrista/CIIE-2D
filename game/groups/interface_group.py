@@ -25,7 +25,7 @@ class Interface(pygame.sprite.Group):
             if not self._player.has_key():
                 kwargs = {'text': "Press <SPACE> to pick up the key."}
             else:
-                kwargs = {'text': "You need to find the exit."}
+                kwargs = {'text': "You need to find the exit.", 'player': self._player}
         if self._player.in_door() and not self._player.has_key():
             kwargs = {'text': "You need to find the key."}
 
