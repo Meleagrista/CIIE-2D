@@ -8,7 +8,7 @@ from game.map.grid import Grid
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
-from utils.filepaths import DEATH_SOUND, PICK_UP_KEY_SOUND, DETECTED_SOUND
+from utils.filepaths import DEATH_SOUND, PICK_UP_KEY_SOUND, DETECTED_SOUND, MOVEMENT_SOUND, INCREASE_HEALTH_SOUND
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -61,7 +61,7 @@ class Player(pygame.sprite.Sprite):
         self._cooldown = self._max_cooldown
         self._is_alive = True
         self._is_exposed = False
-        
+
         self._in_exit = False
         self._in_key = False
         self._has_key = False
@@ -120,6 +120,10 @@ class Player(pygame.sprite.Sprite):
         ##############################
         pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.mixer.init()
+        pygame.mixer.set_reserved(3)
+        channel_death = pygame.mixer.Channel(0)
+        channel_detected = pygame.mixer.Channel(1)
+        channel_increase_health = pygame.mixer.Channel(2)
 
         sound_detected = pygame.mixer.Sound(DETECTED_SOUND)
         if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
@@ -132,17 +136,24 @@ class Player(pygame.sprite.Sprite):
                 pygame.mixer.pre_init(44100, 16, 2, 4096)
                 pygame.mixer.init()
                 sound_death = pygame.mixer.Sound(DEATH_SOUND)
-                sound_death.play()
+                #sound_death.play()
+                channel_death.play(sound_death)
                 self._is_alive = False
             else:
-                sound_detected.play(-1)
+                channel_detected.play(sound_detected, -1)
+                #sound_detected.play(-1)
             self.notify_observers()
         elif self._is_alive:
-            sound_detected.stop()
+            #sound_detected.stop()
+            channel_detected.pause()
             self._is_exposed = False
             self._cooldown = increase(self._cooldown, self._max_cooldown)
             if self._cooldown >= self._max_cooldown:
                 self._health = increase(self._health, self._max_health)
+                #if self._health != self._max_health:
+                    #sound_increase_health = pygame.mixer.Sound(INCREASE_HEALTH_SOUND)
+                    #sound_increase_health.play()
+                    #channel_increase_health.play(sound_increase_health, -1)
 
         ##############################
         # MOVEMENT AND DIRECTION
