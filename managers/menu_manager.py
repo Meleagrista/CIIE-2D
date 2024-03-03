@@ -14,10 +14,12 @@ import time
 
 class MenuManager(Scene):
 
-    def __init__(self, manager):
+    def __init__(self, manager, audio):
         Scene.__init__(self, manager)
 
         self.screen_list = []
+
+        self.audio = audio
 
         self.screen_list.append(StartingScreen(self))
         self.screen_list.append(ConfigurationScreen(self))
@@ -50,18 +52,7 @@ class MenuManager(Scene):
         self.manager.exit()
 
     def run(self):
-        #Stop menu music
-        pygame.mixer.music.stop()
-        pygame.mixer.quit()
-
-        #Start game music
-        pygame.mixer.pre_init(44100, 16, 2, 4096)
-        pygame.mixer.init()
-        pygame.mixer.music.load(MUSIC_BACKGROUND)
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.1)
-
-        print('Starting game...')
+        self.audio.music_game()
         self.manager.change_scene()
 
     def show_starting_screen(self):

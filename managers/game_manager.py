@@ -12,13 +12,14 @@ from game.groups.enemies_group import Enemies
 from game.map.grid import Grid
 from game.ui.ui_bar import Bar
 from game.ui.ui_text import Message
+from managers.audio_manager import AudioManager
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 from utils.filepaths import FINISH_LEVEL_SOUND
 
 
 class GameManager(Scene):
-    def __init__(self, manager):
+    def __init__(self, manager, audio):
         Scene.__init__(self, manager)
 
         self.win_size = GRID_SIZE * SQUARE_SIZE
@@ -29,6 +30,8 @@ class GameManager(Scene):
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
+
+        self.audio = audio
 
         self._start()
 
@@ -75,15 +78,32 @@ class GameManager(Scene):
             self.interface.update()
 
     def notified(self):
-        if not self.player.alive():
+        if self.player.detected():
+            self.audio.play_detected()
+        else:
+            self.audio.stop_detected()
+
+        if not self.player.alive():  # Player has died
+            self.audio.play_death()
             self.open_menu(self.death_menu)
 
-        if self.player.in_door():
+        if self.player.in_door():  # Player has reached the end
             if self.player.has_key():
-                sound_finish_level = pygame.mixer.Sound(FINISH_LEVEL_SOUND)
-                sound_finish_level.play()
-                pygame.time.wait(3500) #ESTO ES TEMPORAL PARA PROBAR EL SONIDO
+                self.audio.play_finish()
                 self.exit()
+
+        if self.player.has_key() and self.player.interacted_key():
+            self.audio.play_key()
+
+        if self.player.moving():
+            self.audio.play_movement()
+        else:
+            self.audio.stop_movement()
+
+        if self.player.recovering():
+            self.audio.play_recovering()
+        else:
+            self.audio.stop_recovering()
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
@@ -94,6 +114,7 @@ class GameManager(Scene):
 
     def _close(self):
         self._restart()
+        self.audio.music_menu()
         self.manager.change_scene()
 
     def _start(self):
@@ -106,6 +127,7 @@ class GameManager(Scene):
     def _restart(self):
         if self.player is not None:
             self._remove_player(self.player)
+        self.enemies.remove_all()
         self.close_menu()
         self._start()
 
@@ -197,7 +219,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="wGo to main menu",
+                        title="Go to main menu",
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
                     )

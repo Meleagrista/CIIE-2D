@@ -27,8 +27,9 @@ class Enemies(pygame.sprite.Group):
             self.remove_all()
 
     def remove_all(self):
-        for enemy in self.sprites():
-            enemy.kill()
+        if len(self.sprites()) > 0:
+            for enemy in self.sprites():
+                enemy.kill()
 
     def spawn(self, grid, win):
         self.remove_all()

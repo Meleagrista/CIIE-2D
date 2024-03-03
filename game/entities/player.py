@@ -8,7 +8,6 @@ from game.map.grid import Grid
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
-from utils.filepaths import DEATH_SOUND, PICK_UP_KEY_SOUND, DETECTED_SOUND, MOVEMENT_SOUND, INCREASE_HEALTH_SOUND
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -59,12 +58,16 @@ class Player(pygame.sprite.Sprite):
         self._health = self._max_health
         self._max_cooldown = FPS
         self._cooldown = self._max_cooldown
+        self._recovering = False
         self._is_alive = True
         self._is_exposed = False
+        self._is_moving = False
 
         self._in_exit = False
         self._in_key = False
         self._has_key = False
+
+        self._interacted_with_key = False
         # self._toggle_key_controls = False
         # self._picked_up_key = False
 
@@ -118,40 +121,31 @@ class Player(pygame.sprite.Sprite):
         ##############################
         # ENEMY DETECTION
         ##############################
-        pygame.mixer.pre_init(44100, 16, 2, 4096)
-        pygame.mixer.init()
-        pygame.mixer.set_reserved(2)
-        channel_detected = pygame.mixer.Channel(0)
-        channel_increase_health = pygame.mixer.Channel(1)
-
-        sound_detected = pygame.mixer.Sound(DETECTED_SOUND)
         if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
-            channel_increase_health.pause()
-            self._is_exposed = True
             self._health = decrease(self._health)
+            self._recovering = False
             self._cooldown = 0
             if self._health <= 0:
-                sound_detected.stop()
-                pygame.mixer.quit()
-                pygame.mixer.pre_init(44100, 16, 2, 4096)
-                pygame.mixer.init()
-                sound_death = pygame.mixer.Sound(DEATH_SOUND)
-                sound_death.play()
                 self._is_alive = False
-            else:
-                channel_detected.play(sound_detected, -1)
-            self.notify_observers()
+            if not self._is_exposed or not self._is_alive:
+                self._is_exposed = True
+                self.notify_observers()
         elif self._is_alive:
-            channel_detected.pause()
             self._is_exposed = False
             self._cooldown = increase(self._cooldown, self._max_cooldown)
-            if self._cooldown >= self._max_cooldown:
+            if self._cooldown >= self._max_cooldown and self._health < self._max_health and not self._recovering:
+                self._recovering = True
+                self.notify_observers()
+            elif self._recovering:
+                self._recovering = False
+                self.notify_observers()
+
+            if self._recovering:
                 self._health = increase(self._health, self._max_health)
-                if self._health != self._max_health:
-                    sound_increase_health = pygame.mixer.Sound(INCREASE_HEALTH_SOUND)
-                    channel_increase_health.play(sound_increase_health, -1)
-                else:
-                    channel_increase_health.pause()
+
+            if self._is_exposed:
+                self._is_exposed = False
+                self.notify_observers()
 
         ##############################
         # MOVEMENT AND DIRECTION
@@ -227,9 +221,12 @@ class Player(pygame.sprite.Sprite):
         self._in_key = self.grid.is_key_square(new_x, new_y)
         self._in_exit = self.grid.is_exit_square(new_x, new_y)
 
-        #if (self.x != new_x or self.y != new_y):
-        #  sound = pygame.mixer.Sound(MOVEMENT_SOUND)
-        #  channel = sound.play()
+        if self.x == new_x and self.y == new_y and self._is_moving:
+            self._is_moving = False
+            self.notify_observers()
+        elif (self.x != new_x or self.y != new_y) and not self._is_moving:
+            self._is_moving = True
+            self.notify_observers()
 
         # Update player's position
         self.x = new_x
@@ -239,8 +236,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
 
     def kill(self):
-        for group in self.groups:
-            group.remove(self)
+        self.remove(self.groups)
         del self
 
     def add(self, *groups):
@@ -251,7 +247,8 @@ class Player(pygame.sprite.Sprite):
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
+            if self in group:
+                group.remove(self)
             if group in self.groups:
                 self.groups.remove(group)
 
@@ -264,9 +261,9 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             if self._in_key:
                 self._has_key = True
-                sound_pick_up_key = pygame.mixer.Sound(PICK_UP_KEY_SOUND)
-                sound_pick_up_key.play()
+                self._interacted_with_key = True
                 self.notify_observers()
+                self._interacted_with_key = False
 
     # ####################################################################### #
     #                                OBSERVER                                 #
@@ -295,6 +292,12 @@ class Player(pygame.sprite.Sprite):
     def health(self):
         return self._health, self._max_health
 
+    def moving(self):
+        return self._is_moving
+
+    def recovering(self):
+        return self._recovering
+
     def in_door(self):
         return self._in_exit
 
@@ -303,6 +306,9 @@ class Player(pygame.sprite.Sprite):
 
     def has_key(self):
         return self._has_key
+
+    def interacted_key(self):
+        return self._interacted_with_key
 
     @deprecated("This method is no longer used.")
     def picked_up_key(self):

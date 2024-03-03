@@ -186,8 +186,7 @@ class Enemy(pygame.sprite.Sprite):
                 self._status = GREEN
 
     def kill(self):
-        for group in self.groups:
-            group.remove(self)
+        self.remove(self.groups)
         del self
 
     def add(self, *groups):
@@ -198,7 +197,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
+            if self in group:
+                group.remove(self)
             if group in self.groups:
                 self.groups.remove(group)
 
