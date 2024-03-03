@@ -56,6 +56,13 @@ if __name__ == "__main__":
     Music promoted by https://www.chosic.com/free-music/all/
     Creative Commons CC BY-SA 3.0
     https://creativecommons.org/licenses/by-sa/3.0/
+    
+    
+    Black Silent Fear by Magnetic Trailer | https://lesfm.net/
+    Music promoted by https://www.chosic.com/free-music/all/
+    Creative Commons CC BY 3.0
+    https://creativecommons.org/licenses/by/3.0/
+ 
 
 """
 

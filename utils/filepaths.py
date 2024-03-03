@@ -17,6 +17,7 @@ BACKGROUND_IMAGE = IMAGES_BACKGROUND + 'desert-pixel-placeholder.png'
 
 MUSIC_FALL_FROM_GRACE = MUSIC_PATH + 'fall-from-grace.mp3'
 MUSIC_MEDIEVAL = MUSIC_PATH + 'Medieval-Fantasy(chosic.com).mp3'
+MUSIC_BACKGROUND = MUSIC_PATH + 'Black-Silent-Fear(chosic.com).mp3'
 
 FONT = FONT_PATH + 'pixel.regular.ttf'
 

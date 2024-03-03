@@ -121,7 +121,6 @@ class Player(pygame.sprite.Sprite):
         pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.mixer.init()
         pygame.mixer.set_reserved(2)
-        #channel_death = pygame.mixer.Channel(0)
         channel_detected = pygame.mixer.Channel(0)
         channel_increase_health = pygame.mixer.Channel(1)
 
