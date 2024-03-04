@@ -74,8 +74,9 @@ class GameManager(Scene):
         if not self.is_open_menu():
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
+            kwargs['language'] = self.manager.get_language()
             self.all_sprites.update(**kwargs)
-            self.interface.update()
+            self.interface.update(**kwargs)
 
     def notified(self):
         if self.player.detected():
@@ -169,7 +170,6 @@ class GameManager(Scene):
         self._add_player(player)
         self.enemies.set_player(self.player)
         self.interface.set_player(self.player)
-        self.interface.set_language(self.manager.get_language())
 
         self.player.add_observer(self)
         self.player.add_observer(self.enemies)
@@ -212,7 +212,7 @@ class GameManager(Scene):
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT,16),
+                        font=pygame.font.Font(FONT, 16),
                         no_background=True
                     )
                 ],
@@ -221,8 +221,8 @@ class GameManager(Scene):
                         title="RESTART",
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color = PURPLE,
-                        font=pygame.font.Font(FONT,16),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
                         no_background=True
                     )
                 ],
@@ -232,7 +232,7 @@ class GameManager(Scene):
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT,16),
+                        font=pygame.font.Font(FONT, 16),
                         no_background=True
                     )
                 ],
@@ -251,7 +251,7 @@ class GameManager(Scene):
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT,16),
+                        font=pygame.font.Font(FONT, 16),
                         no_background=True
                     )
                 ],
@@ -261,7 +261,7 @@ class GameManager(Scene):
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT,16),
+                        font=pygame.font.Font(FONT, 16),
                         no_background=True
                     )
                 ],

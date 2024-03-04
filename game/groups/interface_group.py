@@ -20,6 +20,13 @@ class Interface(pygame.sprite.Group):
             sprite.draw(*args, **kwargs)
 
     def update(self, **kwargs):
+        language = kwargs.pop('language', None)
+        if language is not None:
+            if not isinstance(language, str):
+                raise TypeError("language must be an instance a String")
+            if language != self._language:
+                self._language = language
+
         kwargs['player'] = self._player
         for sprite in self.sprites():
             sprite.update(**kwargs)
