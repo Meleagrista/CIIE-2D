@@ -42,10 +42,6 @@ class Keys(pygame.sprite.Sprite):
         if player.has_key():
             self.key_obtained = True
 
-    def kill(self):
-        self.remove(self.groups)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)

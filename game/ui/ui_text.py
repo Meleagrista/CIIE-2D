@@ -35,10 +35,6 @@ class Message(pygame.sprite.Sprite, Text):
 
         self.set_text(message)
 
-    def kill(self):
-        self.remove(self.groups)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)

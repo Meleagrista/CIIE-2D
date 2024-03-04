@@ -235,10 +235,6 @@ class Player(pygame.sprite.Sprite):
         # Update sprite
         self.rect.topleft = (self.x, self.y)
 
-    def kill(self):
-        self.remove(self.groups)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)

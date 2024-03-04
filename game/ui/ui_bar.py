@@ -37,10 +37,6 @@ class Bar(pygame.sprite.Sprite):
     def notified(self, **kwargs):
         pass
 
-    def kill(self):
-        self.remove(self.groups)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)

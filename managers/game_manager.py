@@ -160,8 +160,8 @@ class GameManager(Scene):
         player.add(self.all_sprites)
 
     def _remove_player(self, player):
-        self.player = None
         player.kill()
+        self.player = None
 
     def _spawn_player(self):
         center = self.win_size // 2 - SQUARE_SIZE
