@@ -15,7 +15,7 @@ from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
-from utils.filepaths import CAVE_IMG, FONT
+from utils.filepaths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
 
 
 class GameManager(Scene):
@@ -236,10 +236,10 @@ class GameManager(Scene):
                     )
                 ],
             ],
-            width=500,
+            width=300,
             has_close_button=False,
             identifier=PAUSE_MENU_ID,
-            background_path=CAVE_IMG
+            background_path=POPUP_IMAGE_PAUSE
         )
         die_menu = InfoBox(
             "",
@@ -265,10 +265,10 @@ class GameManager(Scene):
                     )
                 ],
             ],
-            width=500,
+            width=300,
             has_close_button=False,
             identifier=DIE_MENU_ID,
-            background_path=CAVE_IMG
+            background_path=POPUP_IMAGE_DEATH
         )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
