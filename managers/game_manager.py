@@ -13,10 +13,9 @@ from game.map.grid import Grid
 from game.ui.ui_bar import Bar
 from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
-from managers.audio_manager import AudioManager
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
-from utils.filepaths import FINISH_LEVEL_SOUND
+from utils.filepaths import CAVE_IMG, FONT
 
 
 class GameManager(Scene):
@@ -204,55 +203,72 @@ class GameManager(Scene):
 
     def _set_menus(self):
         pause_menu = InfoBox(
-            "Pause menu",
+            "",
             [
                 [
                     Button(
-                        title="Resume",
+                        title="RESUME",
                         callback=lambda: self._resume(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT,16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Restart",
+                        title="RESTART",
                         callback=lambda: self._restart(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color = PURPLE,
+                        font=pygame.font.Font(FONT,16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Go to main menu",
+                        title="MAIN MENU",
                         callback=lambda: self._close(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT,16),
+                        no_background=True
                     )
                 ],
             ],
             width=500,
             has_close_button=False,
-            identifier=PAUSE_MENU_ID
+            identifier=PAUSE_MENU_ID,
+            background_path=CAVE_IMG
         )
         die_menu = InfoBox(
-            "You died",
+            "",
             [
                 [
                     Button(
-                        title="Restart",
+                        title="RESTART",
                         callback=lambda: self._restart(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT,16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Go to main menu",
+                        title="MAIN MENU",
                         callback=lambda: self._close(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT,16),
+                        no_background=True
                     )
                 ],
             ],
             width=500,
             has_close_button=False,
-            identifier=DIE_MENU_ID
+            identifier=DIE_MENU_ID,
+            background_path=CAVE_IMG
         )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
