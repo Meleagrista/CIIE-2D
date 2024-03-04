@@ -37,7 +37,7 @@ class Camera(pygame.sprite.Group):
 
     def enemy_mask(self, enemy, surface, vertices, mask):
         # Check if the vision area is completely outside the surface
-        if not self._in_range(enemy.rect.center, -enemy.ray_radius):
+        if not self._in_range(enemy.rect.center, enemy.ray_radius):
             return
         vertices = list(map(lambda point: point - self.offset, vertices))
         position_x = int(enemy.x) - self.offset[0]

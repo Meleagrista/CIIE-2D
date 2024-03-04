@@ -85,7 +85,7 @@ class Enemy(pygame.sprite.Sprite):
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        if not self._in_range(surface, center, -self.size):
+        if not self._in_range(surface, center, self.size):
             return
 
         ##############################
