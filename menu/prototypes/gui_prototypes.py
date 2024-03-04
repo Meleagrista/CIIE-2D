@@ -3,6 +3,7 @@ from managers.resource_manager import ResourceManager
 import pygame
 
 from utils.filepaths import FONT
+from utils.i18n import get_translation
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -93,10 +94,13 @@ class Text(ElementoGUI):
     def activate(self):
         pass
 
-    def set_text(self, new_text):
-        self.text = new_text
-        self.image = self.font.render(new_text, True, self.color)
-        self.rect = self.image.get_rect()
+    def translate(self, language):
+        new_text = get_translation(language, self.text)
+        text_surface = self.font.render(new_text, True, self.color)
+        old_rect = self.rect
+        self.rect = text_surface.get_rect()
+        self.rect.topleft = old_rect.topleft
+        self.image = text_surface
 
 
 class CreditsText:

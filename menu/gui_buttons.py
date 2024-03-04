@@ -76,6 +76,7 @@ class SwitchController(ButtonSwitch):
             self.state = 'Arrows'
             self.image = self.image_1
 
+
 class SwitchLanguage(ButtonSwitch):
     def __init__(self, screen):
         ButtonSwitch.__init__(self, screen, SPAIN, UNITED_KINGDOM, (500, 170), "en")

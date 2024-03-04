@@ -69,6 +69,8 @@ class MenuManager(Scene):
 
     def set_language(self, language):
         self.manager.set_language(language)
+        for screen in self.screen_list:
+            screen.translate(language)
 
     @staticmethod
     def splash_screen(screen, wait_seconds):

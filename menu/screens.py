@@ -24,6 +24,8 @@ class StartingScreen(PantallaGUI):
         text_exit = TextoExit(self)
         texto_titulo = TextoMenuTitle(self)
 
+        self.all_text = [text_play, text_configuration, text_credits, text_exit]
+
         self.elements.append(text_play)
         self.elements.append(text_configuration)
         self.elements.append(text_credits)
@@ -50,6 +52,8 @@ class ConfigurationScreen(PantallaGUI):
         texto_languages = TextoMenuLanguages(self)
         text_go_back = TextoBackToMenu(self)
 
+        self.all_text = [texto_volumen, texto_arrows_wasd, texto_languages, text_go_back]
+
         self.elements.append(texto_volumen)
         self.elements.append(texto_arrows_wasd)
         self.elements.append(texto_languages)
@@ -66,6 +70,8 @@ class CreditsScreen(PantallaGUI):
 
         text_credits = CreditsText(self)
         text_go_back = TextoBackToMenu(self)
+
+        self.all_text = [text_go_back]
 
         self.elements.append(text_credits)
         self.elements.append(text_go_back)
