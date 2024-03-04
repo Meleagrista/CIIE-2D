@@ -1,3 +1,5 @@
+import queue
+
 import numpy as np
 from pygame import Surface
 
@@ -46,7 +48,9 @@ class Enemy(pygame.sprite.Sprite):
         self.setting_path = False
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
         self.delta_y = math.sin(math.radians(self.angle)) * self.offset
-        self.areas = areas
+        self.areas = queue.Queue()
+        for area in areas:
+            self.areas.put(area)
 
         # 3. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ PATHFINDING ALGORITHM ~~
@@ -223,11 +227,22 @@ class Enemy(pygame.sprite.Sprite):
 
     def set_random_end(self):
         current_node = self.grid.get_node((self.x, self.y))
-        # Solve problem in pathfinding when start node equals end node
-        end_node = self.grid.get_random_node_from_zones(self.areas)
-        while current_node.compare_node(end_node):
-            end_node = self.grid.get_random_node_from_zones(self.areas)
-        self.end_node = end_node
+
+        if self.areas.empty():
+            self.end_node = self.grid.get_random_node()
+            return
+
+        zone = self.areas.get()
+        end_node = self.grid.get_random_node_from_zone(zone)
+        if end_node is None:
+            # Will not add zone again, will try with next area
+            print("No node found in zone", zone, ". Deleting zone from path...")
+            self.set_random_end()
+        else:
+            while current_node.compare_node(end_node):
+                end_node = self.grid.get_random_node_from_zone(zone)
+            self.end_node = end_node
+            self.areas.put(zone)
 
     def set_next_point(self):
         try:
