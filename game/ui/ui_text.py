@@ -17,7 +17,7 @@ class Message(pygame.sprite.Sprite, Text):
 
         Text.__init__(self, screen, fuente, (255, 255, 255), '', text_rect.topleft)
 
-        self._groups = []
+        self.groups = []
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
@@ -35,22 +35,18 @@ class Message(pygame.sprite.Sprite, Text):
 
         self.set_text(message)
 
-    def kill(self):
-        for group in self._groups:
-            group.remove(self)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)
-            if group not in self._groups:
-                self._groups.append(group)
+            if group not in self.groups:
+                self.groups.append(group)
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
-            if group in self._groups:
-                self._groups.remove(group)
+            if self in group:
+                group.remove(self)
+            if group in self.groups:
+                self.groups.remove(group)
 
     def set_text(self, new_text):
         text_surface = self.font.render(new_text, True, (255, 255, 255))

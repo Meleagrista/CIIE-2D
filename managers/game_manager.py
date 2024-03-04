@@ -11,13 +11,15 @@ from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.map.grid import Grid
 from game.ui.ui_bar import Bar
+from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
+from utils.filepaths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
 
 
 class GameManager(Scene):
-    def __init__(self, manager):
+    def __init__(self, manager, audio):
         Scene.__init__(self, manager)
 
         self.win = pygame.display.get_surface()
@@ -28,6 +30,8 @@ class GameManager(Scene):
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
+
+        self.audio = audio
 
         self._start()
 
@@ -71,16 +75,37 @@ class GameManager(Scene):
         if not self.is_open_menu():
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
+            kwargs['language'] = self.manager.get_language()
             self.all_sprites.update(**kwargs)
-            self.interface.update()
+            self.interface.update(**kwargs)
 
     def notified(self):
-        if not self.player.alive():
+        if self.player.detected():
+            self.audio.play_detected()
+        else:
+            self.audio.stop_detected()
+
+        if not self.player.alive():  # Player has died
+            self.audio.play_death()
             self.open_menu(self.death_menu)
 
-        if self.player.in_door():
+        if self.player.in_door():  # Player has reached the end
             if self.player.has_key():
+                self.audio.play_finish()
                 self.exit()
+
+        if self.player.has_key() and self.player.interacted_key():
+            self.audio.play_key()
+
+        if self.player.moving():
+            self.audio.play_movement()
+        else:
+            self.audio.stop_movement()
+
+        if self.player.recovering():
+            self.audio.play_recovering()
+        else:
+            self.audio.stop_recovering()
 
     # ####################################################################### #
     #                               CLASS METHODS                             #
@@ -91,6 +116,7 @@ class GameManager(Scene):
 
     def _close(self):
         self._restart()
+        self.audio.music_menu()
         self.manager.change_scene()
 
     def _start(self):
@@ -103,6 +129,7 @@ class GameManager(Scene):
     def _restart(self):
         if self.player is not None:
             self._remove_player(self.player)
+        self.enemies.remove_all()
         self.close_menu()
         self._start()
 
@@ -135,8 +162,8 @@ class GameManager(Scene):
         player.add(self.all_sprites)
 
     def _remove_player(self, player):
-        self.player = None
         player.kill()
+        self.player = None
 
     def _spawn_player(self):
         center = self.win_size // 2
@@ -163,6 +190,8 @@ class GameManager(Scene):
         bar.add(self.interface)
         message = Message(self.win)
         message.add(self.interface)
+        keys_box = Keys(self.win)
+        keys_box.add(self.interface)
 
     def is_open_menu(self):
         return self.menu_manager.active_menu is not None
@@ -176,55 +205,72 @@ class GameManager(Scene):
 
     def _set_menus(self):
         pause_menu = InfoBox(
-            "Pause menu",
+            "",
             [
                 [
                     Button(
-                        title="Resume",
+                        title="RESUME",
                         callback=lambda: self._resume(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Restart",
+                        title="RESTART",
                         callback=lambda: self._restart(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Go to main menu",
+                        title="MAIN MENU",
                         callback=lambda: self._close(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
                     )
                 ],
             ],
-            width=500,
+            width=300,
             has_close_button=False,
-            identifier=PAUSE_MENU_ID
+            identifier=PAUSE_MENU_ID,
+            background_path=POPUP_IMAGE_PAUSE
         )
         die_menu = InfoBox(
-            "You died",
+            "",
             [
                 [
                     Button(
-                        title="Restart",
+                        title="RESTART",
                         callback=lambda: self._restart(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
                     )
                 ],
                 [
                     Button(
-                        title="Go to main menu",
+                        title="MAIN MENU",
                         callback=lambda: self._close(),
-                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1])
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
                     )
                 ],
             ],
-            width=500,
+            width=300,
             has_close_button=False,
-            identifier=DIE_MENU_ID
+            identifier=DIE_MENU_ID,
+            background_path=POPUP_IMAGE_DEATH
         )
         self.pause_menu = pause_menu
         self.death_menu = die_menu

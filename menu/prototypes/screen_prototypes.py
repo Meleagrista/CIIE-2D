@@ -19,6 +19,7 @@ class PantallaGUI:
         self.image = pygame.transform.scale(self.image, (pygame.display.Info().current_w, pygame.display.Info().current_h))
         self.elements = []
         self.click = None
+        self.all_text = []
 
     def events(self, event_list):
         for event in event_list:
@@ -37,3 +38,7 @@ class PantallaGUI:
         screen.blit(self.image, self.image.get_rect())
         for element in self.elements:
             element.draw(screen, )
+
+    def translate(self, language):
+        for text in self.all_text:
+            text.translate(language)

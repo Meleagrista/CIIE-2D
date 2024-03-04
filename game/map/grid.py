@@ -213,6 +213,14 @@ class Grid:
         i = random.randint(0, len(possible_nodes) - 1)
         return possible_nodes[i]
 
+    def get_random_node_from_zone(self, zone_id):
+        flattened_nodes = [node for row in self.nodes for node in row]
+        possible_nodes = [node for node in flattened_nodes if node.id == zone_id]
+        if not possible_nodes:
+            return None
+        i = random.randint(0, len(possible_nodes) - 1)
+        return possible_nodes[i]
+
     def set_key_square(self, x, y):
         if x < 0 or y < 0 or x >= self.size or y >= self.size:
             return False

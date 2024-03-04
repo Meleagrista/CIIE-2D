@@ -2,7 +2,8 @@ import pygame
 from pygame import Surface
 
 from game.entities.player import Player
-from utils.constants import GREEN, RED
+from utils.constants import GREEN, RED, BLACK
+from utils.filepaths import HEALTH_BAR
 
 
 class Bar(pygame.sprite.Sprite):
@@ -14,7 +15,7 @@ class Bar(pygame.sprite.Sprite):
         self._y = self._height
         self._percentage = 0
 
-        self._groups = []
+        self.groups = []
 
     def update(self, *args, **kwargs):
         player = kwargs.pop('player', None)
@@ -31,25 +32,25 @@ class Bar(pygame.sprite.Sprite):
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pyagme.Surface class")
 
+        health_bar_img = pygame.image.load(HEALTH_BAR)
+        scaled_image = pygame.transform.scale(health_bar_img, (int(self._width) * 1.08, self._height * 1.95))
+        surface.blit(scaled_image, (self._x * 0.5, self._y * 0.5))
+
         pygame.draw.rect(surface, RED, (self._x, self._y, self._width, self._height))
         pygame.draw.rect(surface, GREEN, (self._x, self._y, self._width * self._percentage, self._height))
 
     def notified(self, **kwargs):
         pass
 
-    def kill(self):
-        for group in self._groups:
-            group.remove(self)
-        del self
-
     def add(self, *groups):
         for group in groups:
             group.add(self)
-            if group not in self._groups:
-                self._groups.append(group)
+            if group not in self.groups:
+                self.groups.append(group)
 
     def remove(self, *groups):
         for group in groups:
-            group.remove(self)
-            if group in self._groups:
-                self._groups.remove(group)
+            if self in group:
+                group.remove(self)
+            if group in self.groups:
+                self.groups.remove(group)

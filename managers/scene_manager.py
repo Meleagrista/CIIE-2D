@@ -18,17 +18,24 @@ class SceneManager:
         self.screen = pygame.display.set_mode((window_width, window_height))
         self.scene_stack = []
         self.clock = pygame.time.Clock()
+        self.language = 'en'
 
         self.movement_option = Ctl.WASD
 
     def set_movement_option(self, option: Ctl):
         self.movement_option = option
 
+    def set_language(self, language):
+        self.language = language
+
     def get_movement_option(self):
         return self.movement_option
 
     def get_screen(self):
         return self.screen
+    
+    def get_language(self):
+        return self.language
 
     def loop(self, scene):
         pygame.event.clear()

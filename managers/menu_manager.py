@@ -1,3 +1,4 @@
+import pygame.mixer
 from pygame import KEYDOWN, K_ESCAPE
 from managers.prototypes.scene_prototype import Scene
 from menu.screens import *
@@ -13,10 +14,12 @@ import time
 
 class MenuManager(Scene):
 
-    def __init__(self, manager):
+    def __init__(self, manager, audio):
         Scene.__init__(self, manager)
 
         self.screen_list = []
+
+        self.audio = audio
 
         self.screen_list.append(StartingScreen(self))
         self.screen_list.append(ConfigurationScreen(self))
@@ -28,7 +31,7 @@ class MenuManager(Scene):
     def events(self, event_list):
         for event in event_list:
             if event.type == KEYDOWN:
-                if event.has_key == K_ESCAPE:
+                if event.key == K_ESCAPE:
                     self.exit()
             elif event.type == pygame.QUIT:
                 self.exit()
@@ -49,7 +52,7 @@ class MenuManager(Scene):
         self.manager.exit()
 
     def run(self):
-        print('Starting game...')
+        self.audio.music_game()
         self.manager.change_scene()
 
     def show_starting_screen(self):
@@ -63,6 +66,11 @@ class MenuManager(Scene):
 
     def set_movement_option(self, option):
         self.manager.set_movement_option(option)
+
+    def set_language(self, language):
+        self.manager.set_language(language)
+        for screen in self.screen_list:
+            screen.translate(language)
 
     @staticmethod
     def splash_screen(screen, wait_seconds):
