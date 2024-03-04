@@ -59,7 +59,7 @@ class GameManager(Scene):
 
     def draw(self, screen):
         self.all_sprites.draw(player=self.player, grid=self.grid)
-        # self.interface.draw(surface=screen)
+        self.interface.draw(surface=screen)
 
         if self.is_open_menu():
             self.menu_manager.display()
@@ -68,11 +68,11 @@ class GameManager(Scene):
 
     def update(self, **kwargs):
         self.all_sprites.update(**kwargs)
-        """if not self.is_open_menu():
+        if not self.is_open_menu():
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
             self.all_sprites.update(**kwargs)
-            self.interface.update()"""
+            self.interface.update()
 
     def notified(self):
         if not self.player.alive():
@@ -95,7 +95,7 @@ class GameManager(Scene):
 
     def _start(self):
         self._spawn_player()
-        # self._spawn_enemies()
+        self._spawn_enemies()
 
     def _resume(self):
         self.close_menu()

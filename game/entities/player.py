@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         # self._toggle_key_controls = False
         # self._picked_up_key = False
 
-    def draw(self, **kwargs):
+    def draw(self, center, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):

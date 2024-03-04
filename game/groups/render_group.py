@@ -36,6 +36,9 @@ class Camera(pygame.sprite.Group):
         )
 
     def enemy_mask(self, enemy, surface, vertices, mask):
+        # Check if the vision area is completely outside the surface
+        if not self._in_range(enemy.rect.center, -enemy.ray_radius):
+            return
         vertices = list(map(lambda point: point - self.offset, vertices))
         position_x = int(enemy.x) - self.offset[0]
         position_y = int(enemy.y) - self.offset[1]
@@ -79,8 +82,11 @@ class Camera(pygame.sprite.Group):
 
         grid.draw(*args, **kwargs)
 
+        # center
+        internal_center = self._boundary.center
+
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
-           sprite.draw(*args, **kwargs)
+            sprite.draw(*args, internal_center, **kwargs)
 
         self._update()
 
@@ -109,3 +115,11 @@ class Camera(pygame.sprite.Group):
         scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)
         self.surface.blit(scaled_surface, scaled_rectangle)
+
+    def _in_range(self, position, padding):
+
+        horizontal_distance = abs(position[0] - self._boundary.center[0])
+        vertical_distance = abs(position[1] - self._boundary.center[1])
+
+        return (horizontal_distance < self._internal_surface.get_width() // 2 + padding and
+                vertical_distance < self._internal_surface.get_height() // 2 + padding)

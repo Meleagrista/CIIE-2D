@@ -74,7 +74,7 @@ class Enemy(pygame.sprite.Sprite):
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._status = GREEN
 
-    def draw(self, **kwargs):
+    def draw(self, center, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
@@ -84,6 +84,9 @@ class Enemy(pygame.sprite.Sprite):
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
+
+        if not self._in_range(surface, center, -self.size):
+            return
 
         ##############################
         # DRAWING RECTANGLE
@@ -115,6 +118,14 @@ class Enemy(pygame.sprite.Sprite):
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
         # nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
         # self.draw_path(surface, nodes, offset)
+
+    def _in_range(self, surface, center, padding):
+
+        horizontal_distance = abs(self.x - center[0])
+        vertical_distance = abs(self.y - center[1])
+
+        return ((horizontal_distance < surface.get_width() // 2 + padding) and
+                vertical_distance < surface.get_height() // 2 + padding)
 
     def update(self, **kwargs):
         ##############################

@@ -76,15 +76,11 @@ class Grid:
         if surface is not None:
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pyagme.Surface class")
-        else:
-            print('An argument is missing.')
 
         offset = kwargs.pop('offset', None)
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
-        else:
-            print('An argument is missing.')
 
         show_id = kwargs.pop('id', None)
         if show_id is not None:
