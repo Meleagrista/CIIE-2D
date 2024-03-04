@@ -30,7 +30,7 @@ class Bar(pygame.sprite.Sprite):
         surface = kwargs.pop('surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pyagme.Surface class")
+                raise TypeError("surface must be an instance of pygame.Surface class")
 
         health_bar_img = pygame.image.load(HEALTH_BAR)
         scaled_image = pygame.transform.scale(health_bar_img, (int(self._width) * 1.08, self._height * 1.95))
