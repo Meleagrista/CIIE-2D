@@ -35,7 +35,7 @@ BUTTON_WASD = IMAGES_BUTTONS + "wasd.png"
 SWITCH_ON = IMAGES_BUTTONS + 'switch_on.png'
 SWITCH_OFF = IMAGES_BUTTONS + 'switch_off.jpg'
 
-HEALTH_BAR = IMAGES_BUTTONS + 'blood_red_bar.png'
+HEALTH_BAR = IMAGES_BUTTONS + 'health_bar.png'
 
 KEYS_IMG = IMAGES_BUTTONS + 'key.png'
 CAVE_IMG = IMAGES_BUTTONS + 'cave_popup.png'

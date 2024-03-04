@@ -32,11 +32,12 @@ class Bar(pygame.sprite.Sprite):
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pyagme.Surface class")
 
-        pygame.draw.rect(surface, BLACK, (self._x, self._y, self._width, self._height))
         health_bar_img = pygame.image.load(HEALTH_BAR)
-        scaled_image = pygame.transform.scale(health_bar_img, (int(self._width * self._percentage), self._height))
-        surface.blit(scaled_image, (self._x, self._y))
-        #pygame.draw.rect(surface, GREEN, (self._x, self._y, self._width * self._percentage, self._height))
+        scaled_image = pygame.transform.scale(health_bar_img, (int(self._width) * 1.08, self._height * 1.95))
+        surface.blit(scaled_image, (self._x * 0.5, self._y * 0.5))
+
+        pygame.draw.rect(surface, RED, (self._x, self._y, self._width, self._height))
+        pygame.draw.rect(surface, GREEN, (self._x, self._y, self._width * self._percentage, self._height))
 
     def notified(self, **kwargs):
         pass
