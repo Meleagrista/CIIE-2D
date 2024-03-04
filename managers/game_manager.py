@@ -169,6 +169,7 @@ class GameManager(Scene):
         self._add_player(player)
         self.enemies.set_player(self.player)
         self.interface.set_player(self.player)
+        self.interface.set_language(self.manager.get_language())
 
         self.player.add_observer(self)
         self.player.add_observer(self.enemies)

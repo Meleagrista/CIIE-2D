@@ -8,7 +8,10 @@ traducciones = {
         'controls': 'CONTROLES',
         'return': 'VOLVER',
         'arrows': 'FLECHAS',
-        'language': 'IDIOMA'
+        'language': 'IDIOMA',
+        'pick up key': 'Pulsa <ESPACIO> para coger la llave',
+        'find exit': 'Tienes que encontrar la salida',
+        'find key': 'Tienes que encontrar la llave'
     },
     'en': {
         'play': 'PLAY',
@@ -19,7 +22,10 @@ traducciones = {
         'controls': 'CONTROLS',
         'return': 'RETURN',
         'arrows': 'ARROWS',
-        'language': 'LANGUAGE'
+        'language': 'LANGUAGE',
+        'pick up key': 'Press <SPACE> to pick up the key',
+        'find exit': 'You need to find the exit',
+        'find key': 'You need to find the key'
     }
 }
 
