@@ -67,7 +67,7 @@ class GameManager(Scene):
         pygame.display.update()
 
     def update(self, **kwargs):
-        self.all_sprites.update(**kwargs)
+        # self.all_sprites.update(**kwargs)
         if not self.is_open_menu():
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
