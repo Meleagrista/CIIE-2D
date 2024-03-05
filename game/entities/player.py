@@ -43,6 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+        self.current_sprite = 0
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -88,24 +89,24 @@ class Player(pygame.sprite.Sprite):
 
 
         # Draw the rotated triangle
-        end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
+        # end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
-        triangle_size = NPC_SIZE // 2
-        triangle_points = [
-            end_point,
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
-            ),
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
-            ),
-        ]
-        pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
+        # triangle_size = NPC_SIZE // 2
+        # triangle_points = [
+        #     end_point,
+        #     (
+        #         end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
+        #         end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
+        #     ),
+        #     (
+        #         end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
+        #         end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
+        #     ),
+        # ]
+        # pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
 
         # Draw the player
-        stopped_coordinates = ResourceManager.load_coordinates(STOPPED, COORDINATES_CHARACTER)
+        stopped_coordinates = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
         my_sprite = self.sheet.subsurface(stopped_coordinates)
 
         # Calculate angle in degrees
@@ -244,6 +245,8 @@ class Player(pygame.sprite.Sprite):
             self.notify_observers()
         elif (self.x != new_x or self.y != new_y) and not self._is_moving:
             self._is_moving = True
+            #self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
+            #self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
             self.notify_observers()
 
         # Update player's position
@@ -252,6 +255,11 @@ class Player(pygame.sprite.Sprite):
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)
+
+        if(self._is_moving):
+            self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
+            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+
 
     def add(self, *groups):
         for group in groups:
