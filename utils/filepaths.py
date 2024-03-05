@@ -7,6 +7,7 @@ IMAGES_BACKGROUND = "assets/images/backgrounds/"
 IMAGES_BUTTONS = "assets/images/icons/"
 MUSIC_PATH = "assets/music/"
 SOUNDS_PATH = "assets/sounds/"
+CHARACTERS_PATH = "assets/characters/"
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
@@ -49,3 +50,6 @@ FINISH_LEVEL_SOUND = SOUNDS_PATH + 'positive-notification-new-level-152480.mp3'
 DEATH_SOUND = SOUNDS_PATH + 'piano-crash-sound-37898.mp3'
 DETECTED_SOUND = SOUNDS_PATH + 'sonar-ping-95840.mp3'
 INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
+
+SHEET_CHARACTER = CHARACTERS_PATH + 'character_template-Sheet.png'
+COORDINATES_CHARACTER = CHARACTERS_PATH + 'character_coordinates.txt'

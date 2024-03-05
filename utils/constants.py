@@ -73,3 +73,5 @@ WEIGHT = 2
 
 FRICTION = 0.5
 LIFE = 2
+
+STOPPED = 0

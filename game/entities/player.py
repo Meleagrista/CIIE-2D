@@ -5,9 +5,11 @@ from pygame import Mask, Surface
 from typing_extensions import deprecated
 
 from game.map.grid import Grid
+from managers.resource_manager import ResourceManager
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
+from utils.filepaths import SHEET_CHARACTER, COORDINATES_CHARACTER
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -34,6 +36,8 @@ class Player(pygame.sprite.Sprite):
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.sheet = ResourceManager.load_image(SHEET_CHARACTER, -1)
+        self.sheet = self.sheet.convert_alpha()
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
         self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
         self.image.fill((0, 0, 0))
@@ -82,8 +86,6 @@ class Player(pygame.sprite.Sprite):
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        # Draw the square
-        pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
 
         # Draw the rotated triangle
         end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
@@ -101,6 +103,22 @@ class Player(pygame.sprite.Sprite):
             ),
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
+
+        # Draw the player
+        stopped_coordinates = ResourceManager.load_coordinates(STOPPED, COORDINATES_CHARACTER)
+        my_sprite = self.sheet.subsurface(stopped_coordinates)
+
+        # Calculate angle in degrees
+        angle_in_degrees = -(math.degrees(angle_to_horizontal) - 90) % 360
+
+        # Rotate sprite
+        rotated_sprite = pygame.transform.rotate(my_sprite, angle_in_degrees)
+
+        # Adjust position of rotated sprite
+        rotated_sprite_rect = rotated_sprite.get_rect(center=my_sprite.get_rect().center)
+
+        # Draw rotated sprite
+        surface.blit(rotated_sprite,(self.rect.x - offset.x + rotated_sprite_rect.x, self.rect.y - offset.y + rotated_sprite_rect.y))
 
     def update(self, **kwargs):
         movement_option = kwargs.pop('movement_option', None)
