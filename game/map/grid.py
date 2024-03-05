@@ -3,7 +3,7 @@ import csv
 from pygame import Surface
 
 from game.map.spritesheet import Spritesheet
-from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SPRITE_SHEET
+from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SPRITE_SHEET, SQUARE_SIZE
 from game.map.square import Square
 
 import math
@@ -42,7 +42,7 @@ class Grid:
             None
         """
         w, _ = win.get_size()
-        self.gap = w // size
+        self.gap = SQUARE_SIZE  # w // size
         self.size = size
         self.win = win
         self.font = pygame.font.SysFont('Arial', self.gap)
@@ -76,7 +76,7 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, **kwargs):
+    def draw(self, *args, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
@@ -94,7 +94,6 @@ class Grid:
 
         if offset is None:
             self.win.fill((125, 125, 125))
-            self.update()
             for row in self.nodes:
                 for spot in row:
                     spot.draw_sprite(self.win, self.sprite_sheet)
@@ -108,7 +107,6 @@ class Grid:
         else:
             font = pygame.font.SysFont('arial', 20)
             self.win.fill(GRID_BACKGROUND)
-            self.update()
             for row in self.nodes:
                 for spot in row:
                     spot.draw_sprite(surface, self.sprite_sheet, offset)

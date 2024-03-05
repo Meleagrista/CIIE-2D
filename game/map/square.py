@@ -8,7 +8,7 @@ from utils.constants import *
 #                                        SQUARE CLASS                                           #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-class Square():
+class Square:
     """
     A class representing a square grid cell in the pathfinding visualization grid.
 
@@ -63,7 +63,7 @@ class Square():
         self.weight = weight
         self.hover = False
 
-        self.image = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+        self.image = pygame.Surface((self.size, self.size))
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
@@ -114,6 +114,11 @@ class Square():
             # Calculate the top-left corner of the rectangle
             top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
             top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+
+            # Check if the rectangle is completely outside the surface
+            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+                return  # Rectangle is completely outside the surface
 
             # Draw the rectangle with the adjusted coordinates
             if GRID_SHOW:
@@ -173,12 +178,6 @@ class Square():
             tuple: The x and y coordinates of the center of the square.
         """
         return self.x, self.y
-
-    def add(self, *groups):
-        for group in groups:
-            group.add(self)
-            if group not in self.groups:
-                self.groups.append(group)
 
     # ####################################################################### #
     #                                VARIABLES                                #
@@ -253,10 +252,10 @@ class Square():
         self.color = GREEN
         self.image.fill((0, 0, 0))
 
-    def make_room(self, id):
+    def make_room(self, room_id):
         self.barrier = False
         self.color = WHITE
-        self.set_id(id)
+        self.set_id(room_id)
         self.image.fill((255, 255, 255))
 
     def make_selected(self):

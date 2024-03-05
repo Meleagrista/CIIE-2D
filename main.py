@@ -1,5 +1,6 @@
 import pygamepopup
 import pygame
+import pygame, os
 
 from managers.audio_manager import AudioManager
 from managers.game_manager import GameManager
@@ -7,7 +8,10 @@ from managers.scene_manager import SceneManager
 from managers.menu_manager import MenuManager
 from utils.filepaths import MUSIC_FALL_FROM_GRACE, MUSIC_MEDIEVAL
 
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # You have to call this before pygame.init()
+
 if __name__ == "__main__":
+
     pygame.init()
     pygamepopup.init()
 

@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
         # self._toggle_key_controls = False
         # self._picked_up_key = False
 
-    def draw(self, **kwargs):
+    def draw(self, center, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
@@ -277,6 +277,8 @@ class Player(pygame.sprite.Sprite):
 
     @staticmethod
     def is_detected(player_mask: Mask, enemy_mask: Mask):
+        if player_mask is None or enemy_mask is None:
+            return False
         return player_mask.overlap_area(enemy_mask, (0, 0)) > 0
 
     def alive(self):
