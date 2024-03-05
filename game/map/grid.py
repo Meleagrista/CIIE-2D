@@ -1,6 +1,9 @@
+import csv
+
 from pygame import Surface
 
-from utils.constants import GRID_BACKGROUND, MAP
+from game.map.spritesheet import Spritesheet
+from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SPRITE_SHEET
 from game.map.square import Square
 
 import math
@@ -26,7 +29,7 @@ class Grid:
         hover (Square): The grid cell currently being hovered over by the mouse cursor.
     """
 
-    def __init__(self, size, win, path=None):
+    def __init__(self, size, win, map_path=None, tilemap_path=None, sprite_sheet_path=None):
         self.groups = []
         """
         Initializes the Grid object with the given size and window.
@@ -47,7 +50,9 @@ class Grid:
         self.hover = None
 
         self.create_array()
-        self.read_map(MAP if path is None else path)
+        self.read_border_map(MAP if map_path is None else map_path)
+        self.read_tilemap(TILEMAP if tilemap_path is None else tilemap_path)
+        self.sprite_sheet = Spritesheet(SPRITE_SHEET if sprite_sheet_path is None else sprite_sheet_path)
         self.update()
 
     # ####################################################################### #
@@ -92,7 +97,8 @@ class Grid:
             self.update()
             for row in self.nodes:
                 for spot in row:
-                    spot.draw(self.win)
+                    spot.draw_sprite(self.win, self.sprite_sheet)
+                    # spot.draw(self.win)
                     if spot.is_border():
                         spot.make_barrier()
                     elif spot.id != 0:
@@ -105,7 +111,8 @@ class Grid:
             self.update()
             for row in self.nodes:
                 for spot in row:
-                    spot.draw(surface, offset)
+                    spot.draw_sprite(surface, self.sprite_sheet, offset)
+                    # spot.draw(surface, offset)
                     if spot.is_border():
                         spot.make_barrier()
                     elif spot.id != 0 and show_id:
@@ -212,6 +219,8 @@ class Grid:
         # Si no, escoger uno de la zona (o zonas) que pueda recorrer
         flattened_nodes = [node for row in self.nodes for node in row]
         possible_nodes = [node for node in flattened_nodes if node.id in set(zone_ids)]
+        if not possible_nodes:
+            return self.get_random_node()
         i = random.randint(0, len(possible_nodes) - 1)
         return possible_nodes[i]
 
@@ -301,6 +310,52 @@ class Grid:
                         file.write(str(node.get_id()))
                 file.write('\n')
         print("Map exported successfully.")
+
+    def read_border_map(self, full_file_path):
+        """
+        Reads a map from a csv file and updates the grid accordingly.
+
+        Args:
+            full_file_path (str): The full path to the text file containing the map.
+
+        Returns:
+            None
+        """
+        with open(full_file_path, 'r') as file:
+            csv_file = csv.reader(file)
+            lines = []
+            for line in csv_file:
+                lines.append(line)
+
+            x, y = 0, 0
+            for row in self.nodes:
+                x = 0
+                for node in row:
+                    if lines[x][y] == 'X':
+                        node.make_barrier()
+                    elif lines[x][y].isnumeric():
+                        node.make_room(int(lines[x][y]))
+                    else:
+                        node.reset()
+                    x += 1
+                y += 1
+
+        print("Map imported successfully.")
+
+    def read_tilemap(self, file_path):
+        tile_map = []
+        with open(file_path, mode='r') as file:
+            csv_file = csv.reader(file)
+            for line in csv_file:
+                tile_map.append(line)
+
+        x, y = 0, 0
+        for row in self.nodes:
+            x = 0
+            for square in row:
+                square.set_tile_id(tile_map[x][y])
+                x += 1
+            y += 1
 
     # ####################################################################### #
     #                                COLLISIONS                               #

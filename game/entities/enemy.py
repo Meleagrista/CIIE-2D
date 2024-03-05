@@ -225,7 +225,10 @@ class Enemy(pygame.sprite.Sprite):
         current_node = self.grid.get_node((self.x, self.y))
 
         if self.areas.empty():
-            self.end_node = self.grid.get_random_node()
+            end_node = self.grid.get_random_node()
+            while current_node.compare_node(end_node):
+                end_node = self.grid.get_random_node()
+            self.end_node = end_node
             return
 
         zone = self.areas.get()

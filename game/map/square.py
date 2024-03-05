@@ -1,5 +1,6 @@
 import pygame
 
+from game.map.spritesheet import Spritesheet
 from utils.constants import *
 
 
@@ -56,6 +57,7 @@ class Square():
         self.neighbors = []
         self.barriers = []
         self.id = -1
+        self.tile_id = -1
         self.barrier = False
         self.color = GRID_BACKGROUND
         self.weight = weight
@@ -79,6 +81,9 @@ class Square():
 
     def get_id(self):
         return self.id
+
+    def set_tile_id(self, tile_id):
+        self.tile_id = int(tile_id)
 
     # ####################################################################### #
     #                                  DRAW                                   #
@@ -115,6 +120,37 @@ class Square():
                 pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
             else:
                 pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
+
+    def draw_sprite(self, win, spritesheet: Spritesheet, offset=None):
+        """
+        Draw the square on the pygame window surface.
+
+           Args:
+            win (pygame.Surface): The pygame window surface.
+            offset: offset to be drawn on the pygame surface
+            spritesheet
+
+           Returns:
+            None
+         """
+        if self.tile_id == -1:
+            self.draw(win, offset)
+            return
+
+        if offset is None:
+            # Calculate the top-left corner of the rectangle
+            top_left_x = self.x - self.size / 2
+            top_left_y = self.y - self.size / 2
+
+            # Draw the tile with the adjusted coordinates
+            tile = spritesheet.get_sprite_by_number(self.tile_id)
+            win.blit(tile, (top_left_x, top_left_y))
+        else:
+            position_x = offset.x + self.size // 2
+            position_y = offset.y + self.size // 2
+
+            tile = spritesheet.get_sprite_by_number(self.tile_id)
+            win.blit(tile, (self.x - position_x, self.y - position_y))
 
     # ####################################################################### #
     #                                POSITION                                 #

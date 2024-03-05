@@ -18,7 +18,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((GRID_SIZE * SQUARE_SIZE, GRID_SIZE * SQUARE_SIZE))
     pygame.display.set_caption("Map editor")
     clock = pygame.time.Clock()
-    grid = Grid(GRID_SIZE, screen, path=path_to_map)
+    grid = Grid(GRID_SIZE, screen, map_path=path_to_map)
     grid.create_array()
 
     dragging = False    # Flag to track if the left mouse button is being dragged
@@ -69,7 +69,7 @@ if __name__ == '__main__':
                 clicked_node.reset()
 
         # TODO: Fixed visibility issues
-        grid.draw(screen, show_id=True)
+        grid.draw()
         pygame.display.flip()
         clock.tick(FPS)
 
