@@ -41,8 +41,8 @@ HEALTH_BAR = IMAGES_BUTTONS + 'health_bar.png'
 KEYS_IMG = IMAGES_BUTTONS + 'key.png'
 CAVE_IMG = IMAGES_BUTTONS + 'cave_popup.png'
 
-SPAIN = IMAGES_BUTTONS + 'spain.png'
-UNITED_KINGDOM = IMAGES_BUTTONS + 'uk.png'
+SPAIN = IMAGES_BUTTONS + 'spain_32.png'
+UNITED_KINGDOM = IMAGES_BUTTONS + 'united_kingdom_32.png'
 
 MOVEMENT_SOUND = SOUNDS_PATH + 'concrete-footsteps-6752.mp3'
 PICK_UP_KEY_SOUND = SOUNDS_PATH + 'interface-124464.mp3'

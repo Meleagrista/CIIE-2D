@@ -245,8 +245,6 @@ class Player(pygame.sprite.Sprite):
             self.notify_observers()
         elif (self.x != new_x or self.y != new_y) and not self._is_moving:
             self._is_moving = True
-            #self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
-            #self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
             self.notify_observers()
 
         # Update player's position
