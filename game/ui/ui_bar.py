@@ -3,7 +3,7 @@ from pygame import Surface
 
 from game.entities.player import Player
 from utils.constants import GREEN, RED, BLACK
-from utils.filepaths import HEALTH_BAR
+from utils.assets_paths import HEALTH_BAR
 
 
 class Bar(pygame.sprite.Sprite):

@@ -4,7 +4,7 @@ from pygame import Surface
 from game.entities.player import Player
 from managers.resource_manager import ResourceManager
 from utils.constants import PURPLE
-from utils.filepaths import KEYS_IMG, POPUP_IMAGE
+from utils.assets_paths import KEYS_IMG, POPUP_IMAGE
 
 
 class Keys(pygame.sprite.Sprite):

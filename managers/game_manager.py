@@ -17,7 +17,8 @@ from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
-from utils.filepaths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
+from utils.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
+from utils.maps_paths import LEVEL_1
 
 
 class GameManager(Scene):
@@ -28,15 +29,25 @@ class GameManager(Scene):
         self.win_size = self.win.get_width()
 
         # Read level
-        with open(Level.level_paths[1], 'r') as file:
+        with open(LEVEL_1, 'r') as file:
             data = file.read().replace('\n', '')
-        j = json.loads(data)
-        self.level = Level(**j)
+
+        # j = json.loads(data)
+        self.level = Level(**json.loads(data))
 
         self.player = None
-        self.grid = Grid(100, self.win, map_path=self.level.map.border_map_path, tilemap_path=self.level.map.tile_map_path,
-                         sprite_sheet_path=self.level.level_spritesheet.path, ss_columns=self.level.level_spritesheet.columns,
-                         ss_rows=self.level.level_spritesheet.rows)
+        self.grid = Grid(
+            size=100,
+            win=self.win,
+            map_path=self.level.map.border_map_path,
+            tile_map_path=self.level.map.tile_map_path,
+            sprite_sheet_path=self.level.level_sprite_sheet.path,
+            ss_columns=self.level.level_sprite_sheet.columns,
+            ss_rows=self.level.level_sprite_sheet.rows
+
+        )
+
+        self.grid.set_spawn_square(self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y)
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
@@ -47,8 +58,6 @@ class GameManager(Scene):
 
         self._set_interface()
 
-        # Set the key and exit squares
-        # TODO: añadir un sprite por encima o modificar la casilla en el mapa
         self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
         self.grid.set_exit_square(self.level.coordinates.exit_x, self.level.coordinates.exit_y)
 
@@ -177,9 +186,9 @@ class GameManager(Scene):
         self.player = None
 
     def _spawn_player(self):
-        x, y = self.grid.nodes[30][60].get_pos()
-        # TODO: tomar coordenadas de self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y
-        player = Player(x, y, 6, self.grid)
+        x, y = self.grid.spawn.get_pos()
+        player = Player(x, y, SPEED, self.grid)
+
         self._add_player(player)
         self.enemies.set_player(self.player)
         self.interface.set_player(self.player)
@@ -196,14 +205,6 @@ class GameManager(Scene):
     # ####################################################################### #
     #                             MENU METHODS                                #
     # ####################################################################### #
-
-    def _set_interface(self):
-        bar = Bar(self.win)
-        bar.add(self.interface)
-        message = Message(self.win)
-        message.add(self.interface)
-        keys_box = Keys(self.win)
-        keys_box.add(self.interface)
 
     def is_open_menu(self):
         return self.menu_manager.active_menu is not None
@@ -286,6 +287,14 @@ class GameManager(Scene):
         )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
+
+    def _set_interface(self):
+        bar = Bar(self.win)
+        bar.add(self.interface)
+        message = Message(self.win)
+        message.add(self.interface)
+        keys_box = Keys(self.win)
+        keys_box.add(self.interface)
 
     # ####################################################################### #
     #                                DEPRECATED                               #
