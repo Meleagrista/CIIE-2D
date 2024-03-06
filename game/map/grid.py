@@ -1,9 +1,10 @@
 import csv
 
 from pygame import Surface
+from typing_extensions import deprecated
 
-from game.map.spritesheet import Spritesheet
-from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SQUARE_SIZE
+from game.map.spritesheet import SpriteSheet
+from utils.constants import GRID_BACKGROUND, MAP, TILE_MAP, SQUARE_SIZE
 from game.map.square import Square
 
 import math
@@ -29,18 +30,9 @@ class Grid:
         hover (Square): The grid cell currently being hovered over by the mouse cursor.
     """
 
-    def __init__(self, size, win, map_path=None, tilemap_path=None, sprite_sheet_path=None, ss_columns=37, ss_rows=23):
+    def __init__(self, size, win, map_path=None, tile_map_path=None, sprite_sheet_path=None, ss_columns=37, ss_rows=23):
         self.groups = []
-        """
-        Initializes the Grid object with the given size and window.
 
-        Args:
-            size (int): The size of the grid.
-            win (pygame.Surface): The pygame window surface.
-
-        Returns:
-            None
-        """
         w, _ = win.get_size()
         self.gap = SQUARE_SIZE  # w // size
         self.size = size
@@ -50,9 +42,13 @@ class Grid:
         self.hover = None
 
         self.create_array()
+
+        self.spawn = None
+
         self.read_border_map(MAP if map_path is None else map_path)
-        self.read_tilemap(TILEMAP if tilemap_path is None else tilemap_path)
-        self.sprite_sheet = Spritesheet(sprite_sheet_path, ss_columns, ss_rows) if tilemap_path is not None else None
+        self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
+        self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows) if tile_map_path is not None else None
+
         self.update()
 
     # ####################################################################### #
@@ -60,12 +56,6 @@ class Grid:
     # ####################################################################### #
 
     def create_array(self):
-        """
-        Creates the grid by initializing Square objects in a 2D array.
-
-        Returns:
-            None
-        """
         self.nodes = []
         for i in range(self.size):
             self.nodes.append([])
@@ -76,47 +66,59 @@ class Grid:
                 self.nodes[i].append(node)
         self.update()
 
-    def draw(self, *args, **kwargs):
+    def draw(self, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pyagme.Surface class")
+                raise TypeError("surface must be an instance of pygame.Surface class")
 
         offset = kwargs.pop('offset', None)
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
+        else:
+            print('There is no offset.')
 
         show_id = kwargs.pop('id', None)
         if show_id is not None:
             if not isinstance(show_id, bool):
                 raise TypeError("show_id must be an instance of Boolean class")
 
+        surface.fill(GRID_BACKGROUND)
+
         if offset is None:
-            self.win.fill((125, 125, 125))
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprite(self.win, self.sprite_sheet)
-                    # spot.draw(self.win)
+                    spot.draw_sprite(surface, self.sprite_sheet)
+
                     if spot.is_border():
                         spot.make_barrier()
-                    elif spot.id != 0:
+                    """elif spot.id != 0:
                         font = pygame.font.SysFont('arial', 20)
                         text = font.render(str(spot.id), True, (0, 0, 0))
-                        self.win.blit(text, (spot.row * spot.size, spot.col * spot.size))
+                        self.win.blit(
+                            source=text,
+                            dest=(spot.row * spot.size, spot.col * spot.size)
+                        )"""
         else:
-            font = pygame.font.SysFont('arial', 20)
-            self.win.fill(GRID_BACKGROUND)
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprite(surface, self.sprite_sheet, offset)
-                    # spot.draw(surface, offset)
+                    spot.draw_sprite(
+                        win=surface,
+                        sprite_sheet=self.sprite_sheet,
+                        offset=offset)
+
                     if spot.is_border():
                         spot.make_barrier()
-                    elif spot.id != 0 and show_id:
+                    """elif spot.id != 0 and show_id:
+                        font = pygame.font.SysFont('arial', 20)
                         text = font.render(str(spot.id), True, (0, 0, 0))
-                        surface.blit(text,
-                                     (spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2))
+                        surface.blit(
+                            source=text,
+                            dest=(spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2)
+                        )"""
+
+        # pygame.display.update()
 
     def add(self, group):
         for row in self.nodes:
@@ -124,75 +126,28 @@ class Grid:
                 node.add(group)
 
     def update(self):
-        """
-        Updates the neighbors and surrounding barriers of each grid cell.
-
-        Returns:
-            None
-        """
         for row in self.nodes:
             for spot in row:
                 spot.update_neighbors(self)
                 spot.surrounding_barrier(self)
 
     # ####################################################################### #
-    #                                   NODES                                 #
+    #                                   POSITION                              #
     # ####################################################################### #
 
-    def hover_over(self, node):
-        """
-        Highlights the grid cell currently being hovered over.
-
-        Args:
-            node (Square): The grid cell being hovered over.
-
-        Returns:
-            None
-        """
-        if self.hover is not None:
-            if not self.hover.is_border() and not self.hover.is_barrier():
-                self.hover.reset()
-        if not node.is_border() and not node.is_barrier():
-            node.make_selected()
-        self.hover = node
-
     def get_node(self, pos):
-        """
-        Gets the grid cell at the specified position.
-
-        Args:
-            pos (tuple): The position (x, y) of the grid cell.
-
-        Returns:
-            Square: The grid cell at the specified position.
-        """
         y, x = pos
         row = math.floor(y / self.gap)
         col = math.floor(x / self.gap)
         return self.nodes[row][col]
 
     def get_nodes_by_id(self, node_id):
-        """
-        Gets all grid cells with the corresponding id.
-
-        Args:
-            node_id (int): The id of the grid cell.
-
-        Returns:
-            list: A list of all grid cells with the specified id.
-        """
         nodes = []
         for row in self.nodes:
             nodes = nodes + list(filter(lambda node: node.id == node_id, row))
         return nodes
 
     def get_random_node(self):
-        """
-        Gets a random non-barrier grid cell.
-
-        Returns:
-            Square: A random non-barrier grid cell.
-        """
         row = random.randint(0, self.size - 1)
         col = random.randint(0, self.size - 1)
         node = self.nodes[row][col]
@@ -203,18 +158,9 @@ class Grid:
         return node
 
     def get_random_node_from_zones(self, zone_ids):
-        """
-        Gets a random node from a list of possible ids.
-
-        Returns:
-            Square: A random node having one of the specified zone ids.
-        """
-
-        # Es un explorador: seleccionar un nodo cualquiera que no sea barrera
         if not zone_ids:
             return self.get_random_node()
 
-        # Si no, escoger uno de la zona (o zonas) que pueda recorrer
         flattened_nodes = [node for row in self.nodes for node in row]
         possible_nodes = [node for node in flattened_nodes if node.id in set(zone_ids)]
         if not possible_nodes:
@@ -229,6 +175,15 @@ class Grid:
             return None
         i = random.randint(0, len(possible_nodes) - 1)
         return possible_nodes[i]
+
+    # ####################################################################### #
+    #                                   NODES                                 #
+    # ####################################################################### #
+
+    def set_spawn_square(self, x, y):
+        if x < 0 or y < 0 or x >= self.size or y >= self.size:
+            raise ValueError  # TODO: Add correct exception
+        self.spawn = self.nodes[x][y]
 
     def set_key_square(self, x, y):
         if x < 0 or y < 0 or x >= self.size or y >= self.size:
@@ -248,20 +203,20 @@ class Grid:
         node = self.get_node((x, y))
         return node.is_exit
 
+    @deprecated("This method is no longer used.")
+    def hover_over(self, node):
+        if self.hover is not None:
+            if not self.hover.is_border() and not self.hover.is_barrier():
+                self.hover.reset()
+        if not node.is_border() and not node.is_barrier():
+            node.make_selected()
+        self.hover = node
+
     # ####################################################################### #
     #                                    MAP                                  #
     # ####################################################################### #
 
     def read_map(self, full_file_path):
-        """
-        Reads a map from a text file and updates the grid accordingly.
-
-        Args:
-            full_file_path (str): The full path to the text file containing the map.
-
-        Returns:
-            None
-        """
         with open(full_file_path, 'r') as file:
             file_content = file.read()
             file_content_without_newline = file_content.replace('\n', '')
@@ -280,15 +235,6 @@ class Grid:
         print("Map imported successfully.")
 
     def save_map(self, file_path):
-        """
-        Stores the map in a text file.
-
-        Args:
-            file_path (str): The path to the folder where the map will be saved.
-
-        Returns:
-            None
-        """
         files = [f for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
         numbers = []
         for file in files:
@@ -310,15 +256,6 @@ class Grid:
         print("Map exported successfully.")
 
     def read_border_map(self, full_file_path):
-        """
-        Reads a map from a csv file and updates the grid accordingly.
-
-        Args:
-            full_file_path (str): The full path to the text file containing the map.
-
-        Returns:
-            None
-        """
         with open(full_file_path, 'r') as file:
             csv_file = csv.reader(file)
             lines = []
@@ -340,7 +277,7 @@ class Grid:
 
         print("Map imported successfully.")
 
-    def read_tilemap(self, file_path):
+    def read_tile_map(self, file_path):
         tile_map = []
         with open(file_path, mode='r') as file:
             csv_file = csv.reader(file)
@@ -355,21 +292,13 @@ class Grid:
                 x += 1
             y += 1
 
+        print("Tile map imported successfully.")
+
     # ####################################################################### #
     #                                COLLISIONS                               #
     # ####################################################################### #
 
     def has_collision(self, player_rect):
-        """
-        Checks whether the player (a square) is entering inside a barrier along the specified axis.
-
-        Args:
-            player_rect (pygame.Rect): The player's bounding box.
-
-        Returns:
-            tuple: A tuple containing a list of collided barrier nodes and a dictionary indicating collision directions.
-        """
-
         # Get the grid cell containing the player
         player_node = self.get_node((player_rect.centerx, player_rect.centery))
 

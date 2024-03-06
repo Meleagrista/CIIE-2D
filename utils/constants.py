@@ -1,12 +1,8 @@
-# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
-#                                      GLOBAL VARIABLES                                         #
-# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
-
 # ####################################################################### #
 #                             ENTITY CONSTANTS                            #
 # ####################################################################### #
 
-NPC_SIZE = 20  # Represents the size of the entity's visual representation (square).
+NPC_SIZE = 40  # Represents the size of the entity's visual representation (square).
 NPC_ANGLE = 90.0  # Represents the initial angle in degrees for all enemy entities.
 VIEW_OFFSET = 2.5  # Represents the offset value for the entity's directional indicator (triangle), indicating its orientation.
 FIELD_OF_VISION = 60
@@ -16,13 +12,10 @@ REACH_OF_VISION = 6
 #                               MAP CONSTANTS                             #
 # ####################################################################### #
 
-# GRID_SIZE = 35  # TODO: This must be deprecated, and use the size of the map.
 GRID_BACKGROUND = (0, 0, 0)
-SQUARE_SIZE = 20  # Represents the size of each square in pixels on the grid.
+SQUARE_SIZE = 50  # Represents the size of each square in pixels on the grid.
 MAP = 'game/map/files/mapa_bueno_1_bordes.csv'  # Represents the path to the file containing the map information.
-TILEMAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the file containing the tilemap information.
-# MAP = 'game/map/files/map-100.txt'  # Represents the path to the file containing the map information.
-GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
+TILE_MAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the file containing the tile map information.
 
 # ####################################################################### #
 #                              PYGAME CONSTANTS                           #
@@ -57,11 +50,11 @@ CREDITS = (
     "Grao en Enxenería Informática\n"
     "Universidade da Coruña\n"
     "Authors:\n"
-    "Martín do Río Rico\n"
-    "Yago Fernández Rego\n"
-    "David García Ramallal\n"
-    "Pelayo Vieites Pérez"
-)  # Represents the credits' information.
+    "  - Martín do Río Rico\n"
+    "  - Yago Fernández Rego\n"
+    "  - David García Ramallal\n"
+    "  - Pelayo Vieites Pérez"
+)
 
 # ####################################################################### #
 #                               PATH CONSTANTS                            #
@@ -75,7 +68,6 @@ WEIGHT = 2
 
 FRICTION = 0.5
 LIFE = 2
-
+SPEED = 18
 STOPPED = 0
-
-TOTAL_MOVEMENT_SPRITES = 11  #2-11
+TOTAL_MOVEMENT_SPRITES = 11

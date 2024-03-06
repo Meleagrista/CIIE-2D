@@ -3,7 +3,7 @@ from menu.prototypes.gui_prototypes import Text
 import pygame
 from utils.i18n import get_translation
 
-from utils.filepaths import FONT
+from utils.assets_paths import FONT
 
 
 class TextoPlay(Text):

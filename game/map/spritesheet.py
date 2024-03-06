@@ -1,11 +1,13 @@
 import pygame
 
+from utils.constants import SQUARE_SIZE
 
-class Spritesheet:
-    def __init__(self, filename, total_columns, total_rows, tile_size=20):
+
+class SpriteSheet:
+    def __init__(self, filename, total_columns, total_rows, tile_size=SQUARE_SIZE):
         self.filename = filename
-        self.sprite_sheet = pygame.transform.scale(pygame.image.load(filename), (total_columns*tile_size,
-                                                                                 total_rows*tile_size))
+        self.sprite_sheet = pygame.transform.scale( pygame.image.load(filename),
+            (total_columns*tile_size, total_rows*tile_size))
         self.tile_size = tile_size
         self.total_columns = total_columns
 

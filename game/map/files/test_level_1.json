@@ -1,10 +1,10 @@
 {
   "level_number": 1,
   "level_map":{
-    "border_map_path": "game/map/files/mapa_bueno_1_bordes.csv",
-    "tile_map_path": "game/map/files/mapa_bueno_1_tiles.csv"
+    "border_map_path": "game/map/files/csv/mapa_bueno_1_bordes.csv",
+    "tile_map_path": "game/map/files/csv/mapa_bueno_1_tiles.csv"
   },
-  "level_spritesheet": {
+  "level_sprite_sheet": {
     "path": "game/map/files/tileset_no_def.png",
     "columns": 37,
     "rows": 23

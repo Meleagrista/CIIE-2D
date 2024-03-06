@@ -10,7 +10,7 @@ SQUARE_SIZE = 20
 FPS = 60
 
 path_to_folder = './files/'
-path_to_map = './files/map-2.txt'
+path_to_map = 'files/txt/map-2.txt'
 
 if __name__ == '__main__':
     pygame.init()

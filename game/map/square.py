@@ -1,6 +1,6 @@
 import pygame
 
-from game.map.spritesheet import Spritesheet
+from game.map.spritesheet import SpriteSheet
 from utils.constants import *
 
 
@@ -54,10 +54,13 @@ class Square:
         self.size = size
         self.total_rows = total_rows
         self.total_cols = total_cols
+
         self.neighbors = []
         self.barriers = []
+
         self.id = -1
         self.tile_id = -1
+
         self.barrier = False
         self.color = GRID_BACKGROUND
         self.weight = weight
@@ -90,16 +93,6 @@ class Square:
     # ####################################################################### #
 
     def draw(self, win, offset=None):
-        """
-        Draw the square on the pygame window surface.
-
-           Args:
-            win (pygame.Surface): The pygame window surface.
-            offset: offset to be drawn on the pygame surface
-
-           Returns:
-            None
-         """
         if offset is None:
             # Calculate the top-left corner of the rectangle
             top_left_x = self.x - self.size / 2
@@ -120,25 +113,12 @@ class Square:
                     top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
                 return  # Rectangle is completely outside the surface
 
-            # Draw the rectangle with the adjusted coordinates
-            if GRID_SHOW:
-                pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
-            else:
-                pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
+            pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
-    def draw_sprite(self, win, spritesheet: Spritesheet, offset=None):
-        """
-        Draw the square on the pygame window surface.
+            # pygame.display.flip()
 
-           Args:
-            win (pygame.Surface): The pygame window surface.
-            offset: offset to be drawn on the pygame surface
-            spritesheet
-
-           Returns:
-            None
-         """
-        if self.tile_id == -1 or spritesheet is None:
+    def draw_sprite(self, win, sprite_sheet: SpriteSheet, offset=None):
+        if self.tile_id == -1 or sprite_sheet is None:
             self.draw(win, offset)
             return
 
@@ -147,17 +127,30 @@ class Square:
             top_left_x = self.x - self.size / 2
             top_left_y = self.y - self.size / 2
 
-            # Draw the tile with the adjusted coordinates
-            tile = spritesheet.get_sprite_by_number(self.tile_id)
-            win.blit(tile, (top_left_x, top_left_y))
+            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+                return  # Rectangle is completely outside the surface
         else:
             position_x = offset.x + self.size // 2
             position_y = offset.y + self.size // 2
 
-            tile = spritesheet.get_sprite_by_number(self.tile_id)
+            # Calculate the top-left corner of the rectangle
+            top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+            top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+
+            # Check if the rectangle is completely outside the surface
+            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+                return  # Rectangle is completely outside the surface
+
+            # Draw the tile with the adjusted coordinates
+            tile = sprite_sheet.get_sprite_by_number(self.tile_id)
             win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    # ####################################################################### #
+        # self.draw(win, offset)
+        # pygame.display.flip()
+
+        # ####################################################################### #
     #                                POSITION                                 #
     # ####################################################################### #
 

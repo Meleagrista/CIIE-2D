@@ -2,7 +2,7 @@ from managers.resource_manager import ResourceManager
 
 import pygame
 
-from utils.filepaths import FONT
+from utils.assets_paths import FONT
 from utils.i18n import get_translation
 
 

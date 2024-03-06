@@ -68,6 +68,8 @@ class Camera(pygame.sprite.Group):
         if grid is not None:
             if not isinstance(grid, Grid):
                 raise TypeError("grid must be an instance of Grid class")
+        else:
+            print('No Grid has reached the camera.')
 
         self.surface.fill((255, 255, 255))
 
@@ -79,14 +81,12 @@ class Camera(pygame.sprite.Group):
 
         kwargs['internal_surface'] = self._internal_surface
         kwargs['offset'] = self.offset
+        kwargs['center'] = self._boundary.center
 
-        grid.draw(*args, **kwargs)
-
-        # center
-        internal_center = self._boundary.center
+        grid.draw(**kwargs)
 
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
-            sprite.draw(*args, internal_center, **kwargs)
+            sprite.draw(*args, **kwargs)
 
         self._update()
 

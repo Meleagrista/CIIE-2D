@@ -1,6 +1,6 @@
 from menu.prototypes.gui_prototypes import Button, ButtonSwitch
 from utils.enums import Controls as Ctl
-from utils.filepaths import *
+from utils.assets_paths import *
 
 import pygame
 
