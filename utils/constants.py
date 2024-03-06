@@ -19,9 +19,8 @@ REACH_OF_VISION = 6
 # GRID_SIZE = 35  # TODO: This must be deprecated, and use the size of the map.
 GRID_BACKGROUND = (0, 0, 0)
 SQUARE_SIZE = 20  # Represents the size of each square in pixels on the grid.
-MAP = 'game/map/files/map-2_bordes.csv'  # Represents the path to the file containing the map information.
-TILEMAP = 'game/map/files/map-2_tiles.csv'  # Represents the path to the file containing the tilemap information.
-SPRITE_SHEET = 'game/map/files/tiles.png'  # Represents the path to the file containing the sprite sheet information.
+MAP = 'game/map/files/mapa_bueno_1_bordes.csv'  # Represents the path to the file containing the map information.
+TILEMAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the file containing the tilemap information.
 # MAP = 'game/map/files/map-100.txt'  # Represents the path to the file containing the map information.
 GRID_SHOW = False  # Represents whether the grid lines are shown on the screen.
 

@@ -138,7 +138,7 @@ class Square:
            Returns:
             None
          """
-        if self.tile_id == -1:
+        if self.tile_id == -1 or spritesheet is None:
             self.draw(win, offset)
             return
 

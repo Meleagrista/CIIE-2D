@@ -1,0 +1,27 @@
+{
+  "level_number": 1,
+  "level_map":{
+    "border_map_path": "game/map/files/mapa_bueno_1_bordes.csv",
+    "tile_map_path": "game/map/files/mapa_bueno_1_tiles.csv"
+  },
+  "level_spritesheet": {
+    "path": "game/map/files/tileset_no_def.png",
+    "columns": 37,
+    "rows": 23
+  },
+  "level_coordinates": {
+    "player_initial_x": 30,
+    "player_initial_y": 60,
+    "key_x": 29,
+    "key_y": 17,
+    "exit_x": 87,
+    "exit_y": 21
+  },
+  "enemies": [
+    [1, 2, 3],
+    [1, 3, 2],
+    [1],
+    [],
+    [3,1]
+  ]
+}

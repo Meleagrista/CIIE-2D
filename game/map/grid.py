@@ -3,7 +3,7 @@ import csv
 from pygame import Surface
 
 from game.map.spritesheet import Spritesheet
-from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SPRITE_SHEET, SQUARE_SIZE
+from utils.constants import GRID_BACKGROUND, MAP, TILEMAP, SQUARE_SIZE
 from game.map.square import Square
 
 import math
@@ -52,7 +52,7 @@ class Grid:
         self.create_array()
         self.read_border_map(MAP if map_path is None else map_path)
         self.read_tilemap(TILEMAP if tilemap_path is None else tilemap_path)
-        self.sprite_sheet = Spritesheet(SPRITE_SHEET if sprite_sheet_path is None else sprite_sheet_path)
+        self.sprite_sheet = Spritesheet(sprite_sheet_path, ss_columns, ss_rows) if tilemap_path is not None else None
         self.update()
 
     # ####################################################################### #

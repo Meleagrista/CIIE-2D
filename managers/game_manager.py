@@ -1,3 +1,4 @@
+import json
 import pygame
 from pygamepopup.components import InfoBox, Button
 from pygamepopup.constants import BUTTON_SIZE
@@ -10,6 +11,7 @@ from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.map.grid import Grid
+from game.map.level import Level
 from game.ui.ui_bar import Bar
 from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
@@ -25,8 +27,16 @@ class GameManager(Scene):
         self.win = pygame.display.get_surface()
         self.win_size = self.win.get_width()
 
+        # Read level
+        with open(Level.level_paths[1], 'r') as file:
+            data = file.read().replace('\n', '')
+        j = json.loads(data)
+        self.level = Level(**j)
+
         self.player = None
-        self.grid = Grid(100, self.win)
+        self.grid = Grid(100, self.win, map_path=self.level.map.border_map_path, tilemap_path=self.level.map.tile_map_path,
+                         sprite_sheet_path=self.level.level_spritesheet.path, ss_columns=self.level.level_spritesheet.columns,
+                         ss_rows=self.level.level_spritesheet.rows)
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
@@ -38,8 +48,9 @@ class GameManager(Scene):
         self._set_interface()
 
         # Set the key and exit squares
-        # self.grid.set_key_square(2, 18)
-        # self.grid.set_exit_square(33, 1)
+        # TODO: añadir un sprite por encima o modificar la casilla en el mapa
+        self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
+        self.grid.set_exit_square(self.level.coordinates.exit_x, self.level.coordinates.exit_y)
 
         self.menu_manager = MenuManager(self.win)
         self._set_menus()
@@ -167,6 +178,7 @@ class GameManager(Scene):
 
     def _spawn_player(self):
         center = self.win_size // 2
+        # TODO: tomar coordenadas de self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y
         player = Player(center, center, 6, self.grid)
         self._add_player(player)
         self.enemies.set_player(self.player)
@@ -177,7 +189,7 @@ class GameManager(Scene):
         self.player.add_observer(self.interface)
 
     def _spawn_enemies(self):
-        enemies = self.enemies.spawn(self.grid, self.win)
+        enemies = self.enemies.spawn(self.grid, self.win, self.level.enemies_zones)
         for enemy in enemies:
             self.enemies.introduce(enemy, self.all_sprites, self.enemies)
 
