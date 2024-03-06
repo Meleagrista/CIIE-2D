@@ -109,7 +109,7 @@ class Grid:
             self.win.fill(GRID_BACKGROUND)
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprite(surface, self.sprite_sheet, offset)
+                    spot.draw(surface, offset)
                     # spot.draw(surface, offset)
                     if spot.is_border():
                         spot.make_barrier()

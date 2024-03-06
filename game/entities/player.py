@@ -76,7 +76,7 @@ class Player(pygame.sprite.Sprite):
         # self._toggle_key_controls = False
         # self._picked_up_key = False
 
-    def draw(self, center, **kwargs):
+    def draw(self, **kwargs):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
@@ -86,7 +86,6 @@ class Player(pygame.sprite.Sprite):
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
-
 
         # Draw the rotated triangle
         # end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
@@ -119,7 +118,8 @@ class Player(pygame.sprite.Sprite):
         rotated_sprite_rect = rotated_sprite.get_rect(center=my_sprite.get_rect().center)
 
         # Draw rotated sprite
-        surface.blit(rotated_sprite,(self.rect.x - offset.x + rotated_sprite_rect.x, self.rect.y - offset.y + rotated_sprite_rect.y))
+        surface.blit(rotated_sprite,
+                     (self.rect.x - offset.x + rotated_sprite_rect.x, self.rect.y - offset.y + rotated_sprite_rect.y))
 
     def update(self, **kwargs):
         movement_option = kwargs.pop('movement_option', None)
@@ -254,8 +254,17 @@ class Player(pygame.sprite.Sprite):
         # Update sprite
         self.rect.topleft = (self.x, self.y)
 
+<<<<<<< Updated upstream
         if(self._is_moving and (self.current_sprite == 0 or self.current_sprite == TOTAL_MOVEMENT_SPRITES)):
             self.current_sprite = 2
+=======
+        ##############################
+        # ANIMATION
+        ##############################
+
+        if self._is_moving:
+            self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
+>>>>>>> Stashed changes
             self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
         elif(self._is_moving and self.current_sprite != TOTAL_MOVEMENT_SPRITES):
             self.current_sprite = (self.current_sprite + 1)
@@ -263,7 +272,6 @@ class Player(pygame.sprite.Sprite):
         elif(not self._is_moving):
             self.current_sprite = STOPPED
             self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
-
 
 
     def add(self, *groups):

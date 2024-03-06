@@ -132,7 +132,7 @@ class GameManager(Scene):
 
     def _start(self):
         self._spawn_player()
-        self._spawn_enemies()
+        # self._spawn_enemies()
 
     def _resume(self):
         self.close_menu()
@@ -177,9 +177,9 @@ class GameManager(Scene):
         self.player = None
 
     def _spawn_player(self):
-        center = self.win_size // 2
+        x, y = self.grid.nodes[30][60].get_pos()
         # TODO: tomar coordenadas de self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y
-        player = Player(center, center, 6, self.grid)
+        player = Player(x, y, 6, self.grid)
         self._add_player(player)
         self.enemies.set_player(self.player)
         self.interface.set_player(self.player)
