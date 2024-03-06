@@ -34,16 +34,10 @@ class ResourceManager(object):
             return image
 
     @classmethod
-    def load_coordinates(cls, name):
-        if name in cls.resources:
-            return cls.resources[name]
-        else:
-            full_name = os.path.join('managers/deprecated_images', name)  # TODO: Check if this works
-            path_file = open(full_name, 'r')
-
-            data = path_file.read()
-            path_file.close()
-
-            cls.resources[name] = data
-
-            return data
+    def load_coordinates(cls, index, filename):
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            if index < len(lines):
+                return tuple(map(int, lines[index].split()))
+            else:
+                return None

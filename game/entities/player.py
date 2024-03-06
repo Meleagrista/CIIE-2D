@@ -5,9 +5,11 @@ from pygame import Mask, Surface
 from typing_extensions import deprecated
 
 from game.map.grid import Grid
+from managers.resource_manager import ResourceManager
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
+from utils.filepaths import SHEET_CHARACTER, COORDINATES_CHARACTER
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -34,11 +36,14 @@ class Player(pygame.sprite.Sprite):
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.sheet = ResourceManager.load_image(SHEET_CHARACTER, -1)
+        self.sheet = self.sheet.convert_alpha()
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
         self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+        self.current_sprite = 0
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -82,25 +87,39 @@ class Player(pygame.sprite.Sprite):
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        # Draw the square
-        pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
 
         # Draw the rotated triangle
-        end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
+        # end_point = (self.rect.centerx - self.delta_x * 10 - offset.x, self.rect.centery - self.delta_y * 10 - offset.y)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
-        triangle_size = NPC_SIZE // 2
-        triangle_points = [
-            end_point,
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
-            ),
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
-            ),
-        ]
-        pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
+        # triangle_size = NPC_SIZE // 2
+        # triangle_points = [
+        #     end_point,
+        #     (
+        #         end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
+        #         end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
+        #     ),
+        #     (
+        #         end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
+        #         end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
+        #     ),
+        # ]
+        # pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
+
+        # Draw the player
+        stopped_coordinates = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+        my_sprite = self.sheet.subsurface(stopped_coordinates)
+
+        # Calculate angle in degrees
+        angle_in_degrees = -(math.degrees(angle_to_horizontal) - 90) % 360
+
+        # Rotate sprite
+        rotated_sprite = pygame.transform.rotate(my_sprite, angle_in_degrees)
+
+        # Adjust position of rotated sprite
+        rotated_sprite_rect = rotated_sprite.get_rect(center=my_sprite.get_rect().center)
+
+        # Draw rotated sprite
+        surface.blit(rotated_sprite,(self.rect.x - offset.x + rotated_sprite_rect.x, self.rect.y - offset.y + rotated_sprite_rect.y))
 
     def update(self, **kwargs):
         movement_option = kwargs.pop('movement_option', None)
@@ -234,6 +253,11 @@ class Player(pygame.sprite.Sprite):
 
         # Update sprite
         self.rect.topleft = (self.x, self.y)
+
+        if(self._is_moving):
+            self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
+            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+
 
     def add(self, *groups):
         for group in groups:
