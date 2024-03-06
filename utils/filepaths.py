@@ -8,6 +8,7 @@ IMAGES_BUTTONS = "assets/images/icons/"
 MUSIC_PATH = "assets/music/"
 SOUNDS_PATH = "assets/sounds/"
 CHARACTERS_PATH = "assets/characters/"
+SPRITES_PATH = "assets/sprites/"
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
@@ -53,3 +54,9 @@ INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 
 SHEET_CHARACTER = CHARACTERS_PATH + 'character_template-Sheet.png'
 COORDINATES_CHARACTER = CHARACTERS_PATH + 'character_coordinates.txt'
+
+KEYS_GREY_SHEET = SPRITES_PATH + 'Key_8_GREY_Spritesheet.png'
+KEYS_SILVER_SHEET = SPRITES_PATH + 'Key_8_SILVER_Spritesheet.png'
+KEYS_GOLD_SHEET = SPRITES_PATH + 'Key_8_GOLD_Spritesheet.png'
+
+COORDINATES_KEYS = SPRITES_PATH + 'keys_coordinates.txt'
