@@ -2,9 +2,10 @@ import pygame
 
 
 class Spritesheet:
-    def __init__(self, filename, tile_size=20, total_columns=12):
+    def __init__(self, filename, total_columns, total_rows, tile_size=20):
         self.filename = filename
-        self.sprite_sheet = pygame.transform.scale(pygame.image.load(filename), (240, 240))
+        self.sprite_sheet = pygame.transform.scale(pygame.image.load(filename), (total_columns*tile_size,
+                                                                                 total_rows*tile_size))
         self.tile_size = tile_size
         self.total_columns = total_columns
 
