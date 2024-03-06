@@ -254,9 +254,16 @@ class Player(pygame.sprite.Sprite):
         # Update sprite
         self.rect.topleft = (self.x, self.y)
 
-        if(self._is_moving):
-            self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
+        if(self._is_moving and (self.current_sprite == 0 or self.current_sprite == TOTAL_MOVEMENT_SPRITES)):
+            self.current_sprite = 2
             self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+        elif(self._is_moving and self.current_sprite != TOTAL_MOVEMENT_SPRITES):
+            self.current_sprite = (self.current_sprite + 1)
+            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+        elif(not self._is_moving):
+            self.current_sprite = STOPPED
+            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+
 
 
     def add(self, *groups):
