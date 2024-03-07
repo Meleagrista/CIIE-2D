@@ -1,6 +1,6 @@
 import pygame
 
-from game.map.spritesheet import SpriteSheet
+from game.sprites.spritesheet import SpriteSheet
 from utils.constants import *
 
 
@@ -92,65 +92,42 @@ class Square:
     #                                  DRAW                                   #
     # ####################################################################### #
 
-    def draw(self, win, offset=None):
-        if offset is None:
-            # Calculate the top-left corner of the rectangle
-            top_left_x = self.x - self.size / 2
-            top_left_y = self.y - self.size / 2
+    def draw(self, win, offset=(0, 0)):
+        position_x = offset.x + self.size // 2
+        position_y = offset.y + self.size // 2
 
-            # Draw the rectangle with the adjusted coordinates
-            pygame.draw.rect(win, self.color, (top_left_x, top_left_y, self.size * 0.99, self.size * 0.99))
-        else:
-            position_x = offset.x + self.size // 2
-            position_y = offset.y + self.size // 2
+        # Calculate the top-left corner of the rectangle
+        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
 
-            # Calculate the top-left corner of the rectangle
-            top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
-            top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+        # Check if the rectangle is completely outside the surface
+        if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+            return  # Rectangle is completely outside the surface
 
-            # Check if the rectangle is completely outside the surface
-            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
-                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-                return  # Rectangle is completely outside the surface
+        pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
-            pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
-
-            # pygame.display.flip()
-
-    def draw_sprite(self, win, sprite_sheet: SpriteSheet, offset=None):
+    def draw_sprite(self, win, sprite_sheet: SpriteSheet, offset=(0, 0)):
         if self.tile_id == -1 or sprite_sheet is None:
             self.draw(win, offset)
             return
+        position_x = offset.x + self.size // 2
+        position_y = offset.y + self.size // 2
 
-        if offset is None:
-            # Calculate the top-left corner of the rectangle
-            top_left_x = self.x - self.size / 2
-            top_left_y = self.y - self.size / 2
+        # Calculate the top-left corner of the rectangle
+        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
 
-            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
-                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-                return  # Rectangle is completely outside the surface
-        else:
-            position_x = offset.x + self.size // 2
-            position_y = offset.y + self.size // 2
+        # Check if the rectangle is completely outside the surface
+        if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+            return  # Rectangle is completely outside the surface
 
-            # Calculate the top-left corner of the rectangle
-            top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
-            top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+        # Draw the tile with the adjusted coordinates
+        tile = sprite_sheet.get_sprite_by_number(self.tile_id)
+        win.blit(tile, (self.x - position_x, self.y - position_y))
 
-            # Check if the rectangle is completely outside the surface
-            if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
-                    top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-                return  # Rectangle is completely outside the surface
-
-            # Draw the tile with the adjusted coordinates
-            tile = sprite_sheet.get_sprite_by_number(self.tile_id)
-            win.blit(tile, (self.x - position_x, self.y - position_y))
-
-        # self.draw(win, offset)
-        # pygame.display.flip()
-
-        # ####################################################################### #
+    # ####################################################################### #
     #                                POSITION                                 #
     # ####################################################################### #
 

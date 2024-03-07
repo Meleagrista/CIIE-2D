@@ -3,7 +3,7 @@ import csv
 from pygame import Surface
 from typing_extensions import deprecated
 
-from game.map.spritesheet import SpriteSheet
+from game.sprites.spritesheet import SpriteSheet
 from utils.constants import GRID_BACKGROUND, MAP, TILE_MAP, SQUARE_SIZE
 from game.map.square import Square
 

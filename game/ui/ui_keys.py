@@ -30,7 +30,7 @@ class Keys(pygame.sprite.Sprite):
         self.background = pygame.transform.scale(self.background, (self._width, self._height))
 
         # Dibuja la imagen en la superficie en la posición del rectángulo
-        surface.blit(self.background, (self._x, self._y))
+        # surface.blit(self.background, (self._x, self._y))
 
         if self.key_obtained:
             surface.blit(self.image, (self._x, self._y))

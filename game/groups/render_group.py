@@ -1,8 +1,9 @@
 import pygame
+from typing_extensions import deprecated
 
 from game.entities.player import Player
 from game.map.grid import Grid
-from utils.constants import *
+from game.ui.ui_bar import Bar
 
 
 class Camera(pygame.sprite.Group):
@@ -85,10 +86,27 @@ class Camera(pygame.sprite.Group):
 
         grid.draw(**kwargs)
 
+        # Draw all sprites except instances of the Bar class
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
             sprite.draw(*args, **kwargs)
 
-        self._update()
+        # Update the display
+        # self._update()
+        if self.surface_mask is not None:
+            self._internal_surface.blit(self.surface_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
+
+        # Draw the Bar instances after updating
+        for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
+            if isinstance(sprite, Bar):
+                sprite.draw(**kwargs)
+
+        scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
+        scaled_rectangle = scaled_surface.get_rect(center=self.center)
+        self.surface.blit(scaled_surface, scaled_rectangle)
+
+        scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
+        scaled_rectangle = scaled_surface.get_rect(center=self.center)
+        self.surface.blit(scaled_surface, scaled_rectangle)
 
     def _zoom(self):
         keys = pygame.key.get_pressed()
@@ -109,6 +127,7 @@ class Camera(pygame.sprite.Group):
         elif player.rect.bottom > self._boundary.bottom:
             self._boundary.bottom = player.rect.bottom
 
+    @deprecated('This method has been replaced')
     def _update(self):
         if self.surface_mask is not None:
             self._internal_surface.blit(self.surface_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
