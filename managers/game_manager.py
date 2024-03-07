@@ -39,8 +39,9 @@ class GameManager(Scene):
         self.grid = Grid(
             size=100,
             win=self.win,
-            map_path=self.level.map.border_map_path,
+            border_map_path=self.level.map.border_map_path,
             tile_map_path=self.level.map.tile_map_path,
+            objects_map_path=self.level.map.objects_map_path,
             sprite_sheet_path=self.level.level_sprite_sheet.path,
             ss_columns=self.level.level_sprite_sheet.columns,
             ss_rows=self.level.level_sprite_sheet.rows

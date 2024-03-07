@@ -1,13 +1,14 @@
 {
   "level_number": 1,
   "level_map":{
-    "border_map_path": "game/map/files/csv/mapa_bueno_1_bordes.csv",
-    "tile_map_path": "game/map/files/csv/mapa_bueno_1_tiles.csv"
+    "border_map_path": "game/map/files/csv/map_1/map_1_bordes.csv",
+    "tile_map_path": "game/map/files/csv/map_1/map_1_suelo.csv",
+    "objects_map_path": "game/map/files/csv/map_1/map_1_objetos.csv"
   },
   "level_sprite_sheet": {
-    "path": "game/map/files/tileset_no_def.png",
+    "path": "game/map/files/whole_tileset.png",
     "columns": 37,
-    "rows": 23
+    "rows": 45
   },
   "level_coordinates": {
     "player_initial_x": 30,

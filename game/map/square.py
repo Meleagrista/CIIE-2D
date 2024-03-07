@@ -59,7 +59,7 @@ class Square:
         self.barriers = []
 
         self.id = -1
-        self.tile_id = -1
+        self.tile_id = []
 
         self.barrier = False
         self.color = GRID_BACKGROUND
@@ -86,7 +86,7 @@ class Square:
         return self.id
 
     def set_tile_id(self, tile_id):
-        self.tile_id = int(tile_id)
+        self.tile_id.append(int(tile_id))
 
     # ####################################################################### #
     #                                  DRAW                                   #
@@ -117,9 +117,8 @@ class Square:
 
             # pygame.display.flip()
 
-    def draw_sprite(self, win, sprite_sheet: SpriteSheet, offset=None):
-        if self.tile_id == -1 or sprite_sheet is None:
-            self.draw(win, offset)
+    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset=None):
+        if sprite_id == -1 or sprite_sheet is None:
             return
 
         if offset is None:
@@ -144,13 +143,14 @@ class Square:
                 return  # Rectangle is completely outside the surface
 
             # Draw the tile with the adjusted coordinates
-            tile = sprite_sheet.get_sprite_by_number(self.tile_id)
+            tile = sprite_sheet.get_sprite_by_number(sprite_id)
             win.blit(tile, (self.x - position_x, self.y - position_y))
 
-        # self.draw(win, offset)
-        # pygame.display.flip()
+    def draw_sprites(self, win, sprite_sheet: SpriteSheet, offset=None):
+        for sprite_id in self.tile_id:
+            self.draw_sprite(win, sprite_id, sprite_sheet, offset)
 
-        # ####################################################################### #
+    # ####################################################################### #
     #                                POSITION                                 #
     # ####################################################################### #
 

@@ -30,7 +30,8 @@ class Grid:
         hover (Square): The grid cell currently being hovered over by the mouse cursor.
     """
 
-    def __init__(self, size, win, map_path=None, tile_map_path=None, sprite_sheet_path=None, ss_columns=37, ss_rows=23):
+    def __init__(self, size, win, border_map_path=None, tile_map_path=None, objects_map_path=None,
+                 sprite_sheet_path=None, ss_columns=37, ss_rows=23):
         self.groups = []
 
         w, _ = win.get_size()
@@ -45,8 +46,9 @@ class Grid:
 
         self.spawn = None
 
-        self.read_border_map(MAP if map_path is None else map_path)
+        self.read_border_map(MAP if border_map_path is None else border_map_path)
         self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
+        self.read_tile_map(objects_map_path) if objects_map_path is not None else None
         self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows) if tile_map_path is not None else None
 
         self.update()
@@ -89,7 +91,7 @@ class Grid:
         if offset is None:
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprite(surface, self.sprite_sheet)
+                    spot.draw_sprites(surface, self.sprite_sheet)
 
                     if spot.is_border():
                         spot.make_barrier()
@@ -103,7 +105,7 @@ class Grid:
         else:
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprite(
+                    spot.draw_sprites(
                         win=surface,
                         sprite_sheet=self.sprite_sheet,
                         offset=offset)
