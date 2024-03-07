@@ -1,7 +1,10 @@
+from pygame import Surface
+
 from managers.resource_manager import ResourceManager
 
 import pygame
 
+from utils.constants import FONT_COLOR, FONT_SIZE
 from utils.paths.assets_paths import FONT
 from utils.i18n import get_translation
 
@@ -22,6 +25,16 @@ class ElementoGUI:
 
     def set_center(self, position):
         self.rect.center = position
+
+    def set_right(self, position):
+        (x, y) = position
+        self.rect.centery = y
+        self.rect.right = x
+
+    def set_left(self, position):
+        (x, y) = position
+        self.rect.centery = y
+        self.rect.left = x
 
     def set_rect(self, new_rect):
         self.rect = new_rect
@@ -48,9 +61,12 @@ class ElementoGUI:
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Button(ElementoGUI):
-    def __init__(self, screen, image_name, position):
-        self.image = ResourceManager.load_image(image_name, -1)
-        self.image = pygame.transform.scale(self.image, (pygame.display.Info().current_h / 10, pygame.display.Info().current_h / 10))
+    def __init__(self, screen, image, position):
+        if isinstance(image, Surface):
+            self.image = image
+        else:
+            self.image = ResourceManager.load_image(image, -1)
+            self.image = pygame.transform.scale(self.image, (pygame.display.Info().current_h / 10, pygame.display.Info().current_h / 10))
 
         ElementoGUI.__init__(self, screen, self.image.get_rect())
 
@@ -62,10 +78,16 @@ class Button(ElementoGUI):
 
 class ButtonSwitch(Button):
     def __init__(self, screen, image_name_1, image_name_2, position, initial_state):
-        self.image_1 = ResourceManager.load_image(image_name_1, -1)
-        self.image_1 = pygame.transform.scale(self.image_1, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
-        self.image_2 = ResourceManager.load_image(image_name_2, -1)
-        self.image_2 = pygame.transform.scale(self.image_2, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
+        if isinstance(image_name_1, Surface):
+            self.image_1 = image_name_1
+        else:
+            self.image_1 = ResourceManager.load_image(image_name_1, -1)
+            self.image_1 = pygame.transform.scale(self.image_1, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
+        if isinstance(image_name_2, Surface):
+            self.image_2 = image_name_2
+        else:
+            self.image_2 = ResourceManager.load_image(image_name_2, -1)
+            self.image_2 = pygame.transform.scale(self.image_2, (pygame.display.Info().current_h / 6, pygame.display.Info().current_h / 6))
         
         ElementoGUI.__init__(self, screen, self.image_1.get_rect())
 
@@ -110,15 +132,22 @@ class CreditsText:
     def __init__(self, screen):
         fuente = pygame.font.Font(FONT, 20)
         self.texts = []
-        self.texts.append(
-            Text(screen, fuente, (0, 0, 0), "Contornos Inmersivos, Interactivos e de Entretemento", (40, 100)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "Grao en Enxeneria Informatica", (40, 130)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "UDC", (40, 160)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "Authors:", (40, 190)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "- Martin do Rio Rico", (50, 220)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "- Yago Fernandez Rego", (50, 250)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "- David Garcia Ramallal:", (50, 280)))
-        self.texts.append(Text(screen, fuente, (0, 0, 0), "- Pelayo Vieites Perez", (50, 310)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "Contornos Inmersivos, Interactivos e de Entretenimiento", (40, 100)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "Grao en Ingeneria Informatica", (40, 130)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "Universidade da Coruna, UDC", (40, 160)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "Autores:", (40, 190)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "     - Martin do Rio Rico", (50, 220)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "     - Yago Fernandez Rego", (50, 250)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "     - David Garcia Ramallal:", (50, 280)))
+        self.texts.append(Text(screen, fuente, FONT_COLOR,
+                               "     - Pelayo Vieites Perez", (50, 310)))
 
     def draw(self, screen):
         for text in self.texts:

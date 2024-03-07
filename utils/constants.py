@@ -39,22 +39,14 @@ TURQUOISE = (64, 224, 208)
 #                               MENU CONSTANTS                            #
 # ####################################################################### #
 
-MENU_FONT = 50  # Represents the font size for menu items.
-CREDITS_FONT = 20  # Represents the font size for credits.
-TITLE_FONT = 52  # Represents the font size for the title.
-FONT_COLOR = "white"  # Represents the color of the text font.
+FONT_SIZE = 50
+FONT_COLOR = (255, 255, 255)
+TITLE_SIZE = 100
+MENU_GAP = 90
+MENU_LEFT = 0.7
+
 PAUSE_MENU_ID = "pause_menu"
 DIE_MENU_ID = "die_menu"
-CREDITS = (
-    "Contornos Inmersivos, Interactivos e de Entretemento\n"
-    "Grao en Enxenería Informática\n"
-    "Universidade da Coruña\n"
-    "Authors:\n"
-    "  - Martín do Río Rico\n"
-    "  - Yago Fernández Rego\n"
-    "  - David García Ramallal\n"
-    "  - Pelayo Vieites Pérez"
-)
 
 # ####################################################################### #
 #                               PATH CONSTANTS                            #

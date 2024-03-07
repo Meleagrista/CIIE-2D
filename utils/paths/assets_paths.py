@@ -1,6 +1,7 @@
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATHS TO FOLDERS                                       #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+from game.sprites.spritesheet import SpriteSheet
 
 MENU_ASSETS = "assets/menu_assets/"
 
@@ -40,28 +41,29 @@ FONT = FONT_PATH + 'pixel.regular.ttf'
 #                                        PATH TO GUI BUTTONS                                    #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-BUTTON_PLAY = IMAGES_BUTTONS + 'controller.png'
-BUTTON_CONFIGURATION = IMAGES_BUTTONS + 'config.png'
-BUTTON_CREDITS = IMAGES_BUTTONS + 'corona.png'
-BUTTON_EXIT = IMAGES_BUTTONS + 'exit.png'
-BUTTON_BACK = IMAGES_BUTTONS + 'return_pixel3.png'
-BUTTON_ARROWS = IMAGES_BUTTONS + 'arrows.png'
-BUTTON_WASD = IMAGES_BUTTONS + "wasd.png"
+buttons = SpriteSheet(MENU_ASSETS + 'ui_white.png', 10, 9, 80, 80)
 
-SWITCH_ON = IMAGES_BUTTONS + 'switch_on.png'
-SWITCH_OFF = IMAGES_BUTTONS + 'switch_off.jpg'
+BUTTON_PLAY = buttons.get_sprite_by_number(85)
+BUTTON_CONFIGURATION = buttons.get_sprite_by_number(75)
+BUTTON_CREDITS = buttons.get_sprite_by_number(78)
+BUTTON_EXIT = buttons.get_sprite_by_number(76)
+BUTTON_BACK = buttons.get_sprite_by_number(80)
+BUTTON_ARROWS = buttons.get_sprite_by_number(70)
+BUTTON_WASD = buttons.get_sprite_by_number(72)
+
+SWITCH_ON = buttons.get_sprite_by_number(70)
+SWITCH_OFF = buttons.get_sprite_by_number(72)
+
+flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 80, 80)
+
+SPAIN = flags.get_sprite_by_number(21)
+UNITED_KINGDOM = flags.get_sprite_by_number(1)
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO ICONS ELEMENTS                                 #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-HEALTH_BAR = IMAGES_BUTTONS + 'health_bar.png'
-
 KEYS_IMG = IMAGES_BUTTONS + 'key.png'
-CAVE_IMG = IMAGES_BUTTONS + 'cave_popup.png'
-
-SPAIN = IMAGES_BUTTONS + 'spain_32.png'
-UNITED_KINGDOM = IMAGES_BUTTONS + 'united_kingdom_32.png'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO SOUND ELEMENTS                                 #
@@ -75,7 +77,7 @@ DETECTED_SOUND = SOUNDS_PATH + 'sonar-ping-95840.mp3'
 INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
-#                                        PATH TO SPRITESHEETS                                   #
+#                                        PATH TO SPRITE SHEETS                                  #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 SHEET_CHARACTER = CHARACTERS_PATH + 'character_template-Sheet.png'

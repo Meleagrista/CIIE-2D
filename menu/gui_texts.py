@@ -1,6 +1,8 @@
 from menu.prototypes.gui_prototypes import Text
 
 import pygame
+
+from utils.constants import FONT_SIZE, MENU_LEFT, MENU_GAP, TITLE_SIZE, FONT_COLOR
 from utils.i18n import get_translation
 
 from utils.paths.assets_paths import FONT
@@ -8,9 +10,8 @@ from utils.paths.assets_paths import FONT
 
 class TextoSplash(Text):
     def __init__(self, screen):
-        font_size = 50
-        font = pygame.font.Font(FONT, font_size)
-        pos = (pygame.display.Info().current_w / 2, pygame.display.Info().current_h - font_size*1.5)
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w / 2, pygame.display.Info().current_h - FONT_SIZE * 1.5)
         Text.__init__(self, screen, font, (255, 255, 255), "PRESS ANY KEY TO PLAY", (0, 0))
         self.set_center(pos)
 
@@ -20,8 +21,10 @@ class TextoSplash(Text):
 
 class TextoPlay(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'PLAY', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.43))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 0)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'play'), (0, 0))
+        self.set_left(pos)
 
     def activate(self):
         self.screen.menu.run()
@@ -29,8 +32,10 @@ class TextoPlay(Text):
 
 class TextoConfiguration(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'SETTINGS', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.53))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 1)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'settings'), (0, 0))
+        self.set_left(pos)
 
     def activate(self):
         self.screen.menu.show_configuration_screen()
@@ -38,8 +43,10 @@ class TextoConfiguration(Text):
 
 class TextoCredits(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'CREDITS', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.63))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 2)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'credits'), (0, 0))
+        self.set_left(pos)
 
     def activate(self):
         self.screen.menu.show_credits_screen()
@@ -47,8 +54,10 @@ class TextoCredits(Text):
 
 class TextoExit(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'EXIT', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.73))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 3)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'exit'), (0, 0))
+        self.set_left(pos)
 
     def activate(self):
         self.screen.menu.exit()
@@ -56,8 +65,9 @@ class TextoExit(Text):
 
 class TextoMenuTitle(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 5)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'GAME TITLE', (pygame.display.Info().current_w * 0.05, pygame.display.Info().current_h * 0.3))
+        font = pygame.font.Font(FONT, TITLE_SIZE)
+        Text.__init__(self, screen, font, FONT_COLOR, 'GAME TITLE',
+                      (pygame.display.Info().current_w * 0.05, pygame.display.Info().current_h * 0.3))
 
     def activate(self):
         pass
@@ -65,8 +75,10 @@ class TextoMenuTitle(Text):
 
 class TextoBackToMenu(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'RETURN', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.80))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 0)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'return'), (0, 0))
+        self.set_left(pos)
 
     def activate(self):
         self.screen.menu.show_starting_screen()
@@ -74,17 +86,23 @@ class TextoBackToMenu(Text):
 
 class TextoMenuMusic(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'MENU MUSIC', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.60))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 1)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'menu music'), (0, 0))
+        self.set_left(pos)
 
 
 class TextoMenuController(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'CONTROLS', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.40))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 2)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'controls'), (0, 0))
+        self.set_left(pos)
 
 
 class TextoMenuLanguages(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'language'), (560, 160))
+        font = pygame.font.Font(FONT, FONT_SIZE)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 3)
+        Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'language'), (0, 0))
+        self.set_left(pos)

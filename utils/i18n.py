@@ -11,7 +11,15 @@ traducciones = {
         'language': 'IDIOMA',
         'pick up key': 'Pulsa <ESPACIO> para coger la llave',
         'find exit': 'Tienes que encontrar la salida',
-        'find key': 'Tienes que encontrar la llave'
+        'find key': 'Tienes que encontrar la llave',
+        'credit text': "Contornos Inmersivos, Interactivos e de Entretenimiento\n"
+                       "Grao en Ingeneria Informática\n"
+                       "Universidade da Coruña\n"
+                       "Autores:\n"
+                       "  - Martín do Río Rico\n"
+                       "  - Yago Fernández Rego\n"
+                       "  - David García Ramallal\n"
+                       "  - Pelayo Vieites Pérez"
     },
     'en': {
         'play': 'PLAY',
@@ -25,7 +33,15 @@ traducciones = {
         'language': 'LANGUAGE',
         'pick up key': 'Press <SPACE> to pick up the key',
         'find exit': 'You need to find the exit',
-        'find key': 'You need to find the key'
+        'find key': 'You need to find the key',
+        'credit text': "Contornos Inmersivos, Interactivos e de Entretenimiento\n"
+                       "Informatics engineering\n"
+                       "Universidade da Coruña\n"
+                       "Authors:\n"
+                       "  - Martín do Río Rico\n"
+                       "  - Yago Fernández Rego\n"
+                       "  - David García Ramallal\n"
+                       "  - Pelayo Vieites Pérez"
     }
 }
 
