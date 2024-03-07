@@ -5,7 +5,6 @@ from game.sprites.spritesheet import SpriteSheet
 
 MENU_ASSETS = "assets/menu_assets/"
 
-FONT_PATH = "assets/fonts/"
 IMAGES_BACKGROUND = "assets/images/backgrounds/"
 IMAGES_BUTTONS = "assets/images/icons/"
 MUSIC_PATH = "assets/music/"
@@ -35,7 +34,8 @@ MUSIC_BACKGROUND = MUSIC_PATH + 'Black-Silent-Fear(chosic.com).mp3'
 #                                        PATH TO FONT ELEMENTS                                  #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-FONT = FONT_PATH + 'pixel.regular.ttf'
+FONT_PATH = "assets/fonts_assets/"
+FONT = FONT_PATH + 'pixel-tactical.ttf'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI BUTTONS                                    #
@@ -54,10 +54,11 @@ BUTTON_WASD = buttons.get_sprite_by_number(72)
 SWITCH_ON = buttons.get_sprite_by_number(70)
 SWITCH_OFF = buttons.get_sprite_by_number(72)
 
-flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 80, 80)
+flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68, 68)
 
 SPAIN = flags.get_sprite_by_number(21)
 UNITED_KINGDOM = flags.get_sprite_by_number(1)
+FRAME = buttons.get_sprite_by_number(70)
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO ICONS ELEMENTS                                 #

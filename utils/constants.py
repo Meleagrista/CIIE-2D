@@ -39,11 +39,13 @@ TURQUOISE = (64, 224, 208)
 #                               MENU CONSTANTS                            #
 # ####################################################################### #
 
-FONT_SIZE = 50
+FONT_SIZE = 60
 FONT_COLOR = (255, 255, 255)
 TITLE_SIZE = 100
-MENU_GAP = 90
+MENU_GAP = 100
 MENU_LEFT = 0.7
+BUTTON_VERTICAL_CORRECTION = 1.5
+BUTTON_HORIZONTAL_CORRECTION = 18
 
 PAUSE_MENU_ID = "pause_menu"
 DIE_MENU_ID = "die_menu"
