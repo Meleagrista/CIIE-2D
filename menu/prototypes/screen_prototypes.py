@@ -4,8 +4,8 @@ from managers.resource_manager import ResourceManager
 import pygame
 
 # TODO: Extact these into a constants file.
-ANCHO_PANTALLA = 800
-ALTO_PANTALLA = 600
+ANCHO_PANTALLA = 400
+ALTO_PANTALLA = 300
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#

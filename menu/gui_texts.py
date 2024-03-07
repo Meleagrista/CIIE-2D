@@ -20,8 +20,8 @@ class TextoSplash(Text):
 
 class TextoPlay(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'play'), (530, 55))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'PLAY', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.43))
 
     def activate(self):
         self.screen.menu.run()
@@ -29,8 +29,8 @@ class TextoPlay(Text):
 
 class TextoConfiguration(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'settings'), (530, 95))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'SETTINGS', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.53))
 
     def activate(self):
         self.screen.menu.show_configuration_screen()
@@ -38,8 +38,8 @@ class TextoConfiguration(Text):
 
 class TextoCredits(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'credits'), (530, 135))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'CREDITS', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.63))
 
     def activate(self):
         self.screen.menu.show_credits_screen()
@@ -47,8 +47,8 @@ class TextoCredits(Text):
 
 class TextoExit(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'exit'), (530, 175))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'EXIT', (pygame.display.Info().current_w * 0.42, pygame.display.Info().current_h * 0.73))
 
     def activate(self):
         self.screen.menu.exit()
@@ -56,8 +56,8 @@ class TextoExit(Text):
 
 class TextoMenuTitle(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 50)
-        Text.__init__(self, screen, fuente, (0, 0, 0), 'GAME TITLE', (50, 100))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 5)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'GAME TITLE', (pygame.display.Info().current_w * 0.05, pygame.display.Info().current_h * 0.3))
 
     def activate(self):
         pass
@@ -65,8 +65,8 @@ class TextoMenuTitle(Text):
 
 class TextoBackToMenu(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'return'), (560, 200))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'RETURN', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.80))
 
     def activate(self):
         self.screen.menu.show_starting_screen()
@@ -74,14 +74,14 @@ class TextoBackToMenu(Text):
 
 class TextoMenuMusic(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'menu music'), (560, 80))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'MENU MUSIC', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.60))
 
 
 class TextoMenuController(Text):
     def __init__(self, screen):
-        fuente = pygame.font.Font(FONT, 20)
-        Text.__init__(self, screen, fuente, (0, 0, 0), get_translation('en', 'controls'), (560, 120))
+        fuente = pygame.font.Font('assets/fonts/pixel.regular.ttf', round((pygame.display.Info().current_h / 10)))
+        Text.__init__(self, screen, fuente, (0, 0, 0), 'CONTROLS', (pygame.display.Info().current_w * 0.45, pygame.display.Info().current_h * 0.40))
 
 
 class TextoMenuLanguages(Text):
