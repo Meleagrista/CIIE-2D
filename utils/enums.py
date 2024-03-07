@@ -72,6 +72,12 @@ class Direction(Enum):
         elif self == Direction.SOUTHWEST:
             return 225
 
+    def is_west(self):
+        return self in [Direction.WEST, Direction.NORTHWEST, Direction.SOUTHWEST]
+
+    def is_east(self):
+        return self in [Direction.EAST, Direction.NORTHEAST, Direction.SOUTHEAST]
+
     def __str__(self):
         return self.name
 

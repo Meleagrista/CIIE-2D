@@ -4,19 +4,18 @@ from utils.constants import SQUARE_SIZE
 
 
 class SpriteSheet:
-    def __init__(self, filename, total_columns, total_rows, tile_width=SQUARE_SIZE, tile_height=SQUARE_SIZE):
+    def __init__(self, filename, total_columns, total_rows, tile_size=SQUARE_SIZE):
         self.filename = filename
         self.sprite_sheet = pygame.transform.scale(
             pygame.image.load(filename),
-            (total_columns*tile_height, total_rows*tile_width))
-        self.tile_height = tile_height
-        self.tile_width = tile_width
+            (total_columns * tile_size, total_rows * tile_size))
+        self.tile_size = tile_size
         self.total_columns = total_columns
 
     def get_sprite(self, x, y):
-        sprite = pygame.Surface((self.tile_width, self.tile_height))
+        sprite = pygame.Surface((self.tile_size, self.tile_size))
         sprite.set_colorkey((0, 0, 0))
-        sprite.blit(self.sprite_sheet, (0, 0), (x*self.tile_width, y*self.tile_height, self.tile_width, self.tile_height))
+        sprite.blit(self.sprite_sheet, (0, 0), (x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size))
         return sprite
 
     def get_sprite_by_number(self, number):

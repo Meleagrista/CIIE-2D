@@ -22,6 +22,7 @@ TILE_MAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the
 # ####################################################################### #
 
 FPS = 60  # Represents the refresh rate (frames per second) for the loop.
+
 RED = (255, 0, 0)
 PASTEL_RED = (255, 182, 193)  # This is a pastel shade of red
 GREEN = (0, 255, 0)

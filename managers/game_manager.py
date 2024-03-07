@@ -291,8 +291,8 @@ class GameManager(Scene):
 
     def _set_interface(self):
         bar = Bar(self.win)
-        # bar.add(self.interface)
-        bar.add(self.all_sprites)
+        bar.add(self.interface)
+        # bar.add(self.all_sprites)
         message = Message(self.win)
         message.add(self.interface)
         keys_box = Keys(self.win)

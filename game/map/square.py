@@ -107,7 +107,7 @@ class Square:
 
         pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
-    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset=(0,0)):
+    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset=(0, 0)):
         if sprite_id == -1 or sprite_sheet is None:
             return
         position_x = offset.x + self.size // 2
@@ -217,7 +217,7 @@ class Square:
 
     def toggle_key(self):
         self.is_key = not self.is_key
-        self.color = YELLOW if self.is_key else WHITE  # Funcionará?
+        self.color = YELLOW if self.is_key else WHITE  # TODO: Check
         self.image.fill((0, 0, 0))
 
     def make_exit(self):

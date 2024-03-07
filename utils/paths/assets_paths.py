@@ -12,6 +12,14 @@ SOUNDS_PATH = "assets/sounds/"
 CHARACTERS_PATH = "assets/characters/"
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        PATHS TO SPRITES                                       #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+
+UI_ASSETS = 'assets/ui_assets/ui-x3.png'
+CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
+BAR_TILE = (1, 0)
+
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
@@ -41,7 +49,7 @@ FONT = FONT_PATH + 'pixel-tactical.ttf'
 #                                        PATH TO GUI BUTTONS                                    #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-buttons = SpriteSheet(MENU_ASSETS + 'ui_white.png', 10, 9, 80, 80)
+buttons = SpriteSheet(MENU_ASSETS + 'ui_white.png', 10, 9, 80)
 
 BUTTON_PLAY = buttons.get_sprite_by_number(85)
 BUTTON_CONFIGURATION = buttons.get_sprite_by_number(75)
@@ -54,7 +62,7 @@ BUTTON_WASD = buttons.get_sprite_by_number(72)
 SWITCH_ON = buttons.get_sprite_by_number(70)
 SWITCH_OFF = buttons.get_sprite_by_number(72)
 
-flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68, 68)
+flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68)
 
 SPAIN = flags.get_sprite_by_number(21)
 UNITED_KINGDOM = flags.get_sprite_by_number(1)
@@ -81,5 +89,10 @@ INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 #                                        PATH TO SPRITE SHEETS                                  #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
+SPRITES_PATH = "assets/sprites/"
 SHEET_CHARACTER = CHARACTERS_PATH + 'character_template-Sheet.png'
 COORDINATES_CHARACTER = CHARACTERS_PATH + 'character_coordinates.txt'
+KEYS_GREY_SHEET = SPRITES_PATH + 'Key_8_GREY_Spritesheet.png'
+KEYS_SILVER_SHEET = SPRITES_PATH + 'Key_8_SILVER_Spritesheet.png'
+KEYS_GOLD_SHEET = SPRITES_PATH + 'Key_8_GOLD_Spritesheet.png'
+COORDINATES_KEYS = SPRITES_PATH + 'keys_coordinates.txt'

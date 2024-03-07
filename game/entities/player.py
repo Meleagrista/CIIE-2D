@@ -5,11 +5,11 @@ from pygame import Mask, Surface
 from typing_extensions import deprecated
 
 from game.map.grid import Grid
-from managers.resource_manager import ResourceManager
+from game.sprites.spritesheet import SpriteSheet
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
-from utils.paths.assets_paths import SHEET_CHARACTER, COORDINATES_CHARACTER
+from utils.paths.assets_paths import CHARACTER_ASSETS
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -31,19 +31,24 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.groups = []
-        self.size = NPC_SIZE
+        self.size = NPC_SIZE * 0.5
 
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.sheet = ResourceManager.load_image(SHEET_CHARACTER, -1)
-        self.sheet = self.sheet.convert_alpha()
+        self._sprite_sheet = SpriteSheet(CHARACTER_ASSETS, 10, 13, NPC_SIZE * 2.5)
+        self._animation_frames = 4
+        self._animation_start = 35
+        self._animation_idle = 2
+        self._current_frame = 0
+        self._looking_right = True
+        # self.sheet = ResourceManager.load_image(SHEET_CHARACTER, -1)
+        # self.sheet = self.sheet.convert_alpha()
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
         self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
-        self.current_sprite = 0
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -80,37 +85,43 @@ class Player(pygame.sprite.Sprite):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pyagme.Surface class")
+                raise TypeError("surface must be an instance of pygame.Surface class")
 
         offset = kwargs.pop('offset', None)
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
+        """# angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
 
         # Draw the player
-        stopped_coordinates = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
-        my_sprite = self.sheet.subsurface(stopped_coordinates)
+        # stopped_coordinates = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+        # my_sprite = self.sheet.subsurface(stopped_coordinates)
 
         # Calculate angle in degrees
-        angle_in_degrees = -(math.degrees(angle_to_horizontal) - 90) % 360
+        # angle_in_degrees = -(math.degrees(angle_to_horizontal) - 90) % 360
 
         # Scale sprite to fit the size of the rectangle
-        scaled_sprite = pygame.transform.scale(my_sprite, (self.size, self.size))
+        # scaled_sprite = pygame.transform.scale(self.image, (self.size, self.size))
 
         # Rotate scaled sprite
-        rotated_sprite = pygame.transform.rotate(scaled_sprite, angle_in_degrees)
+        # rotated_sprite = pygame.transform.rotate(scaled_sprite, angle_in_degrees)
 
         # Adjust position of rotated sprite
-        rotated_sprite_rect = rotated_sprite.get_rect(center=scaled_sprite.get_rect().center)
+        # rotated_sprite_rect = rotated_sprite.get_rect(center=scaled_sprite.get_rect().center)"""
 
         # pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
 
+        sprite_rect = self.image.get_rect()
+        sprite_rect.centerx = self.rect.centerx - 10
+        sprite_rect.bottom = self.rect.bottom - 10
+
+        flipped_image = pygame.transform.flip(self.image, self._looking_right, False)
+
         # Draw rotated sprite
         surface.blit(
-            source=rotated_sprite,
-            dest=(self.rect.x - offset.x + rotated_sprite_rect.x, self.rect.y - offset.y + rotated_sprite_rect.y)
+            source=flipped_image,
+            dest=(sprite_rect.x - offset.x, sprite_rect.y - offset.y)
         )
 
     def update(self, **kwargs):
@@ -164,13 +175,18 @@ class Player(pygame.sprite.Sprite):
 
         direction, direction_x, direction_y = get_direction(movement_option)
 
-        if direction == Direction.STOPPED:
+        if direction.is_west():
+            self._looking_right = True
+        if direction.is_east():
+            self._looking_right = False
+
+        """if direction == Direction.STOPPED:
             self.angle = self.last_direction.angle()
         else:
             self.angle = direction.angle()
             self.last_direction = direction
         self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
-        self.delta_y = math.sin(math.radians(self.angle)) * self.offset
+        self.delta_y = math.sin(math.radians(self.angle)) * self.offset"""
 
         # Normalize the direction vector for diagonal movement
         if direction_x != 0 and direction_y != 0:
@@ -232,6 +248,10 @@ class Player(pygame.sprite.Sprite):
         self._in_key = self.grid.is_key_square(new_x, new_y)
         self._in_exit = self.grid.is_exit_square(new_x, new_y)
 
+        ##############################
+        # MOVEMENT CHECK
+        ##############################
+
         if self.x == new_x and self.y == new_y and self._is_moving:
             self._is_moving = False
             self.notify_observers()
@@ -250,7 +270,7 @@ class Player(pygame.sprite.Sprite):
         # ANIMATION
         ##############################
 
-        if self._is_moving:
+        """if self._is_moving:
             self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
             self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
         elif self._is_moving and self.current_sprite != TOTAL_MOVEMENT_SPRITES:
@@ -258,7 +278,14 @@ class Player(pygame.sprite.Sprite):
             self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
         elif not self._is_moving:
             self.current_sprite = STOPPED
-            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
+            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)"""
+
+        if self._is_moving:
+            self._current_frame += 0.5  # Increment frame counter by 0.5
+            self._current_frame %= self._animation_frames  # Ensure frame counter wraps around
+            self.image = self._sprite_sheet.get_sprite_by_number(self._animation_start + int(self._current_frame))
+        elif not self._is_moving:
+            self.image = self._sprite_sheet.get_sprite_by_number(self._animation_idle)
 
     def add(self, *groups):
         for group in groups:
@@ -306,6 +333,10 @@ class Player(pygame.sprite.Sprite):
             return False
         return player_mask.overlap_area(enemy_mask, (0, 0)) > 0
 
+    # ####################################################################### #
+    #                                PROPERTIES                               #
+    # ####################################################################### #
+
     def alive(self):
         return self._is_alive
 
@@ -332,6 +363,10 @@ class Player(pygame.sprite.Sprite):
 
     def interacted_key(self):
         return self._interacted_with_key
+
+    # ####################################################################### #
+    #                                DEPRECATED                               #
+    # ####################################################################### #
 
     @deprecated("This method is no longer used.")
     def picked_up_key(self):
