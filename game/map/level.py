@@ -1,7 +1,8 @@
 class LevelMap:
-    def __init__(self, border_map_path, tile_map_path):
+    def __init__(self, border_map_path, tile_map_path, objects_map_path):
         self.border_map_path = border_map_path
         self.tile_map_path = tile_map_path
+        self.objects_map_path = objects_map_path
 
 
 class LevelSpriteSheet:
