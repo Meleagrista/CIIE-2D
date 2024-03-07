@@ -92,8 +92,8 @@ class GameManager(Scene):
         pygame.display.update()
 
     def update(self, **kwargs):
-        # self.all_sprites.update(**kwargs)
         if not self.is_open_menu():
+            kwargs['player'] = self.player
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
             kwargs['language'] = self.manager.get_language()
@@ -291,7 +291,8 @@ class GameManager(Scene):
 
     def _set_interface(self):
         bar = Bar(self.win)
-        bar.add(self.interface)
+        # bar.add(self.interface)
+        bar.add(self.all_sprites)
         message = Message(self.win)
         message.add(self.interface)
         keys_box = Keys(self.win)

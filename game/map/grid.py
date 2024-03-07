@@ -3,7 +3,7 @@ import csv
 from pygame import Surface
 from typing_extensions import deprecated
 
-from game.map.spritesheet import SpriteSheet
+from game.sprites.spritesheet import SpriteSheet
 from utils.constants import GRID_BACKGROUND, MAP, TILE_MAP, SQUARE_SIZE
 from game.map.square import Square
 
@@ -119,8 +119,6 @@ class Grid:
                             source=text,
                             dest=(spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2)
                         )"""
-
-        # pygame.display.update()
 
     def add(self, group):
         for row in self.nodes:
