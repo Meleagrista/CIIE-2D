@@ -17,8 +17,8 @@ from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
-from utils.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
-from utils.maps_paths import LEVEL_1
+from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
+from utils.paths.maps_paths import LEVEL_1
 
 
 class GameManager(Scene):

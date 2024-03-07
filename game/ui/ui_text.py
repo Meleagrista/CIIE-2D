@@ -2,7 +2,7 @@ import pygame
 from pygame import Surface
 
 from menu.prototypes.gui_prototypes import Text
-from utils.assets_paths import FONT
+from utils.paths.assets_paths import FONT
 
 
 class Message(pygame.sprite.Sprite, Text):

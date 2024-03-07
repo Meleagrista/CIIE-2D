@@ -2,7 +2,7 @@ from managers.resource_manager import ResourceManager
 
 import pygame
 
-from utils.assets_paths import FONT
+from utils.paths.assets_paths import FONT
 from utils.i18n import get_translation
 
 
@@ -19,6 +19,9 @@ class ElementoGUI:
         (x, y) = position
         self.rect.left = x
         self.rect.bottom = y
+
+    def set_center(self, position):
+        self.rect.center = position
 
     def set_rect(self, new_rect):
         self.rect = new_rect

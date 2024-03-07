@@ -9,7 +9,7 @@ from managers.resource_manager import ResourceManager
 from utils.auxiliar import get_direction, increase, decrease, has_changed
 from utils.constants import *
 from utils.enums import *
-from utils.assets_paths import SHEET_CHARACTER, COORDINATES_CHARACTER
+from utils.paths.assets_paths import SHEET_CHARACTER, COORDINATES_CHARACTER
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#

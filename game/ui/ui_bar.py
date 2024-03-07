@@ -3,9 +3,7 @@ from pygame import Surface
 
 from game.entities.player import Player
 from game.sprites.spritesheet import SpriteSheet
-from utils.constants import GREEN, RED, BLACK
-from utils.assets_paths import HEALTH_BAR
-from utils.maps_paths import UI_ASSETS, BAR_TILE
+from utils.paths.maps_paths import UI_ASSETS
 
 
 class Bar(pygame.sprite.Sprite):

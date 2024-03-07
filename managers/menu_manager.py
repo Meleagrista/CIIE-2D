@@ -1,9 +1,12 @@
+import time
+
 import pygame.mixer
-from pygame import KEYDOWN, K_ESCAPE
+from pygame import K_ESCAPE
+from typing_extensions import deprecated
+
 from managers.prototypes.scene_prototype import Scene
 from menu.screens import *
 
-import time
 
 # movement_option = Ctl.WASD
 
@@ -24,9 +27,10 @@ class MenuManager(Scene):
         self.screen_list.append(StartingScreen(self))
         self.screen_list.append(ConfigurationScreen(self))
         self.screen_list.append(CreditsScreen(self))
+        self.screen_list.append(SplashScreen(self))
 
         self.current_screen = None
-        self.show_starting_screen()
+        self.show_splash_screen()
 
     def events(self, event_list):
         for event in event_list:
@@ -64,6 +68,9 @@ class MenuManager(Scene):
     def show_credits_screen(self):
         self.current_screen = 2
 
+    def show_splash_screen(self):
+        self.current_screen = 3
+
     def set_movement_option(self, option):
         self.manager.set_movement_option(option)
 
@@ -73,6 +80,7 @@ class MenuManager(Scene):
             screen.translate(language)
 
     @staticmethod
+    @deprecated("This method is no longer used.")
     def splash_screen(screen, wait_seconds):
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 

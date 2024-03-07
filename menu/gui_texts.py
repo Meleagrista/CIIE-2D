@@ -3,7 +3,19 @@ from menu.prototypes.gui_prototypes import Text
 import pygame
 from utils.i18n import get_translation
 
-from utils.assets_paths import FONT
+from utils.paths.assets_paths import FONT
+
+
+class TextoSplash(Text):
+    def __init__(self, screen):
+        font_size = 50
+        font = pygame.font.Font(FONT, font_size)
+        pos = (pygame.display.Info().current_w / 2, pygame.display.Info().current_h - font_size*1.5)
+        Text.__init__(self, screen, font, (255, 255, 255), "PRESS ANY KEY TO PLAY", (0, 0))
+        self.set_center(pos)
+
+    def activate(self):
+        pass
 
 
 class TextoPlay(Text):

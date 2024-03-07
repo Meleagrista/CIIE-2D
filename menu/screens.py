@@ -1,7 +1,25 @@
+from pygame import MOUSEBUTTONDOWN, KEYDOWN
+
 from menu.prototypes.gui_prototypes import CreditsText
 from menu.prototypes.screen_prototypes import PantallaGUI
 from menu.gui_texts import *
 from menu.gui_buttons import *
+
+
+class SplashScreen(PantallaGUI):
+    def __init__(self, menu):
+        PantallaGUI.__init__(self, menu, SPLASH_IMAGE)
+
+        text_splash = TextoSplash(self)
+
+        self.all_text = []
+
+        self.elements.append(text_splash)
+
+    def events(self, event_list):
+        for event in event_list:
+            if event.type == MOUSEBUTTONDOWN or event.type == KEYDOWN:
+                self.menu.show_starting_screen()
 
 
 class StartingScreen(PantallaGUI):

@@ -1,12 +1,11 @@
-import pygamepopup
+import os
 import pygame
-import pygame, os
+import pygamepopup
 
 from managers.audio_manager import AudioManager
 from managers.game_manager import GameManager
-from managers.scene_manager import SceneManager
 from managers.menu_manager import MenuManager
-from utils.assets_paths import MUSIC_FALL_FROM_GRACE, MUSIC_MEDIEVAL
+from managers.scene_manager import SceneManager
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'  # You have to call this before pygame.init()
 
@@ -21,8 +20,6 @@ if __name__ == "__main__":
     manager.stack_scene(game_scene)
     menu_scene = MenuManager(manager, audio)
     manager.stack_scene(menu_scene)
-
-    menu_scene.splash_screen(manager.screen, 10)
 
     audio.music_menu()
 
@@ -52,4 +49,3 @@ if __name__ == "__main__":
  
 
 """
-
