@@ -1,7 +1,7 @@
 import pygame
 
 from utils.paths.assets_paths import DETECTED_SOUND, DEATH_SOUND, INCREASE_HEALTH_SOUND, MOVEMENT_SOUND, PICK_UP_KEY_SOUND, \
-    FINISH_LEVEL_SOUND, MUSIC_BACKGROUND, MUSIC_MEDIEVAL, MUSIC_FALL_FROM_GRACE
+    FINISH_LEVEL_SOUND, MUSIC_BACKGROUND, MUSIC_MEDIEVAL
 
 
 class AudioManager:
@@ -38,9 +38,6 @@ class AudioManager:
         self.channel_movement.pause()
 
         self.all_channels = [self.channel_increase_health, self.channel_detected, self.channel_movement]
-
-        pygame.mixer.music.load(MUSIC_FALL_FROM_GRACE)
-        pygame.mixer.music.play(-1)
 
     def pause(self):
         for channel in self.all_channels:
