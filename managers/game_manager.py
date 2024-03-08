@@ -142,7 +142,7 @@ class GameManager(Scene):
 
     def _start(self):
         self._spawn_player()
-        # self._spawn_enemies()
+        self._spawn_enemies()
 
     def _resume(self):
         self.close_menu()
@@ -159,24 +159,21 @@ class GameManager(Scene):
     # ####################################################################### #
 
     def _render(self):
-        mask_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
-        subtract_surface = pygame.Surface((self.win_size, self.win_size), pygame.SRCALPHA)
-
-        for enemy in self.enemies.sprites():
+        for enemy in self.enemies.sprites():  # TODO: Limit enemies during rendering.
             vertices = []
             for pair in enemy.corners:
                 point1, point2 = pair
                 vertices.append(point1)
                 vertices.append(point2)
-            self.all_sprites.enemy_mask(enemy, subtract_surface, vertices, mask_surface)
+            self.all_sprites.save_enemy_mask(enemy, vertices)
 
-        mask = pygame.mask.from_surface(mask_surface)
-        subtract = pygame.mask.from_surface(subtract_surface)
-        mask = mask.overlap_mask(subtract, (0, 0))
+        # mask = pygame.mask.from_surface(mask_surface)
+        # subtract = pygame.mask.from_surface(subtract_surface)
+        # mask = mask.overlap_mask(subtract, (0, 0))
 
-        self.all_sprites.surface_mask = mask
+        # self.all_sprites.surface_mask = mask
 
-        return self.all_sprites.surface_mask
+        return self.all_sprites.return_enemy_mask()
 
     def _add_player(self, player):
         self.player = player

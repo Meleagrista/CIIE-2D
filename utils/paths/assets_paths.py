@@ -5,11 +5,12 @@ from game.sprites.spritesheet import SpriteSheet
 
 MENU_ASSETS = "assets/menu_assets/"
 
-IMAGES_BACKGROUND = "assets/images/backgrounds/"
-IMAGES_BUTTONS = "assets/images/icons/"
+IMAGES_BACKGROUND = "assets/menu_assets/images/backgrounds/"
+IMAGES_BUTTONS = "assets/menu_assets/images/icons/"
 MUSIC_PATH = "assets/music/"
 SOUNDS_PATH = "assets/sounds/"
-CHARACTERS_PATH = "assets/characters/"
+CHARACTERS_PATH = "assets/characters_assets/characters/"
+SPRITES_PATH = "assets/sprites/"
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATHS TO SPRITES                                       #
@@ -17,6 +18,7 @@ CHARACTERS_PATH = "assets/characters/"
 
 UI_ASSETS = 'assets/ui_assets/ui-x3.png'
 CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
+ENEMY_ASSETS = 'assets/character_assets/enemies-x3.png'
 BAR_TILE = (1, 0)
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -89,7 +91,6 @@ INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 #                                        PATH TO SPRITE SHEETS                                  #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-SPRITES_PATH = "assets/sprites/"
 SHEET_CHARACTER = CHARACTERS_PATH + 'character_template-Sheet.png'
 COORDINATES_CHARACTER = CHARACTERS_PATH + 'character_coordinates.txt'
 KEYS_GREY_SHEET = SPRITES_PATH + 'Key_8_GREY_Spritesheet.png'

@@ -104,6 +104,34 @@ def fill_mask(surface, mask):
 #                                     ANGLE TOOLS FUNCTIONS                                     #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
+def is_looking_right(angle):
+    # Define tolerance to determine if angle is looking right
+    tolerance = 80  # You can adjust this value based on your requirements
+
+    # Normalize the angle to be within [0, 360] degrees
+    angle %= 360
+
+    # Define the range of angles that indicate looking right
+    right_range = (360 - tolerance, tolerance)
+
+    # Check if the angle falls within the range of looking right
+    return right_range[0] <= angle or angle <= right_range[1]
+
+
+def is_looking_left(angle):
+    # Define tolerance to determine if angle is looking left
+    tolerance = 80  # You can adjust this value based on your requirements
+
+    # Normalize the angle to be within [0, 360] degrees
+    angle %= 360
+
+    # Define the range of angles that indicate looking left
+    left_range = (180 - tolerance, 180 + tolerance)
+
+    # Check if the angle falls within the range of looking left
+    return left_range[0] <= angle <= left_range[1]
+
+
 def increase_degree(angle, increment):
     return (angle + increment) % 360
 

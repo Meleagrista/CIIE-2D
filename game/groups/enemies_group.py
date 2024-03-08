@@ -41,7 +41,6 @@ class Enemies(pygame.sprite.Group):
             enemy = Enemy((x, y), 0.5, 1, grid, win, zones)
             enemies.append(enemy)
 
-        ## DEPRECATED: los enemigos se generan con lista de listas de zonas
         # # Generar 2 guardias (entidad asociada a varias zonas)
         # x, y = grid.get_random_node_from_zones([1, 2]).get_pos()
         # enemy = Enemy((x, y), 0.5, 1, grid, win, [1, 2])

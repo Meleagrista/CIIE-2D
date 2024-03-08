@@ -36,17 +36,39 @@ class Camera(pygame.sprite.Group):
             self._internal_surface.get_height() - (self._boundary_corners['top'] + self._boundary_corners['bottom'])
         )
 
-    def enemy_mask(self, enemy, surface, vertices, mask):
-        # Check if the vision area is completely outside the surface
+        win = pygame.display.get_surface()
+        self._enemy_surface = pygame.Surface((win.get_width(), win.get_height()), pygame.SRCALPHA)
+        self._enemy_untreated_vertices = []
+        self._enemy_untreated_positions = []
+        self._enemy_mask = pygame.mask.from_surface(self._enemy_surface)
+
+    def save_enemy_mask(self, enemy, vertices):
+        self._enemy_untreated_vertices.append(vertices)
+        self._enemy_untreated_positions.append(enemy)
+
+    def return_enemy_mask(self):
+        return self._enemy_mask
+
+    def enemy_mask(self, enemy, vertices):
         if not self._in_range(enemy.rect.center, enemy.ray_radius):
             return
+
         vertices = list(map(lambda point: point - self.offset, vertices))
         position_x = int(enemy.x) - self.offset[0]
         position_y = int(enemy.y) - self.offset[1]
+
         if len(vertices) > 2:
-            pygame.draw.polygon(mask, (255, 255, 255), vertices)
-        pygame.draw.circle(mask, (255, 255, 255, 255), (position_x, position_y), enemy.size * 2)
-        pygame.draw.circle(surface, (255, 255, 255, 255), (position_x, position_y), enemy.ray_radius)
+            pygame.draw.polygon(self._enemy_surface, (255, 255, 255), vertices)
+
+        pygame.draw.rect(
+            self._enemy_surface,
+            (255, 255, 255, 255),
+            pygame.Rect(position_x - enemy.size, position_y - enemy.size, enemy.size * 2, enemy.size * 2)
+        )
+
+        # pygame.draw.circle(mask, (255, 255, 255, 255), (position_x, position_y), enemy.size * 2)
+        # pygame.draw.circle(surface, (255, 255, 255, 255), (position_x, position_y), enemy.ray_radius)
+        # surface.fill((255, 255, 255))
 
     def player_mask(self, player):
         mask_surface = pygame.Surface((self.surface.get_width(), self.surface.get_height()), pygame.SRCALPHA)
@@ -92,17 +114,27 @@ class Camera(pygame.sprite.Group):
 
         # Update the display
         # self._update()
-        if self.surface_mask is not None:
-            self._internal_surface.blit(self.surface_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
+
+        win = pygame.display.get_surface()
+        self._enemy_surface = pygame.Surface((win.get_width(), win.get_height()), pygame.SRCALPHA)
+
+        for vertices, enemy in zip(self._enemy_untreated_vertices, self._enemy_untreated_positions):
+            self.enemy_mask(enemy, vertices)
+
+        self._enemy_untreated_vertices = []
+        self._enemy_untreated_positions = []
+
+        self._enemy_mask = pygame.mask.from_surface(self._enemy_surface)
+        # subtract = pygame.mask.from_surface(surface)
+        # mask = mask.overlap_mask(subtract, (0, 0))
+
+        if self._enemy_mask is not None:
+            self._internal_surface.blit(self._enemy_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
 
         # Draw the Bar instances after updating
-        for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
+        """for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
             if isinstance(sprite, Bar):
-                sprite.draw(**kwargs)
-
-        scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
-        scaled_rectangle = scaled_surface.get_rect(center=self.center)
-        self.surface.blit(scaled_surface, scaled_rectangle)
+                sprite.draw(**kwargs)"""
 
         scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)

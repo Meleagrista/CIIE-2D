@@ -6,9 +6,11 @@ from pygame import Surface
 from scipy.interpolate import CubicSpline
 from typing_extensions import deprecated
 from game.map.grid import Grid
+from game.sprites.spritesheet import SpriteSheet
 from utils.algorithms import *
 from utils.auxiliar import *
 from utils.constants import *
+from utils.paths.assets_paths import ENEMY_ASSETS
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -37,6 +39,15 @@ class Enemy(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+
+        self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 2.5)
+        self._animation_frames = 4
+        self._animation_start = 10
+        self._idle_frames = 4
+        self._idle_start = 0
+        self._current_frame = 0
+        self._looking_right = True
+        self._is_moving = False
 
         # 2. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ MOVEMENT AND ROTATION ~~
@@ -95,17 +106,37 @@ class Enemy(pygame.sprite.Sprite):
         ##############################
         # DRAWING RECTANGLE
         ##############################
-        rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        """rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         pygame.draw.rect(rect_surface, self._status, (0, 0, self.size, self.size))
         rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
         rect = rotated_rect.get_rect()
         rect.center = (self.x, self.y)
-        surface.blit(rotated_rect, (rect.x - offset.x, rect.y - offset.y))
+        surface.blit(rotated_rect, (rect.x - offset.x, rect.y - offset.y))"""
+
+        print(self.angle)
+        if is_looking_right(self.angle):
+            self._looking_right = True
+            print('Is looking right.')
+        if is_looking_left(self.angle):
+            self._looking_right = False
+            print('Is looking left.')
+
+        sprite_rect = self.image.get_rect()
+        sprite_rect.centerx = self.rect.centerx - 10
+        sprite_rect.bottom = self.rect.bottom - 10
+
+        flipped_image = pygame.transform.flip(self.image, not self._looking_right, False)
+
+        # Draw rotated sprite
+        surface.blit(
+            source=flipped_image,
+            dest=(sprite_rect.x - offset.x, sprite_rect.y - offset.y)
+        )
 
         ##############################
         # DRAWING TRIANGLE
         ##############################
-        end_point = (self.x - self.delta_x * 10 - offset.x, self.y - self.delta_y * 10 - offset.y)
+        """end_point = (self.x - self.delta_x * 10 - offset.x, self.y - self.delta_y * 10 - offset.y)
         angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
         triangle_size = self.size // 2
         triangle_points = [
@@ -120,8 +151,9 @@ class Enemy(pygame.sprite.Sprite):
             ),
         ]
         pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
-        # nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
-        # self.draw_path(surface, nodes, offset)
+        
+        nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
+        self.draw_path(surface, nodes, offset)"""
 
     def _in_range(self, surface, center, padding):
 
@@ -136,10 +168,13 @@ class Enemy(pygame.sprite.Sprite):
         # PATHFINDING AND ROTATION
         ##############################
         current_pos = (self.x, self.y)
+        self._is_moving = True
+
         if self.next_point is None or self.end_node.compare_pos(current_pos):
             self.pathfinding()
             self.setting_path = True
             self.setting_rotation = True
+            self._is_moving = False
         elif self.has_reached(self.next_point):
             self.set_next_point()
 
@@ -168,10 +203,12 @@ class Enemy(pygame.sprite.Sprite):
                 self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
                 self.delta_y = math.sin(math.radians(self.angle)) * self.offset
         else:
-            if abs(updated_angle - self.angle) > 45:
+            iteration_count = 0
+            while (abs(updated_angle - self.angle) > 45) and (iteration_count < 2):
                 self.set_next_point()
                 end_point = self.next_point
                 updated_angle = self.angle_to_point(end_point)
+                iteration_count += 1
 
             self.angle = updated_angle
 
@@ -180,6 +217,19 @@ class Enemy(pygame.sprite.Sprite):
 
             self.x -= self.delta_x * self.speed
             self.y -= self.delta_y * self.speed
+
+        ##############################
+        # ANIMATION
+        ##############################
+
+        self._current_frame += 0.5
+
+        if self._is_moving:
+            self._current_frame %= self._animation_frames  # Ensure frame counter wraps around
+            self.image = self._sprite_sheet.get_sprite_by_number(self._animation_start + int(self._current_frame))
+        else:
+            self._current_frame %= self._idle_frames  # Ensure frame counter wraps around
+            self.image = self._sprite_sheet.get_sprite_by_number(self._idle_start + int(self._current_frame))
 
         ##############################
         # CASTING RAYS
@@ -218,13 +268,17 @@ class Enemy(pygame.sprite.Sprite):
     # ####################################################################### #
 
     def pathfinding(self):
-        self.set_start()
-        self.set_random_end()
-        self.path_nodes = a_star(self)
-        self.path_points = self.interpolate_points(8)
-        self.next_point = self.path_points[1]
-        self.path_nodes.pop(0)
-        self.path_points.pop(0)
+        try:
+            self.set_start()
+            self.set_random_end()
+            self.path_nodes = a_star(self)
+            self.path_points = self.interpolate_points(8)
+            self.next_point = self.path_points[1]
+            self.path_nodes.pop(0)
+            self.path_points.pop(0)
+        except Exception as e:
+            print(e)
+            print(self.path_nodes)
 
     def set_start(self):
         self.start_node = self.grid.get_node((self.x, self.y))
@@ -246,7 +300,7 @@ class Enemy(pygame.sprite.Sprite):
         end_node = self.grid.get_random_node_from_zone(zone)
         if end_node is None:
             # Will not add zone again, will try with next area
-            print("No node found in zone", zone, ". Deleting zone from path...")
+            print("No node found in zone", zone, "\nDeleting zone from path...")
             self.set_random_end()
         else:
             while current_node.compare_node(end_node):
@@ -335,9 +389,9 @@ class Enemy(pygame.sprite.Sprite):
             while ray_distance < self.ray_reach and ray_distance < self.grid.size:
                 map_x = int(ray_x // self.grid.gap)
                 map_y = int(ray_y // self.grid.gap - (1 if up else 0))
-                if (0 <= map_x < self.grid.size and
-                        0 <= map_y < self.grid.size and
-                        self.grid.nodes[map_x][map_y].is_barrier()
+                if (
+                    0 <= map_x < self.grid.size and
+                    0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
                 ):
                     ray_distance = self.ray_reach
                 else:
@@ -366,9 +420,9 @@ class Enemy(pygame.sprite.Sprite):
             while ray_distance < self.ray_reach and ray_distance < self.grid.size:
                 map_x = int(ray_x // self.grid.gap - (0 if right else 1))
                 map_y = int(ray_y // self.grid.gap)
-                if (0 <= map_x < self.grid.size and
-                        0 <= map_y < self.grid.size and
-                        self.grid.nodes[map_x][map_y].is_barrier()
+                if (
+                    0 <= map_x < self.grid.size and
+                    0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
                 ):
                     ray_distance = self.ray_reach
                 else:
