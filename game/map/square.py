@@ -161,60 +161,24 @@ class Square:
     # ####################################################################### #
 
     def get_weight(self):
-        """
-        Get the weight of the square.
-
-        Returns:
-            int: The weight of the square.
-        """
         return self.weight
 
     def is_barrier(self):
-        """
-        Check if the square is a barrier.
-
-        Returns:
-            bool: True if the square is a barrier, False otherwise.
-        """
         return self.barrier
 
     def is_border(self):
-        """
-        Check if the square is on the border of the grid.
-
-        Returns:
-            bool: True if the square is on the border, False otherwise.
-        """
         return self.col == 0 or self.row == 0 or self.col >= self.total_cols - 1 or self.row >= self.total_rows - 1
 
     def reset(self):
-        """
-        Reset the state of the square.
-
-        Returns:
-            None
-        """
         self.barrier = False
         self.color = GRID_BACKGROUND
 
     def reset_for_editor(self):
-        """
-        Reset the state of the square, setting white.
-
-        Returns:
-            None
-        """
         self.barrier = False
         self.color = WHITE
         self.id = 0
 
     def make_barrier(self):
-        """
-        Make the square a barrier.
-
-        Returns:
-            None
-        """
         self.barrier = True
         self.color = BLACK
         self.image.fill((0, 0, 0))

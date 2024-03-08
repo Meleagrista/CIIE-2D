@@ -19,7 +19,7 @@ SPRITES_PATH = "assets/sprites/"
 UI_ASSETS = 'assets/ui_assets/ui-x3.png'
 CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
 ENEMY_ASSETS = 'assets/character_assets/enemies-x3.png'
-BAR_TILE = (1, 0)
+UI_ICONS = MENU_ASSETS + 'ui_white.png'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #

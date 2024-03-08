@@ -35,7 +35,7 @@ class Grid:
         self.groups = []
 
         w, _ = win.get_size()
-        self.gap = SQUARE_SIZE  # w // size
+        self.gap = SQUARE_SIZE
         self.size = size
         self.win = win
         self.font = pygame.font.SysFont('Arial', self.gap)

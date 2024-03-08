@@ -2,23 +2,31 @@ import pygame
 from pygame import Surface
 
 from game.entities.player import Player
-from managers.resource_manager import ResourceManager
-from utils.paths.assets_paths import KEYS_IMG, POPUP_IMAGE
+from game.sprites.spritesheet import SpriteSheet
+from utils.paths.assets_paths import UI_ICONS
 
 
 class Keys(pygame.sprite.Sprite):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self):
         super().__init__()
-        self._width = screen.get_width() * 0.075
-        self._height = screen.get_height() * 0.075
-        self._x = self._height * 0.2
-        self._y = self._height * 0.75
+        self._x = 0
+        self._y = 0
+
         self.key_obtained = False
-        self.image = ResourceManager.load_image(KEYS_IMG, -1)
-        self.image = pygame.transform.scale(self.image, (self._width * 0.9, self._width * 0.9))
-        self.background = pygame.image.load(POPUP_IMAGE)
+
+        self.tile_size = 60
+        self.tile_id = 36
+
+        self._sprite_sheet = SpriteSheet(UI_ICONS, 10, 9, self.tile_size)
+
+        self.tile = self._sprite_sheet.get_sprite_by_number(self.tile_id)
+        self.rect = self.tile.get_rect()
 
         self.groups = []
+
+    def set_position(self, rect):
+        self._x = rect.right + self.tile_size / 8
+        self._y = rect.centery - self.tile_size / 2
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
@@ -26,13 +34,8 @@ class Keys(pygame.sprite.Sprite):
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pygame.Surface class")
 
-        self.background = pygame.transform.scale(self.background, (self._width, self._height))
-
-        # Dibuja la imagen en la superficie en la posición del rectángulo
-        # surface.blit(self.background, (self._x, self._y))
-
         if self.key_obtained:
-            surface.blit(self.image, (self._x, self._y))
+            surface.blit(self.tile, (self._x, self._y))
 
     def notified(self, **kwargs):
         player = kwargs.pop('player', None)
@@ -43,6 +46,8 @@ class Keys(pygame.sprite.Sprite):
             
         if player.has_key():
             self.key_obtained = True
+        else:
+            self.key_obtained = False
 
     def add(self, *groups):
         for group in groups:
