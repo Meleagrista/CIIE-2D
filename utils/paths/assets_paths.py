@@ -61,8 +61,8 @@ BUTTON_BACK = buttons.get_sprite_by_number(80)
 BUTTON_ARROWS = buttons.get_sprite_by_number(70)
 BUTTON_WASD = buttons.get_sprite_by_number(72)
 
-SWITCH_ON = buttons.get_sprite_by_number(70)
-SWITCH_OFF = buttons.get_sprite_by_number(72)
+SWITCH_ON = buttons.get_sprite_by_number(81)
+SWITCH_OFF = buttons.get_sprite_by_number(82)
 
 flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68)
 
