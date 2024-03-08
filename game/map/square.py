@@ -74,6 +74,7 @@ class Square:
 
         self.is_key = False
         self.is_exit = False
+        self.is_floating = False
 
     # ####################################################################### #
     #                                VARIABLES                                #
@@ -85,8 +86,11 @@ class Square:
     def get_id(self):
         return self.id
 
-    def set_tile_id(self, tile_id):
+    def set_tile_id(self, tile_id, is_objects_map):
         self.tile_id.append(int(tile_id))
+        if is_objects_map and tile_id in FLOATING_TILES:
+            self.is_floating = True
+            self.barrier = False
 
     # ####################################################################### #
     #                                  DRAW                                   #

@@ -46,9 +46,12 @@ class Grid:
 
         self.spawn = None
 
+        # Read border map (which also includes the room ids) and tile maps for ground and objects
         self.read_border_map(MAP if border_map_path is None else border_map_path)
         self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
-        self.read_tile_map(objects_map_path) if objects_map_path is not None else None
+        self.read_tile_map(objects_map_path, True) if objects_map_path is not None else None
+
+        # Set the sprite sheet for drawing the grid
         self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows) if tile_map_path is not None else None
 
         self.update()
@@ -277,7 +280,7 @@ class Grid:
 
         print("Map imported successfully.")
 
-    def read_tile_map(self, file_path):
+    def read_tile_map(self, file_path, is_objects_map=False):
         tile_map = []
         with open(file_path, mode='r') as file:
             csv_file = csv.reader(file)
@@ -288,7 +291,7 @@ class Grid:
         for row in self.nodes:
             x = 0
             for square in row:
-                square.set_tile_id(tile_map[x][y])
+                square.set_tile_id(int(tile_map[x][y]), is_objects_map)
                 x += 1
             y += 1
 
