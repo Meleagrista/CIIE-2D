@@ -76,7 +76,7 @@ class TextoMenuTitle(Text):
 class TextoBackToMenu(Text):
     def __init__(self, screen):
         font = pygame.font.Font(FONT, FONT_SIZE)
-        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 0)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 3)
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'return'), (0, 0))
         self.set_left(pos)
 
@@ -87,7 +87,7 @@ class TextoBackToMenu(Text):
 class TextoMenuMusic(Text):
     def __init__(self, screen):
         font = pygame.font.Font(FONT, FONT_SIZE)
-        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 1)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 0)
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'menu music'), (0, 0))
         self.set_left(pos)
 
@@ -95,7 +95,7 @@ class TextoMenuMusic(Text):
 class TextoMenuController(Text):
     def __init__(self, screen):
         font = pygame.font.Font(FONT, FONT_SIZE)
-        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 2)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 1)
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'controls'), (0, 0))
         self.set_left(pos)
 
@@ -103,6 +103,6 @@ class TextoMenuController(Text):
 class TextoMenuLanguages(Text):
     def __init__(self, screen):
         font = pygame.font.Font(FONT, FONT_SIZE)
-        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 3)
+        pos = (pygame.display.Info().current_w * MENU_LEFT, 0 + (FONT_SIZE * 1.5) + MENU_GAP * 2)
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'language'), (0, 0))
         self.set_left(pos)
