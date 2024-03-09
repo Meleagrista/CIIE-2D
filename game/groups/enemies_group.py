@@ -1,6 +1,7 @@
 import pygame
 
 from game.entities.enemy import Enemy
+from game.entities.guard import Guard
 
 
 class Enemies(pygame.sprite.Group):
@@ -38,13 +39,12 @@ class Enemies(pygame.sprite.Group):
 
         for zones in enemies_zones:
             x, y = grid.get_random_node_from_zones(zones).get_pos()
-            enemy = Enemy((x, y), 0.5, 1, grid, win, zones)
+            enemy = Guard((x, y), 0.5, 1, grid, win, zones)
             enemies.append(enemy)
 
         # # Generar 2 guardias (entidad asociada a varias zonas)
         # x, y = grid.get_random_node_from_zones([1, 2]).get_pos()
-        # enemy = Enemy((x, y), 0.5, 1, grid, win, [1, 2])
-        #
+        # enemy = Guard((x, y), 0.5, 1, grid, win, [1, 2])
         # enemies.append(enemy)
         #
         # x, y = grid.get_random_node_from_zones([2, 3]).get_pos()

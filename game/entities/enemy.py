@@ -72,6 +72,10 @@ class Enemy(pygame.sprite.Sprite):
         self.path_nodes = []
         self.path_points = []
         self.next_point = None
+        self.chasing = False
+        self.chase_position = None
+        self.investigating = False
+        self.last_seen = []
 
         # 4. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ RAY CASTING AND VISION ~~
@@ -113,13 +117,10 @@ class Enemy(pygame.sprite.Sprite):
         rect.center = (self.x, self.y)
         surface.blit(rotated_rect, (rect.x - offset.x, rect.y - offset.y))"""
 
-        print(self.angle)
         if is_looking_right(self.angle):
             self._looking_right = True
-            print('Is looking right.')
         if is_looking_left(self.angle):
             self._looking_right = False
-            print('Is looking left.')
 
         sprite_rect = self.image.get_rect()
         sprite_rect.centerx = self.rect.centerx - 10
@@ -170,13 +171,33 @@ class Enemy(pygame.sprite.Sprite):
         current_pos = (self.x, self.y)
         self._is_moving = True
 
-        if self.next_point is None or self.end_node.compare_pos(current_pos):
-            self.pathfinding()
-            self.setting_path = True
-            self.setting_rotation = True
-            self._is_moving = False
-        elif self.has_reached(self.next_point):
-            self.set_next_point()
+        if self.chasing:
+            if self.chase_position.compare_pos(current_pos):
+                if not self.last_seen:
+                    self._status = GREEN
+                    self.pathfinding(self.end_node)
+                else:
+                    self.chasing = False
+                    self.investigating = True
+            else:
+                self.set_direct_path(self.chase_position)
+
+        elif self.investigating:
+            top = self.last_seen.pop()
+            if top.compare_pos(current_pos):
+                if not self.last_seen:
+                    self.pathfinding(self.end_node)
+                self.pathfinding(top)
+            else:
+                self.pathfinding(top)
+        else:
+            if self.next_point is None or self.end_node.compare_pos(current_pos):
+                self.pathfinding()
+                self.setting_path = True
+                self.setting_rotation = True
+                self._is_moving = False
+            elif self.has_reached(self.next_point):
+                self.set_next_point()
 
         #################################
         # DRAWING PATH (OPTIONAL)
@@ -267,10 +288,13 @@ class Enemy(pygame.sprite.Sprite):
     #                               PATHFINDING                               #
     # ####################################################################### #
 
-    def pathfinding(self):
+    def pathfinding(self, end=None):
         try:
             self.set_start()
-            self.set_random_end()
+            if end is not None:
+                self.end_node = end
+            else:
+                self.set_random_end()
             self.path_nodes = a_star(self)
             self.path_points = self.interpolate_points(8)
             self.next_point = self.path_points[1]
@@ -283,7 +307,7 @@ class Enemy(pygame.sprite.Sprite):
     def set_start(self):
         self.start_node = self.grid.get_node((self.x, self.y))
 
-    def set_manual_end(self, node):
+    def set_end(self, node):
         self.end_node = node
 
     def set_random_end(self):
@@ -307,6 +331,14 @@ class Enemy(pygame.sprite.Sprite):
                 end_node = self.grid.get_random_node_from_zone(zone)
             self.end_node = end_node
             self.areas.put(zone)
+
+    def set_direct_path(self, node):
+        current_node = self.grid.get_node((self.x, self.y))
+        self.path_points = self.points_from_path()
+        self.next_point = (node.x, node.y)
+
+    def set_path(self, node):
+        self.pathfinding(node)
 
     def set_next_point(self):
         try:
