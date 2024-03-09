@@ -168,36 +168,50 @@ class Enemy(pygame.sprite.Sprite):
         ##############################
         # PATHFINDING AND ROTATION
         ##############################
-        current_pos = (self.x, self.y)
+        current_node = self.grid.get_node((self.x, self.y))
+
         self._is_moving = True
 
         if self.chasing:
-            if self.chase_position.compare_pos(current_pos):
+            if self.chase_position.compare_node(current_node):
                 if not self.last_seen:
                     self._status = GREEN
+                    self.chasing = False
                     self.pathfinding(self.end_node)
+                    print("a")
                 else:
                     self.chasing = False
                     self.investigating = True
+                    print("b")
             else:
                 self.set_direct_path(self.chase_position)
+                print("c")
 
         elif self.investigating:
-            top = self.last_seen.pop()
-            if top.compare_pos(current_pos):
-                if not self.last_seen:
-                    self.pathfinding(self.end_node)
+            if self.last_seen:
+                top = self.last_seen.pop()
                 self.pathfinding(top)
+                self.setting_path = True
+                self.setting_rotation = True
+                self._is_moving = False
+                print("d")
             else:
-                self.pathfinding(top)
-        else:
-            if self.next_point is None or self.end_node.compare_pos(current_pos):
+                self.investigating = False
                 self.pathfinding()
                 self.setting_path = True
                 self.setting_rotation = True
                 self._is_moving = False
+                print("e")
+        else:
+            if self.next_point is None or self.end_node.compare_node(current_node):
+                self.pathfinding()
+                self.setting_path = True
+                self.setting_rotation = True
+                self._is_moving = False
+                print("f")
             elif self.has_reached(self.next_point):
                 self.set_next_point()
+                print("g")
 
         #################################
         # DRAWING PATH (OPTIONAL)
@@ -295,7 +309,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.end_node = end
             else:
                 self.set_random_end()
-            self.path_nodes = self.a_star
+            self.path_nodes = self.a_star()
             self.path_points = self.interpolate_points(8)
             self.next_point = self.path_points[1]
             self.path_nodes.pop(0)
