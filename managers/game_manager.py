@@ -17,6 +17,7 @@ from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
+from utils.i18n import get_translation
 from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
 from utils.paths.maps_paths import LEVEL_1
 
@@ -214,7 +215,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title="RESUME",
+                        title=get_translation('en', 'resume'),
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -224,7 +225,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="RESTART",
+                        title=get_translation('en', 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -234,7 +235,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="MAIN MENU",
+                        title=get_translation('en', 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -253,7 +254,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title="RESTART",
+                        title=get_translation('en', 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -263,7 +264,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="MAIN MENU",
+                        title=get_translation('en', 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,

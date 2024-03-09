@@ -1,7 +1,7 @@
 traducciones = {
     'es': {
         'play': 'JUGAR',
-        'settings': 'CONFIGURACION',
+        'settings': 'OPCIONES',
         'credits': 'CREDITOS',
         'exit': 'SALIR',
         'menu music': 'MUSICA MENU',
@@ -12,14 +12,17 @@ traducciones = {
         'pick up key': 'Pulsa <ESPACIO> para coger la llave',
         'find exit': 'Tienes que encontrar la salida',
         'find key': 'Tienes que encontrar la llave',
-        'credit text': "Contornos Inmersivos, Interactivos e de Entretenimiento\n"
-                       "Grao en Ingeneria Informática\n"
+        'credit text': "Contornos Inmersivos, Interactivos y de Entretenimiento\n"
+                       "Grado en Ingenieria Informática\n"
                        "Universidade da Coruña\n"
                        "Autores:\n"
                        "  - Martín do Río Rico\n"
                        "  - Yago Fernández Rego\n"
                        "  - David García Ramallal\n"
-                       "  - Pelayo Vieites Pérez"
+                       "  - Pelayo Vieites Pérez",
+        'resume': 'CONTINUAR',
+        'restart': 'REINICIAR',
+        'main menu': 'MENU PRINCIPAL'
     },
     'en': {
         'play': 'PLAY',
@@ -41,7 +44,10 @@ traducciones = {
                        "  - Martín do Río Rico\n"
                        "  - Yago Fernández Rego\n"
                        "  - David García Ramallal\n"
-                       "  - Pelayo Vieites Pérez"
+                       "  - Pelayo Vieites Pérez",
+        'resume': 'RESUME',
+        'restart': 'RESTART',
+        'main menu': 'MAIN MENU'
     }
 }
 

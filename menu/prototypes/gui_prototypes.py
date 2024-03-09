@@ -133,9 +133,9 @@ class CreditsText:
         fuente = pygame.font.Font(FONT, 20)
         self.texts = []
         self.texts.append(Text(screen, fuente, FONT_COLOR,
-                               "Contornos Inmersivos, Interactivos e de Entretenimiento", (40, 100)))
+                               "Contornos Inmersivos, Interactivos y de Entretenimiento", (40, 100)))
         self.texts.append(Text(screen, fuente, FONT_COLOR,
-                               "Grao en Ingeneria Informatica", (40, 130)))
+                               "Grado en Ingenieria Informatica", (40, 130)))
         self.texts.append(Text(screen, fuente, FONT_COLOR,
                                "Universidade da Coruna, UDC", (40, 160)))
         self.texts.append(Text(screen, fuente, FONT_COLOR,
