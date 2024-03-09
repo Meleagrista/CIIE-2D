@@ -26,17 +26,20 @@ class Guard(Enemy):
 
     def update_path(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
-        print(self.seen_positions)
 
         if self.chasing:
             if self.chase_position.compare_node(current_node):
-                if not self.last_seen:
+                if self.seen_positions:
+                    previous_position = self.seen_positions.pop()
+                    self.pathfinding(previous_position)
+                else:
                     self._status = GREEN
                     self.chasing = False
+                    self.chase_position = None
                     self.pathfinding(self.end_node)
-                else:
-                    self.chasing = False
-                    self.investigating = True
+                self.setting_path = True
+                self.setting_rotation = True
+                self._is_moving = False
             else:
                 self.set_direct_path(self.chase_position)
         else:
@@ -54,6 +57,7 @@ class Guard(Enemy):
             super().notified(player)
 
             self.chasing = True
+            if self.chase_position is not None:
+                self.seen_positions.append(self.chase_position)
             self.chase_position = self.grid.get_node((player.x, player.y))
-            self.seen_positions.append(self.chase_position)
             self.update(self.update_path())

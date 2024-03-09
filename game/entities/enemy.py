@@ -72,10 +72,6 @@ class Enemy(pygame.sprite.Sprite):
         self.path_nodes = []
         self.path_points = []
         self.next_point = None
-        self.chasing = False
-        self.chase_position = None
-        self.investigating = False
-        self.last_seen = []
 
         # 4. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ RAY CASTING AND VISION ~~
