@@ -1,9 +1,9 @@
 from pygame import MOUSEBUTTONDOWN, KEYDOWN
 
-from menu.prototypes.gui_prototypes import CreditsText
-from menu.prototypes.screen_prototypes import PantallaGUI
-from menu.gui_texts import *
 from menu.gui_buttons import *
+from menu.gui_texts import *
+from menu.prototypes.gui_prototypes import CreditsText, TitleElement
+from menu.prototypes.screen_prototypes import PantallaGUI
 
 
 class SplashScreen(PantallaGUI):
@@ -26,6 +26,10 @@ class StartingScreen(PantallaGUI):
     def __init__(self, menu):
         PantallaGUI.__init__(self, menu, BACKGROUND_IMAGE)
 
+        title = TitleElement(self, TITLE_IMAGE, (pygame.display.Info().current_w - 20, 20))
+
+        self.elements.append(title)
+
         button_play = ButtonPlay(self)
         button_configuration = ButtonConfiguration(self)
         button_credits = ButtonCredits(self)
@@ -40,7 +44,7 @@ class StartingScreen(PantallaGUI):
         text_configuration = TextoConfiguration(self)
         text_credits = TextoCredits(self)
         text_exit = TextoExit(self)
-        texto_titulo = TextoMenuTitle(self)
+        # texto_titulo = TextoMenuTitle(self)
 
         self.all_text = [text_play, text_configuration, text_credits, text_exit]
 
@@ -48,12 +52,16 @@ class StartingScreen(PantallaGUI):
         self.elements.append(text_configuration)
         self.elements.append(text_credits)
         self.elements.append(text_exit)
-        self.elements.append(texto_titulo)
+        # self.elements.append(texto_titulo)
 
 
 class ConfigurationScreen(PantallaGUI):
     def __init__(self, menu):
         PantallaGUI.__init__(self, menu, BACKGROUND_IMAGE)
+
+        title = TitleElement(self, TITLE_IMAGE, (pygame.display.Info().current_w - 20, 20))
+
+        self.elements.append(title)
 
         switch_volumen = SwitchVolume(self)
         switch_controles = SwitchController(self)
@@ -89,7 +97,7 @@ class CreditsScreen(PantallaGUI):
         text_credits = CreditsText(self)
         text_go_back = TextoBackToMenu(self)
 
-        self.all_text = [text_go_back]
+        self.all_text = [text_go_back, text_credits]
 
         self.elements.append(text_credits)
         self.elements.append(text_go_back)

@@ -1,21 +1,20 @@
 import pygame
 
 from utils.constants import FPS
+
 from utils.enums import Controls as Ctl
-
-# TODO: Extract these into a constants file.
-ANCHO_PANTALLA = 400
-ALTO_PANTALLA = 300
-
 
 class SceneManager:
     def __init__(self):
         info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
         screen_width, screen_height = info.current_w, info.current_h
+
+        # screen_width, screen_height = 800, 800
+
         window_width, window_height = screen_width - 30, screen_height - 90
         # window_width, window_height = 800, 800
 
-        self.screen = pygame.display.set_mode((window_width, window_height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((window_width, window_height))
         self.scene_stack = []
         self.clock = pygame.time.Clock()
         self.language = 'en'

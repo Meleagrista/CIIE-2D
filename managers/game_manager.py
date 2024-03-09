@@ -202,9 +202,9 @@ class GameManager(Scene):
     def is_open_menu(self):
         return self.menu_manager.active_menu is not None
 
-    def open_menu(self, menu):
+    def open_menu(self, menu_to_open):
         self.close_menu()
-        self.menu_manager.open_menu(menu)
+        self.menu_manager.open_menu(menu_to_open)
 
     def close_menu(self):
         self.menu_manager.close_active_menu()
