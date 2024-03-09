@@ -96,7 +96,7 @@ class Square:
     #                                  DRAW                                   #
     # ####################################################################### #
 
-    def draw(self, win, offset=(0, 0)):
+    def draw_rect(self, win, offset):
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -111,9 +111,10 @@ class Square:
 
         pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
-    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset=(0, 0)):
-        if sprite_id == -1 or sprite_sheet is None:
+    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset):
+        if sprite_id < 0 or sprite_sheet is None:
             return
+
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -124,15 +125,21 @@ class Square:
         # Check if the rectangle is completely outside the surface
         if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
                 top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-            return  # Rectangle is completely outside the surface
+            return
 
         # Draw the tile with the adjusted coordinates
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw_sprites(self, win, sprite_sheet: SpriteSheet, offset=None):
-        for sprite_id in self.tile_id:
-            self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_floor=False):
+        if only_floor:
+            for sprite_id in self.tile_id:
+                if sprite_id in GROUND_TILES:
+                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+        else:
+            for sprite_id in self.tile_id:
+                if sprite_id not in GROUND_TILES and sprite_id >= 0:
+                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
 
     # ####################################################################### #
     #                                POSITION                                 #
@@ -161,60 +168,24 @@ class Square:
     # ####################################################################### #
 
     def get_weight(self):
-        """
-        Get the weight of the square.
-
-        Returns:
-            int: The weight of the square.
-        """
         return self.weight
 
     def is_barrier(self):
-        """
-        Check if the square is a barrier.
-
-        Returns:
-            bool: True if the square is a barrier, False otherwise.
-        """
         return self.barrier
 
     def is_border(self):
-        """
-        Check if the square is on the border of the grid.
-
-        Returns:
-            bool: True if the square is on the border, False otherwise.
-        """
         return self.col == 0 or self.row == 0 or self.col >= self.total_cols - 1 or self.row >= self.total_rows - 1
 
     def reset(self):
-        """
-        Reset the state of the square.
-
-        Returns:
-            None
-        """
         self.barrier = False
         self.color = GRID_BACKGROUND
 
     def reset_for_editor(self):
-        """
-        Reset the state of the square, setting white.
-
-        Returns:
-            None
-        """
         self.barrier = False
         self.color = WHITE
         self.id = 0
 
     def make_barrier(self):
-        """
-        Make the square a barrier.
-
-        Returns:
-            None
-        """
         self.barrier = True
         self.color = BLACK
         self.image.fill((0, 0, 0))

@@ -97,14 +97,14 @@ class Enemy(pygame.sprite.Sprite):
         surface = kwargs.pop('internal_surface', None)
         if surface is not None:
             if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pyagme.Surface class")
+                raise TypeError("surface must be an instance of pygame.Surface class")
 
         offset = kwargs.pop('offset', None)
         if offset is not None:
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        if not self._in_range(surface, center, self.size):
+        if not self.in_range(surface, center, self.size * 2):
             return
 
         ##############################
@@ -156,7 +156,7 @@ class Enemy(pygame.sprite.Sprite):
         nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
         self.draw_path(surface, nodes, offset)"""
 
-    def _in_range(self, surface, center, padding):
+    def in_range(self, surface, center, padding):
 
         horizontal_distance = abs(self.x - center[0])
         vertical_distance = abs(self.y - center[1])
@@ -295,7 +295,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.end_node = end
             else:
                 self.set_random_end()
-            self.path_nodes = a_star(self)
+            self.path_nodes = self.a_star
             self.path_points = self.interpolate_points(8)
             self.next_point = self.path_points[1]
             self.path_nodes.pop(0)
@@ -305,7 +305,7 @@ class Enemy(pygame.sprite.Sprite):
             print(self.path_nodes)
 
     def set_start(self):
-        self.start_node = self.grid.get_node((self.x, self.y))
+        self.start_node = self.grid.get_node((self.rect.centerx, self.rect.centery))
 
     def set_end(self, node):
         self.end_node = node
@@ -315,18 +315,37 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.areas.empty():
             end_node = self.grid.get_random_node()
-            while current_node.compare_node(end_node):
+            dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
+            dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
+            while (
+                    dist_x < 3 * SQUARE_SIZE or
+                    dist_y < 3 * SQUARE_SIZE
+            ):
                 end_node = self.grid.get_random_node()
+                dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
+                dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
             self.end_node = end_node
-            return
-
-        zone = self.areas.get()
-        end_node = self.grid.get_random_node_from_zone(zone)
-        if end_node is None:
-            # Will not add zone again, will try with next area
-            print("No node found in zone", zone, "\nDeleting zone from path...")
-            self.set_random_end()
         else:
+            zone = self.areas.get()
+            end_node = self.grid.get_random_node_from_zone(zone)
+            while end_node is None:
+                if self.areas.empty():
+                    end_node = self.grid.get_random_node()
+                    dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
+                    dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
+                    while (
+                            dist_x < 3 * SQUARE_SIZE or
+                            dist_y < 3 * SQUARE_SIZE
+                    ):
+                        end_node = self.grid.get_random_node()
+                        dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
+                        dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
+                    self.end_node = end_node
+                    return
+                else:
+                    zone = self.areas.get()
+                    end_node = self.grid.get_random_node_from_zone(zone)
+
             while current_node.compare_node(end_node):
                 end_node = self.grid.get_random_node_from_zone(zone)
             self.end_node = end_node
@@ -362,7 +381,7 @@ class Enemy(pygame.sprite.Sprite):
         points = np.array(self.points_from_path())
 
         if len(points) < 2:
-            return points  # Return points back if there aren't enough points
+            return points
 
         t = np.arange(len(points))
         x = points[:, 0]
@@ -378,7 +397,12 @@ class Enemy(pygame.sprite.Sprite):
 
         smooth_points.append(points[-1])
 
-        return [tuple(point) for point in smooth_points]
+        point_list = [tuple(point) for point in smooth_points]
+
+        if len(point_list) < 2:
+            return points
+
+        return point_list
 
     # ####################################################################### #
     #                               RAY CASTING                               #
@@ -422,8 +446,8 @@ class Enemy(pygame.sprite.Sprite):
                 map_x = int(ray_x // self.grid.gap)
                 map_y = int(ray_y // self.grid.gap - (1 if up else 0))
                 if (
-                    0 <= map_x < self.grid.size and
-                    0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
+                        0 <= map_x < self.grid.size and
+                        0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
                 ):
                     ray_distance = self.ray_reach
                 else:
@@ -453,8 +477,8 @@ class Enemy(pygame.sprite.Sprite):
                 map_x = int(ray_x // self.grid.gap - (0 if right else 1))
                 map_y = int(ray_y // self.grid.gap)
                 if (
-                    0 <= map_x < self.grid.size and
-                    0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
+                        0 <= map_x < self.grid.size and
+                        0 <= map_y < self.grid.size and self.grid.nodes[map_x][map_y].is_barrier()
                 ):
                     ray_distance = self.ray_reach
                 else:
@@ -483,6 +507,49 @@ class Enemy(pygame.sprite.Sprite):
         ##############################
         corner_list.append((contact_point, (self.x, self.y)))
         self.corners = corner_list
+
+    def a_star(self):
+        """
+        Perform A* pathfinding.
+
+        Returns:
+            List: List of nodes representing the path.
+        """
+        count = 0
+        open_set = PriorityQueue()
+        open_set.put((0, count, self.start_node))
+        came_from = {}
+        g_score = {spot: float("inf") for row in self.grid.nodes for spot in row}
+        g_score[self.start_node] = 0
+        f_score = {spot: float("inf") for row in self.grid.nodes for spot in row}
+        f_score[self.start_node] = heuristic(
+            self.start_node.get_pos(),
+            self.end_node.get_pos(),
+            self.start_node.get_weight()
+        )
+        open_set_hash = {self.start_node}
+
+        while not open_set.empty():
+            current = open_set.get()[2]
+            open_set_hash.remove(current)
+
+            if current == self.end_node:
+                return reconstruct_path(came_from, self.end_node)
+
+            for neighbor in current.neighbors:
+                temp_g_score = g_score[current] + current.weight
+
+                if temp_g_score < g_score[neighbor]:
+                    came_from[neighbor] = current
+                    g_score[neighbor] = temp_g_score
+                    f_score[neighbor] = temp_g_score + heuristic(neighbor.get_pos(), self.end_node.get_pos(),
+                                                                 neighbor.get_weight())
+                    if neighbor not in open_set_hash:
+                        count += 1
+                        open_set.put((f_score[neighbor], count, neighbor))
+                        open_set_hash.add(neighbor)
+
+        return []
 
     # ####################################################################### #
     #                                 ROTATION                                #

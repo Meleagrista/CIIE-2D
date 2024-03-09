@@ -49,7 +49,7 @@ class ButtonExit(Button):
 class ButtonBackToMenu(Button):
     def __init__(self, screen):
         Button.__init__(self, screen, BUTTON_BACK, (520, 200))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 0)
+        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 3)
         self.set_right(pos)
 
     def activate(self):
@@ -59,7 +59,7 @@ class ButtonBackToMenu(Button):
 class SwitchVolume(ButtonSwitch):
     def __init__(self, screen):
         ButtonSwitch.__init__(self, screen, SWITCH_OFF, SWITCH_ON, (500, 90), "On")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 1)
+        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 0)
         self.set_right(pos)
 
     def activate(self):
@@ -77,7 +77,7 @@ class SwitchVolume(ButtonSwitch):
 class SwitchController(ButtonSwitch):
     def __init__(self, screen):
         ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_WASD, (500, 130), "WASD")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 2)
+        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 1)
         self.set_right(pos)
 
     def activate(self):
@@ -95,7 +95,7 @@ class SwitchController(ButtonSwitch):
 class SwitchLanguage(ButtonSwitch):
     def __init__(self, screen):
         ButtonSwitch.__init__(self, screen, SPAIN, UNITED_KINGDOM, (500, 170), "en")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION - 6, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 3)
+        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION - 6, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 2)
         self.set_right(pos)
 
         self.frame = FRAME

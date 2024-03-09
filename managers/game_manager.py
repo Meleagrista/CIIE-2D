@@ -17,6 +17,7 @@ from game.ui.ui_keys import Keys
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
+from utils.i18n import get_translation
 from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
 from utils.paths.maps_paths import LEVEL_1
 
@@ -167,12 +168,6 @@ class GameManager(Scene):
                 vertices.append(point2)
             self.all_sprites.save_enemy_mask(enemy, vertices)
 
-        # mask = pygame.mask.from_surface(mask_surface)
-        # subtract = pygame.mask.from_surface(subtract_surface)
-        # mask = mask.overlap_mask(subtract, (0, 0))
-
-        # self.all_sprites.surface_mask = mask
-
         return self.all_sprites.return_enemy_mask()
 
     def _add_player(self, player):
@@ -220,7 +215,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title="RESUME",
+                        title=get_translation('en', 'resume'),
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -230,7 +225,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="RESTART",
+                        title=get_translation('en', 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -240,7 +235,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="MAIN MENU",
+                        title=get_translation('en', 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -259,7 +254,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title="RESTART",
+                        title=get_translation('en', 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -269,7 +264,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title="MAIN MENU",
+                        title=get_translation('en', 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -289,11 +284,13 @@ class GameManager(Scene):
     def _set_interface(self):
         bar = Bar(self.win)
         bar.add(self.interface)
-        # bar.add(self.all_sprites)
+
         message = Message(self.win)
         message.add(self.interface)
-        keys_box = Keys(self.win)
-        keys_box.add(self.interface)
+
+        keys = Keys()
+        keys.set_position(bar.rect)
+        keys.add(self.interface)
 
     # ####################################################################### #
     #                                DEPRECATED                               #

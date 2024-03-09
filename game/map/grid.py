@@ -35,7 +35,7 @@ class Grid:
         self.groups = []
 
         w, _ = win.get_size()
-        self.gap = SQUARE_SIZE  # w // size
+        self.gap = SQUARE_SIZE
         self.size = size
         self.win = win
         self.font = pygame.font.SysFont('Arial', self.gap)
@@ -89,12 +89,20 @@ class Grid:
             if not isinstance(show_id, bool):
                 raise TypeError("show_id must be an instance of Boolean class")
 
-        surface.fill(GRID_BACKGROUND)
+        only_floor = kwargs.pop('floor', None)
+        if only_floor is not None:
+            if not isinstance(only_floor, bool):
+                raise TypeError("show_id must be an instance of Boolean class")
+        else:
+            only_floor = False
+
+        if only_floor:
+            surface.fill(GRID_BACKGROUND)
 
         if offset is None:
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprites(surface, self.sprite_sheet)
+                    spot.draw(surface, self.sprite_sheet)
 
                     if spot.is_border():
                         spot.make_barrier()
@@ -108,13 +116,16 @@ class Grid:
         else:
             for row in self.nodes:
                 for spot in row:
-                    spot.draw_sprites(
+                    spot.draw(
                         win=surface,
                         sprite_sheet=self.sprite_sheet,
-                        offset=offset)
+                        offset=offset,
+                        only_floor=only_floor
+                    )
 
                     if spot.is_border():
                         spot.make_barrier()
+
                     """elif spot.id != 0 and show_id:
                         font = pygame.font.SysFont('arial', 20)
                         text = font.render(str(spot.id), True, (0, 0, 0))

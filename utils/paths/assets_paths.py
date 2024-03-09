@@ -19,7 +19,7 @@ SPRITES_PATH = "assets/sprites/"
 UI_ASSETS = 'assets/ui_assets/ui-x3.png'
 CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
 ENEMY_ASSETS = 'assets/character_assets/enemies-x3.png'
-BAR_TILE = (1, 0)
+UI_ICONS = MENU_ASSETS + 'ui_white.png'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
@@ -61,8 +61,8 @@ BUTTON_BACK = buttons.get_sprite_by_number(80)
 BUTTON_ARROWS = buttons.get_sprite_by_number(70)
 BUTTON_WASD = buttons.get_sprite_by_number(72)
 
-SWITCH_ON = buttons.get_sprite_by_number(70)
-SWITCH_OFF = buttons.get_sprite_by_number(72)
+SWITCH_ON = buttons.get_sprite_by_number(81)
+SWITCH_OFF = buttons.get_sprite_by_number(82)
 
 flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68)
 
@@ -84,7 +84,7 @@ MOVEMENT_SOUND = SOUNDS_PATH + 'concrete-footsteps-6752.mp3'
 PICK_UP_KEY_SOUND = SOUNDS_PATH + 'interface-124464.mp3'
 FINISH_LEVEL_SOUND = SOUNDS_PATH + 'positive-notification-new-level-152480.mp3'
 DEATH_SOUND = SOUNDS_PATH + 'piano-crash-sound-37898.mp3'
-DETECTED_SOUND = SOUNDS_PATH + 'sonar-ping-95840.mp3'
+DETECTED_SOUND = SOUNDS_PATH + 'beep-warning-6387.mp3'
 INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
