@@ -164,54 +164,27 @@ class Enemy(pygame.sprite.Sprite):
         return ((horizontal_distance < surface.get_width() // 2 + padding) and
                 vertical_distance < surface.get_height() // 2 + padding)
 
-    def update(self, **kwargs):
+    def update_path(self, **kwargs):
+        current_node = self.grid.get_node((self.x, self.y))
+        if self.next_point is None or self.end_node.compare_node(current_node):
+            self.pathfinding()
+            self.setting_path = True
+            self.setting_rotation = True
+            self._is_moving = False
+        elif self.has_reached(self.next_point):
+            self.set_next_point()
+
+    def update(self, update_function=None, **kwargs):
         ##############################
         # PATHFINDING AND ROTATION
         ##############################
-        current_node = self.grid.get_node((self.x, self.y))
 
         self._is_moving = True
 
-        if self.chasing:
-            if self.chase_position.compare_node(current_node):
-                if not self.last_seen:
-                    self._status = GREEN
-                    self.chasing = False
-                    self.pathfinding(self.end_node)
-                    print("a")
-                else:
-                    self.chasing = False
-                    self.investigating = True
-                    print("b")
-            else:
-                self.set_direct_path(self.chase_position)
-                print("c")
-
-        elif self.investigating:
-            if self.last_seen:
-                top = self.last_seen.pop()
-                self.pathfinding(top)
-                self.setting_path = True
-                self.setting_rotation = True
-                self._is_moving = False
-                print("d")
-            else:
-                self.investigating = False
-                self.pathfinding()
-                self.setting_path = True
-                self.setting_rotation = True
-                self._is_moving = False
-                print("e")
+        if update_function is not None:
+            update_function()
         else:
-            if self.next_point is None or self.end_node.compare_node(current_node):
-                self.pathfinding()
-                self.setting_path = True
-                self.setting_rotation = True
-                self._is_moving = False
-                print("f")
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
-                print("g")
+            self.update_path()
 
         #################################
         # DRAWING PATH (OPTIONAL)
