@@ -37,17 +37,19 @@ class Keys(pygame.sprite.Sprite):
         if self.key_obtained:
             surface.blit(self.tile, (self._x, self._y))
 
-    def notified(self, **kwargs):
+    def update(self, *args, **kwargs):
         player = kwargs.pop('player', None)
-
         if player is not None:
             if not isinstance(player, Player):
                 raise TypeError("player must be an instance of Player class")
-            
+
         if player.has_key():
             self.key_obtained = True
         else:
             self.key_obtained = False
+
+    def notified(self, **kwargs):
+        pass
 
     def add(self, *groups):
         for group in groups:

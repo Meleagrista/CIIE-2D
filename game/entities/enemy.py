@@ -100,7 +100,7 @@ class Enemy(pygame.sprite.Sprite):
             if not isinstance(offset, pygame.math.Vector2):
                 raise TypeError("offset must be an instance of Vector2 class")
 
-        if not self._in_range(surface, center, self.size):
+        if not self.in_range(surface, center, self.size * 2):
             return
 
         ##############################
@@ -152,7 +152,7 @@ class Enemy(pygame.sprite.Sprite):
         nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
         self.draw_path(surface, nodes, offset)"""
 
-    def _in_range(self, surface, center, padding):
+    def in_range(self, surface, center, padding):
 
         horizontal_distance = abs(self.x - center[0])
         vertical_distance = abs(self.y - center[1])

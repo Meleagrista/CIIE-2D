@@ -16,7 +16,9 @@ GRID_BACKGROUND = (0, 0, 0)
 SQUARE_SIZE = 50  # Represents the size of each square in pixels on the grid.
 MAP = 'game/map/files/mapa_bueno_1_bordes.csv'  # Represents the path to the file containing the map information.
 TILE_MAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the file containing the tile map information.
-FLOATING_TILES = {1073, 1075, 1076, 1077, 1147, 1149, 1150, 1151, 1221}
+
+FLOATING_TILES = [1073, 1075, 1076, 1077, 1147, 1149, 1150, 1151, 1221]
+GROUND_TILES = [69, 70, 71]
 
 # ####################################################################### #
 #                              PYGAME CONSTANTS                           #

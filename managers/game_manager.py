@@ -167,12 +167,6 @@ class GameManager(Scene):
                 vertices.append(point2)
             self.all_sprites.save_enemy_mask(enemy, vertices)
 
-        # mask = pygame.mask.from_surface(mask_surface)
-        # subtract = pygame.mask.from_surface(subtract_surface)
-        # mask = mask.overlap_mask(subtract, (0, 0))
-
-        # self.all_sprites.surface_mask = mask
-
         return self.all_sprites.return_enemy_mask()
 
     def _add_player(self, player):

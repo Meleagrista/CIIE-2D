@@ -3,7 +3,6 @@ from typing_extensions import deprecated
 
 from game.entities.player import Player
 from game.map.grid import Grid
-from game.ui.ui_bar import Bar
 
 
 class Camera(pygame.sprite.Group):
@@ -43,8 +42,9 @@ class Camera(pygame.sprite.Group):
         self._enemy_mask = pygame.mask.from_surface(self._enemy_surface)
 
     def save_enemy_mask(self, enemy, vertices):
-        self._enemy_untreated_vertices.append(vertices)
-        self._enemy_untreated_positions.append(enemy)
+        if enemy.in_range(self._internal_surface, self._boundary.center, enemy.ray_radius):
+            self._enemy_untreated_vertices.append(vertices)
+            self._enemy_untreated_positions.append(enemy)
 
     def return_enemy_mask(self):
         return self._enemy_mask
@@ -105,15 +105,9 @@ class Camera(pygame.sprite.Group):
         kwargs['internal_surface'] = self._internal_surface
         kwargs['offset'] = self.offset
         kwargs['center'] = self._boundary.center
+        kwargs['floor'] = True
 
         grid.draw(**kwargs)
-
-        # Draw all sprites except instances of the Bar class
-        for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
-            sprite.draw(*args, **kwargs)
-
-        # Update the display
-        # self._update()
 
         win = pygame.display.get_surface()
         self._enemy_surface = pygame.Surface((win.get_width(), win.get_height()), pygame.SRCALPHA)
@@ -131,10 +125,12 @@ class Camera(pygame.sprite.Group):
         if self._enemy_mask is not None:
             self._internal_surface.blit(self._enemy_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
 
-        # Draw the Bar instances after updating
-        """for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
-            if isinstance(sprite, Bar):
-                sprite.draw(**kwargs)"""
+        kwargs['floor'] = False
+
+        grid.draw(**kwargs)
+
+        for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
+            sprite.draw(*args, **kwargs)
 
         scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)

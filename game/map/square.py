@@ -96,7 +96,7 @@ class Square:
     #                                  DRAW                                   #
     # ####################################################################### #
 
-    def draw(self, win, offset=(0, 0)):
+    def draw_rect(self, win, offset):
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -111,9 +111,10 @@ class Square:
 
         pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
-    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset=(0, 0)):
-        if sprite_id == -1 or sprite_sheet is None:
+    def draw_sprite(self, win, sprite_id, sprite_sheet: SpriteSheet, offset):
+        if sprite_id < 0 or sprite_sheet is None:
             return
+
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -124,15 +125,21 @@ class Square:
         # Check if the rectangle is completely outside the surface
         if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
                 top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-            return  # Rectangle is completely outside the surface
+            return
 
         # Draw the tile with the adjusted coordinates
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw_sprites(self, win, sprite_sheet: SpriteSheet, offset=None):
-        for sprite_id in self.tile_id:
-            self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_floor=False):
+        if only_floor:
+            for sprite_id in self.tile_id:
+                if sprite_id in GROUND_TILES:
+                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+        else:
+            for sprite_id in self.tile_id:
+                if sprite_id not in GROUND_TILES and sprite_id >= 0:
+                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
 
     # ####################################################################### #
     #                                POSITION                                 #
