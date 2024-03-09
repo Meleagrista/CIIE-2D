@@ -84,7 +84,7 @@ MOVEMENT_SOUND = SOUNDS_PATH + 'concrete-footsteps-6752.mp3'
 PICK_UP_KEY_SOUND = SOUNDS_PATH + 'interface-124464.mp3'
 FINISH_LEVEL_SOUND = SOUNDS_PATH + 'positive-notification-new-level-152480.mp3'
 DEATH_SOUND = SOUNDS_PATH + 'piano-crash-sound-37898.mp3'
-DETECTED_SOUND = SOUNDS_PATH + 'sonar-ping-95840.mp3'
+DETECTED_SOUND = SOUNDS_PATH + 'beep-warning-6387.mp3'
 INCREASE_HEALTH_SOUND = SOUNDS_PATH + 'arcade-heal-48183.mp3'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
