@@ -73,6 +73,8 @@ class Player(pygame.sprite.Sprite):
         self._is_exposed = False
         self._is_moving = False
 
+        self.exposer = None
+
         self._in_exit = False
         self._in_key = False
         self._has_key = False

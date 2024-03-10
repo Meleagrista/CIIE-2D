@@ -31,6 +31,7 @@ class Guard(Enemy):
 
         if player.detected() and distance < self.ray_radius:
 
+            player.exposer = self.__class__
             super().notified(player)
 
             self.chasing = True
@@ -38,6 +39,7 @@ class Guard(Enemy):
                 self.seen_positions.append(self.chase_position)
             self.chase_position = self.grid.get_node((player.x, player.y))
 
+            print(player.exposer)
             self.update()
 
     def update(self, **kwargs):
