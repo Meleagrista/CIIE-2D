@@ -103,54 +103,21 @@ class Enemy(pygame.sprite.Sprite):
         if not self.in_range(surface, center, self.size * 2):
             return
 
-        ##############################
-        # DRAWING RECTANGLE
-        ##############################
-        """rect_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        pygame.draw.rect(rect_surface, self._status, (0, 0, self.size, self.size))
-        rotated_rect = pygame.transform.rotate(rect_surface, self.angle)
-        rect = rotated_rect.get_rect()
-        rect.center = (self.x, self.y)
-        surface.blit(rotated_rect, (rect.x - offset.x, rect.y - offset.y))"""
-
         if is_looking_right(self.angle):
             self._looking_right = True
         if is_looking_left(self.angle):
             self._looking_right = False
 
         sprite_rect = self.image.get_rect()
-        sprite_rect.centerx = self.rect.centerx - 10
+        sprite_rect.centerx = self.rect.centerx
         sprite_rect.bottom = self.rect.bottom - 10
 
         flipped_image = pygame.transform.flip(self.image, not self._looking_right, False)
 
-        # Draw rotated sprite
         surface.blit(
             source=flipped_image,
             dest=(sprite_rect.x - offset.x, sprite_rect.y - offset.y)
         )
-
-        ##############################
-        # DRAWING TRIANGLE
-        ##############################
-        """end_point = (self.x - self.delta_x * 10 - offset.x, self.y - self.delta_y * 10 - offset.y)
-        angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
-        triangle_size = self.size // 2
-        triangle_points = [
-            end_point,
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal - math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal - math.radians(30)),
-            ),
-            (
-                end_point[0] + triangle_size * math.cos(angle_to_horizontal + math.radians(30)),
-                end_point[1] + triangle_size * math.sin(angle_to_horizontal + math.radians(30)),
-            ),
-        ]
-        pygame.draw.polygon(surface, (255, 0, 0), triangle_points)
-        
-        nodes = list(map(lambda node: node.get_pos(), self.path_nodes))
-        self.draw_path(surface, nodes, offset)"""
 
     def in_range(self, surface, center, padding):
 
@@ -197,13 +164,23 @@ class Enemy(pygame.sprite.Sprite):
                         self.rotation = -1 * abs(self.rotation)
                     self.setting_rotation = False
                 self.rotate(self.rotation)
+
+                if (
+                        (self.rotation > 0 and self.angle > updated_angle) or
+                        (self.rotation < 0 and self.angle < updated_angle)
+                ):
+                    # If overshot, revert the rotation and set the correct angle
+                    self.angle = updated_angle
+
                 self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
                 self.delta_y = math.sin(math.radians(self.angle)) * self.offset
         else:
             iteration_count = 0
             while (abs(updated_angle - self.angle) > 45) and (iteration_count < 2):
-                self.set_next_point()
                 end_point = self.next_point
+                self.set_next_point()
+                if self.next_point is not None:
+                    end_point = self.next_point
                 updated_angle = self.angle_to_point(end_point)
                 iteration_count += 1
 
@@ -284,49 +261,31 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.areas.empty():
             end_node = self.grid.get_random_node()
-            dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
-            dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
-            while (
-                    dist_x < 3 * SQUARE_SIZE or
-                    dist_y < 3 * SQUARE_SIZE
-            ):
+            while current_node.distance_to(end_node) < 3 * SQUARE_SIZE:
                 end_node = self.grid.get_random_node()
-                dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
-                dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
             self.end_node = end_node
         else:
-            zone = self.areas.get()
-            end_node = self.grid.get_random_node_from_zone(zone)
-            while end_node is None:
-                if self.areas.empty():
+            while True:
+                zone = self.areas.get()
+                end_node = self.grid.get_random_node_from_zone(zone)
+                if end_node is not None and not current_node.compare_node(end_node):
+                    self.end_node = end_node
+                    self.areas.put(zone)
+                    break
+                elif self.areas.empty():
                     end_node = self.grid.get_random_node()
-                    dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
-                    dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
-                    while (
-                            dist_x < 3 * SQUARE_SIZE or
-                            dist_y < 3 * SQUARE_SIZE
-                    ):
+                    while current_node.distance_to(end_node) < 3 * SQUARE_SIZE:
                         end_node = self.grid.get_random_node()
-                        dist_x = abs(end_node.get_pos()[0] - current_node.get_pos()[0])
-                        dist_y = abs(end_node.get_pos()[1] - current_node.get_pos()[1])
                     self.end_node = end_node
                     return
-                else:
-                    zone = self.areas.get()
-                    end_node = self.grid.get_random_node_from_zone(zone)
-
-            while current_node.compare_node(end_node):
-                end_node = self.grid.get_random_node_from_zone(zone)
-            self.end_node = end_node
-            self.areas.put(zone)
 
     def set_next_point(self):
         try:
             index = self.path_points.index(self.next_point)
             self.next_point = self.path_points[index + 1]
             self.path_points.pop(index)
-        except Exception as e:
-            print(e)
+        except Exception:
+            self.next_point = None
 
     def has_reached(self, point, threshold: int = 1):
         return (point[0] - threshold <= self.x <= point[0] + threshold) and (
@@ -470,12 +429,6 @@ class Enemy(pygame.sprite.Sprite):
         self.corners = corner_list
 
     def a_star(self):
-        """
-        Perform A* pathfinding.
-
-        Returns:
-            List: List of nodes representing the path.
-        """
         count = 0
         open_set = PriorityQueue()
         open_set.put((0, count, self.start_node))
@@ -517,16 +470,6 @@ class Enemy(pygame.sprite.Sprite):
     # ####################################################################### #
 
     def angle_to_point(self, point, show=False):
-        """
-                    Calculates the angle between the sprite and a given point.
-
-                    Args:
-                        point (tuple): The target point (x, y).
-                        show (bool, optional): Flag to display angle calculations. Defaults to False.
-
-                    Returns:
-                        float: The angle in degrees between the sprite and the point.
-                    """
         delta_x = point[0] - self.x
         delta_y = point[1] - self.y
         angle_rad = math.atan2(delta_y, delta_x)
@@ -542,30 +485,12 @@ class Enemy(pygame.sprite.Sprite):
         return angle_final
 
     def is_facing(self, point):
-        """
-                    Checks if the sprite is facing a given point within a certain threshold angle.
-
-                    Args:
-                        point (tuple): The target point (x, y).
-
-                    Returns:
-                        bool: True if facing the point within threshold angle, False otherwise.
-                    """
         threshold_angle = abs(self.rotation) + 1
         angle_to_point_deg = self.angle_to_point(point)
         angle_diff = (angle_to_point_deg - self.angle + 180) % 360 - 180
         return abs(angle_diff) <= threshold_angle
 
     def shortest_rotation(self, point):
-        """
-                    Determines the shortest rotation direction towards a given point.
-
-                    Args:
-                        point (tuple): The target point (x, y).
-
-                    Returns:
-                        int: 1 if clockwise rotation, -1 if counterclockwise rotation.
-                    """
         target_angle = self.angle_to_point(point)
         diff = (target_angle - self.angle + 360) % 360
         return 1 if diff <= 180 else -1

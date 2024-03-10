@@ -118,50 +118,49 @@ class Square:
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
-        # Calculate the top-left corner of the rectangle
-        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
-        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
-
-        # Check if the rectangle is completely outside the surface
-        if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
-                top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
-            return
-
         # Draw the tile with the adjusted coordinates
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_floor=False):
+    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False):
+        position_x = offset.x + self.size // 2
+        position_y = offset.y + self.size // 2
+
+        # Calculate the top-left corner of the rectangle
+        top_left_x = (self.x - self.size / 2) - position_x - (self.size // 2)
+        top_left_y = (self.y - self.size / 2) - position_y - (self.size // 2)
+
+        if (top_left_x + self.size * 2 < 0 or top_left_x > win.get_width() or
+                top_left_y + self.size * 2 < 0 or top_left_y > win.get_height()):
+            return
+
         if only_floor:
-            for sprite_id in self.tile_id:
-                if sprite_id in GROUND_TILES:
-                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+            tiles_to_draw = [sprite_id for sprite_id in self.tile_id if sprite_id in GROUND_TILES]
+        elif only_float:
+            tiles_to_draw = [sprite_id for sprite_id in self.tile_id if
+                             sprite_id in FLOATING_TILES and sprite_id >= 0]
         else:
-            for sprite_id in self.tile_id:
-                if sprite_id not in GROUND_TILES and sprite_id >= 0:
-                    self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+            tiles_to_draw = [sprite_id for sprite_id in self.tile_id if
+                             sprite_id not in GROUND_TILES and sprite_id >= 0 and sprite_id not in FLOATING_TILES]
+
+        if tiles_to_draw is not None and len(tiles_to_draw) > 0:
+            for sprite_id in tiles_to_draw:
+                self.draw_sprite(win, sprite_id, sprite_sheet, offset)
 
     # ####################################################################### #
     #                                POSITION                                 #
     # ####################################################################### #
 
     def get_grid_pos(self):
-        """
-        Get the row and column indices of the square.
-
-        Returns:
-            tuple: The row and column indices of the square.
-        """
         return self.row, self.col
 
     def get_pos(self):
-        """
-        Get the coordinates of the center of the square.
-
-        Returns:
-            tuple: The x and y coordinates of the center of the square.
-        """
         return self.x, self.y
+
+    def distance_to(self, other_node):
+        x1, y1 = self.get_pos()
+        x2, y2 = other_node.get_pos()
+        return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
     # ####################################################################### #
     #                                VARIABLES                                #

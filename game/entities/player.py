@@ -110,10 +110,8 @@ class Player(pygame.sprite.Sprite):
         # Adjust position of rotated sprite
         # rotated_sprite_rect = rotated_sprite.get_rect(center=scaled_sprite.get_rect().center)"""
 
-        # pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
-
         sprite_rect = self.image.get_rect()
-        sprite_rect.centerx = self.rect.centerx - 10
+        sprite_rect.centerx = self.rect.centerx
         sprite_rect.bottom = self.rect.bottom - 10
 
         flipped_image = pygame.transform.flip(self.image, self._looking_right, False)

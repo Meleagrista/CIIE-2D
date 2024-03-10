@@ -5,8 +5,8 @@
 NPC_SIZE = 40  # Represents the size of the entity's visual representation (square).
 NPC_ANGLE = 90.0  # Represents the initial angle in degrees for all enemy entities.
 VIEW_OFFSET = 2.5  # Represents the offset value for the entity's directional indicator (triangle), indicating its orientation.
-FIELD_OF_VISION = 60
-REACH_OF_VISION = 6
+FIELD_OF_VISION = 90
+REACH_OF_VISION = 5
 
 # ####################################################################### #
 #                               MAP CONSTANTS                             #
@@ -17,8 +17,8 @@ SQUARE_SIZE = 50  # Represents the size of each square in pixels on the grid.
 MAP = 'game/map/files/mapa_bueno_1_bordes.csv'  # Represents the path to the file containing the map information.
 TILE_MAP = 'game/map/files/mapa_bueno_1_tiles.csv'  # Represents the path to the file containing the tile map information.
 
-FLOATING_TILES = [1073, 1075, 1076, 1077, 1147, 1149, 1150, 1151, 1221]
-GROUND_TILES = [69, 70, 71]
+FLOATING_TILES = [2, 8, 373, 374, 375, 376, 377, 1073, 1075, 1076, 1077, 1147, 1149, 1150, 1151, 1221, 1369, 1370, ]
+GROUND_TILES = [69, 70, 71, 73, 106]
 
 # ####################################################################### #
 #                              PYGAME CONSTANTS                           #
