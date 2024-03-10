@@ -15,8 +15,8 @@
     "player_initial_y": 74,
     "key_x": 16,
     "key_y": 73,
-    "exit_x": 65,
-    "exit_y": 40
+    "exit_x": [64, 65],
+    "exit_y": [39, 39]
   },
   "enemies": [
     [3, 1, 4, 5, 7, 6],
