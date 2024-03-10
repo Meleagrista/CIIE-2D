@@ -1,69 +1,91 @@
+import pygame
+
 from menu.prototypes.gui_prototypes import Button, ButtonSwitch
-from utils.constants import MENU_LEFT, FONT_SIZE, MENU_GAP, BUTTON_VERTICAL_CORRECTION, BUTTON_HORIZONTAL_CORRECTION
+from utils.constants import MENU_GAP, BUTTON_VERTICAL_CORRECTION, BUTTON_HORIZONTAL_CORRECTION, FONT_SIZE, \
+    FONT_PERCENT
 from utils.enums import Controls as Ctl
 from utils.paths.assets_paths import *
 
-import pygame
 
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        REGULAR BUTTONS                                        #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-class ButtonPlay(Button):
-    def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_PLAY, (500, 90))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 0)
-        self.set_right(pos)
-
-    def activate(self):
-        self.screen.menu.run()
-
-
-class ButtonConfiguration(Button):
-    def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_CONFIGURATION, (500, 90))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 1)
-        self.set_right(pos)
+class AbstractButton(Button):
+    def __init__(self, screen, button_type, button_size, button_position, action_function):
+        size = round(min(pygame.display.Info().current_w * FONT_PERCENT, FONT_SIZE))
+        Button.__init__(self, screen, button_type, button_size)
+        pos = (BUTTON_HORIZONTAL_CORRECTION,
+               pygame.display.Info().current_h - (size * BUTTON_VERTICAL_CORRECTION) - MENU_GAP * button_position)
+        self.set_left(pos)
+        self.action_function = action_function
 
     def activate(self):
-        self.screen.menu.show_configuration_screen()
+        self.action_function(self.screen.menu)
 
 
-class ButtonCredits(Button):
+class ButtonPlay(AbstractButton):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_CREDITS, (500, 130))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 2)
-        self.set_right(pos)
+        super().__init__(screen, BUTTON_PLAY, (500, 90), 3, lambda menu: menu.run())
+
+
+class ButtonConfiguration(AbstractButton):
+    def __init__(self, screen):
+        super().__init__(screen, BUTTON_CONFIGURATION, (500, 90), 2, lambda menu: menu.show_configuration_screen())
+
+
+class ButtonCredits(AbstractButton):
+    def __init__(self, screen):
+        super().__init__(screen, BUTTON_CREDITS, (500, 130), 1, lambda menu: menu.show_credits_screen())
+
+
+class ButtonExit(AbstractButton):
+    def __init__(self, screen):
+        super().__init__(screen, BUTTON_EXIT, (500, 170), 0, lambda menu: menu.exit())
+
+
+class ButtonBackToMenu(AbstractButton):
+    def __init__(self, screen):
+        super().__init__(screen, BUTTON_BACK, (520, 200), 0, lambda menu: menu.show_starting_screen())
+
+
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+#                                        REGULAR BUTTONS                                        #
+# ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+
+class AbstractSwitch(ButtonSwitch):
+    def __init__(self, screen, image_off, image_on, button_size, button_position, initial_state, action_function):
+        size = round(min(pygame.display.Info().current_w * FONT_PERCENT, FONT_SIZE))
+        ButtonSwitch.__init__(self, screen, image_off, image_on, button_size, initial_state)
+        self.pos = (BUTTON_HORIZONTAL_CORRECTION,
+                    pygame.display.Info().current_h - (size * BUTTON_VERTICAL_CORRECTION) - MENU_GAP * button_position)
+        self.set_left(self.pos)
+        self.action_function = action_function
 
     def activate(self):
-        self.screen.menu.show_credits_screen()
+        self.action_function()
 
 
-class ButtonExit(Button):
+class SwitchVolume(AbstractSwitch):
     def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_EXIT, (500, 170))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 3)
-        self.set_right(pos)
+        super().__init__(screen, SWITCH_ON, SWITCH_OFF, (500, 90), 3, 'Off', self.toggle_volume)
+        # self.pos = (self.pos[0], self.pos[1])
+        # self.set_left(self.pos)
+        self.rescale(90)
+        self.pos = (self.pos[0] - 9, self.pos[1])
+        self.set_left(self.pos)
+        self.state = "0n"
 
-    def activate(self):
-        self.screen.menu.exit()
+        self.frame = FRAME
+        self.frame_rect = self.frame.get_rect()
+        self.frame_rect.centery = self.pos[1]
+        self.frame_rect.left = BUTTON_HORIZONTAL_CORRECTION
 
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        screen.blit(self.frame, self.frame_rect)
 
-class ButtonBackToMenu(Button):
-    def __init__(self, screen):
-        Button.__init__(self, screen, BUTTON_BACK, (520, 200))
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 3)
-        self.set_right(pos)
-
-    def activate(self):
-        self.screen.menu.show_starting_screen()
-
-
-class SwitchVolume(ButtonSwitch):
-    def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, SWITCH_OFF, SWITCH_ON, (500, 90), "On")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 0)
-        self.set_right(pos)
-
-    def activate(self):
-        # Cambiar el estado del interruptor
+    def toggle_volume(self):
         if self.state == 'Off':
             pygame.mixer.music.set_volume(1.0)  # Max volume
             self.state = 'On'
@@ -73,15 +95,23 @@ class SwitchVolume(ButtonSwitch):
             self.state = 'Off'
             self.image = self.image_1
 
-
-class SwitchController(ButtonSwitch):
+class SwitchController(AbstractSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, BUTTON_ARROWS, BUTTON_WASD, (500, 130), "WASD")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 1)
-        self.set_right(pos)
+        super().__init__(screen, BUTTON_ARROWS, BUTTON_WASD, (80, 80), 2, 'Arrows', self.toggle_controller)
+        self.pos = (self.pos[0] + 15, self.pos[1])
+        self.set_left(self.pos)
+        self.state = 'WASD'
 
-    def activate(self):
-        # Cambiar el estado del interruptor
+        self.frame = FRAME
+        self.frame_rect = self.frame.get_rect()
+        self.frame_rect.centery = self.pos[1]
+        self.frame_rect.left = BUTTON_HORIZONTAL_CORRECTION
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        screen.blit(self.frame, self.frame_rect)
+
+    def toggle_controller(self):
         if self.state == 'Arrows':
             self.screen.menu.set_movement_option(Ctl.WASD)
             self.state = 'WASD'
@@ -92,23 +122,23 @@ class SwitchController(ButtonSwitch):
             self.image = self.image_1
 
 
-class SwitchLanguage(ButtonSwitch):
+class SwitchLanguage(AbstractSwitch):
     def __init__(self, screen):
-        ButtonSwitch.__init__(self, screen, SPAIN, UNITED_KINGDOM, (500, 170), "en")
-        pos = (pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION - 6, 0 + (FONT_SIZE * BUTTON_VERTICAL_CORRECTION) + MENU_GAP * 2)
-        self.set_right(pos)
+        super().__init__(screen, SPAIN, UNITED_KINGDOM, (500, 170), 1, 'es', self.toggle_language)
+        self.pos = (self.pos[0] + 6, self.pos[1])
+        self.set_left(self.pos)
+        self.state = 'en'
 
         self.frame = FRAME
         self.frame_rect = self.frame.get_rect()
-        self.frame_rect.centery = pos[1]
-        self.frame_rect.right = pygame.display.Info().current_w * MENU_LEFT - BUTTON_HORIZONTAL_CORRECTION
+        self.frame_rect.centery = self.pos[1]
+        self.frame_rect.left = BUTTON_HORIZONTAL_CORRECTION
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         screen.blit(self.frame, self.frame_rect)
 
-    def activate(self):
-        # Cambiar el estado del interruptor
+    def toggle_language(self):
         if self.state == 'es':
             self.screen.menu.set_language('en')
             self.state = 'en'

@@ -17,9 +17,11 @@ SPRITES_PATH = "assets/sprites/"
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 UI_ASSETS = 'assets/ui_assets/ui-x3.png'
+UI_ICONS = MENU_ASSETS + 'ui_white.png'
+
 CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
 ENEMY_ASSETS = 'assets/character_assets/enemies-x3.png'
-UI_ICONS = MENU_ASSETS + 'ui_white.png'
+
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO GUI ELEMENTS                                   #
@@ -27,10 +29,13 @@ UI_ICONS = MENU_ASSETS + 'ui_white.png'
 
 SPLASH_IMAGE = MENU_ASSETS + 'desert.jpg'
 BACKGROUND_IMAGE = MENU_ASSETS + 'desert-city.png'
+TITLE_IMAGE = MENU_ASSETS + 'title.png'
+WASD_IMAGE = MENU_ASSETS + 'wasd.png'
+ARROWS_IMAGE = MENU_ASSETS + 'arrows.png'
 
 POPUP_IMAGE = IMAGES_BACKGROUND + 'popup_img.png'
-POPUP_IMAGE_PAUSE = IMAGES_BACKGROUND + 'popup_img_pause.png'
-POPUP_IMAGE_DEATH = IMAGES_BACKGROUND + 'popup_img_death.png'
+POPUP_IMAGE_PAUSE = IMAGES_BACKGROUND + 'popup_img_pause_trans.png'
+POPUP_IMAGE_DEATH = IMAGES_BACKGROUND + 'popup_img_death_trans.png'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO MUSIC ELEMENTS                                 #
@@ -58,11 +63,11 @@ BUTTON_CONFIGURATION = buttons.get_sprite_by_number(75)
 BUTTON_CREDITS = buttons.get_sprite_by_number(78)
 BUTTON_EXIT = buttons.get_sprite_by_number(76)
 BUTTON_BACK = buttons.get_sprite_by_number(80)
-BUTTON_ARROWS = buttons.get_sprite_by_number(70)
-BUTTON_WASD = buttons.get_sprite_by_number(72)
+BUTTON_ARROWS = 'assets/menu_assets/arrows.png'
+BUTTON_WASD = 'assets/menu_assets/wasd.png'
 
-SWITCH_ON = buttons.get_sprite_by_number(81)
-SWITCH_OFF = buttons.get_sprite_by_number(82)
+SWITCH_ON = buttons.get_sprite_by_number(40)
+SWITCH_OFF = buttons.get_sprite_by_number(42)
 
 flags = SpriteSheet(MENU_ASSETS + 'flags.png', 11, 5, 68)
 
