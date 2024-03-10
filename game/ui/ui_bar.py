@@ -33,7 +33,11 @@ class Bar(pygame.sprite.Sprite):
         hp_value, hp_max = player.health()
 
         self._percentage = round(float(hp_value) / float(hp_max), 2)
-        self.tile_id = int(round(self._percentage * 10))
+        tmp_tile_id = int(round(self._percentage * 10))
+        if tmp_tile_id != 0:
+            self.tile_id = int(round(self._percentage * 10))
+        else:
+            self.tile_id = 1
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
