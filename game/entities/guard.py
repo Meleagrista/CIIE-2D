@@ -1,5 +1,6 @@
 import math
 import pygame
+import queue
 
 from game.entities.enemy import Enemy
 from game.map.grid import Grid
@@ -24,25 +25,46 @@ class Guard(Enemy):
         self.chase_position = None
         self.seen_positions = []
 
-    def update_path(self, **kwargs):
+    def notified(self, player):
+        distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
+                             (player.rect.centery - self.rect.centery) ** 2)
+
+        if player.detected() and distance < self.ray_radius:
+
+            super().notified(player)
+
+            self.chasing = True
+            if self.chase_position is not None:
+                self.seen_positions.append(self.chase_position)
+            self.chase_position = self.grid.get_node((player.x, player.y))
+
+            self.update()
+
+    def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
 
-        if self.chasing:
+        if self.chasing and self.chase_position is not None:
             if self.chase_position.compare_node(current_node):
                 if self.seen_positions:
+                    # visit squares of previous player sights
                     previous_position = self.seen_positions.pop()
                     self.pathfinding(previous_position)
+                    self.setting_path = True
+
                 else:
+                    # revert to normal status
                     self._status = GREEN
                     self.chasing = False
                     self.chase_position = None
                     self.pathfinding(self.end_node)
-                self.setting_path = True
-                self.setting_rotation = True
-                self._is_moving = False
+                    self.setting_path = True
+                    self.setting_rotation = True
+                    self._is_moving = False
             else:
+                # direct sight to player is assumed here
                 self.set_direct_path(self.chase_position)
         else:
+            # normal behaviour
             if self.next_point is None or self.end_node.compare_node(current_node):
                 self.pathfinding()
                 self.setting_path = True
@@ -51,13 +73,4 @@ class Guard(Enemy):
             elif self.has_reached(self.next_point):
                 self.set_next_point()
 
-    def notified(self, player):
-        if player.detected():
-
-            super().notified(player)
-
-            self.chasing = True
-            if self.chase_position is not None:
-                self.seen_positions.append(self.chase_position)
-            self.chase_position = self.grid.get_node((player.x, player.y))
-            self.update(self.update_path())
+        super().general_update(**kwargs)

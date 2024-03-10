@@ -160,7 +160,7 @@ class Enemy(pygame.sprite.Sprite):
         return ((horizontal_distance < surface.get_width() // 2 + padding) and
                 vertical_distance < surface.get_height() // 2 + padding)
 
-    def update_path(self, **kwargs):
+    def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
         if self.next_point is None or self.end_node.compare_node(current_node):
             self.pathfinding()
@@ -170,17 +170,9 @@ class Enemy(pygame.sprite.Sprite):
         elif self.has_reached(self.next_point):
             self.set_next_point()
 
-    def update(self, update_function=None, **kwargs):
-        ##############################
-        # PATHFINDING AND ROTATION
-        ##############################
+        self.general_update(**kwargs)
 
-        self._is_moving = True
-
-        if update_function is not None:
-            update_function()
-        else:
-            self.update_path()
+    def general_update(self, **kwargs):
 
         #################################
         # DRAWING PATH (OPTIONAL)
