@@ -74,6 +74,7 @@ class SwitchVolume(AbstractSwitch):
         self.rescale(90)
         self.pos = (self.pos[0] - 9, self.pos[1])
         self.set_left(self.pos)
+        self.state = "0n"
 
         self.frame = FRAME
         self.frame_rect = self.frame.get_rect()
@@ -99,6 +100,7 @@ class SwitchController(AbstractSwitch):
         super().__init__(screen, BUTTON_ARROWS, BUTTON_WASD, (80, 80), 2, 'Arrows', self.toggle_controller)
         self.pos = (self.pos[0] + 15, self.pos[1])
         self.set_left(self.pos)
+        self.state = 'WASD'
 
         self.frame = FRAME
         self.frame_rect = self.frame.get_rect()
@@ -125,6 +127,7 @@ class SwitchLanguage(AbstractSwitch):
         super().__init__(screen, SPAIN, UNITED_KINGDOM, (500, 170), 1, 'es', self.toggle_language)
         self.pos = (self.pos[0] + 6, self.pos[1])
         self.set_left(self.pos)
+        self.state = 'en'
 
         self.frame = FRAME
         self.frame_rect = self.frame.get_rect()
