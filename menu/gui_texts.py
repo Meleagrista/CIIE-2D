@@ -1,5 +1,4 @@
 from menu.prototypes.gui_prototypes import Text
-
 import pygame
 
 
@@ -18,8 +17,6 @@ class TextoSplash(Text):
         Text.__init__(self, screen, font, (255, 255, 255), "PRESS ANY KEY TO PLAY", (0, 0))
         self.set_center(pos)
 
-    def activate(self):
-        pass
 
 
 class TextoPlay(Text):
@@ -30,9 +27,6 @@ class TextoPlay(Text):
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'play'), (0, 0))
         self.set_left(pos)
 
-    def activate(self):
-        self.screen.menu.run()
-
 
 class TextoConfiguration(Text):
     def __init__(self, screen):
@@ -41,9 +35,6 @@ class TextoConfiguration(Text):
         pos = (MENU_LEFT, pygame.display.Info().current_h - (size * TEXT_VERTICAL_CORRECTION) - MENU_GAP * 2)
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'settings'), (0, 0))
         self.set_left(pos)
-
-    def activate(self):
-        self.screen.menu.show_configuration_screen()
 
 
 class TextoCredits(Text):
@@ -54,10 +45,6 @@ class TextoCredits(Text):
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'credits'), (0, 0))
         self.set_left(pos)
 
-    def activate(self):
-        self.screen.menu.show_credits_screen()
-
-
 class TextoExit(Text):
     def __init__(self, screen):
         size = round(min(pygame.display.Info().current_w * FONT_PERCENT, FONT_SIZE))
@@ -66,18 +53,12 @@ class TextoExit(Text):
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'exit'), (0, 0))
         self.set_left(pos)
 
-    def activate(self):
-        self.screen.menu.exit()
-
 
 class TextoMenuTitle(Text):
     def __init__(self, screen):
         font = pygame.font.Font(FONT, TITLE_SIZE)
         Text.__init__(self, screen, font, FONT_COLOR, 'GAME TITLE',
                       (pygame.display.Info().current_w * 0.0175, pygame.display.Info().current_h * 0.2))
-
-    def activate(self):
-        pass
 
 
 class TextoBackToMenu(Text):
@@ -88,8 +69,6 @@ class TextoBackToMenu(Text):
         Text.__init__(self, screen, font, FONT_COLOR, get_translation('en', 'return'), (0, 0))
         self.set_left(pos)
 
-    def activate(self):
-        self.screen.menu.show_starting_screen()
 
 
 class TextoMenuMusic(Text):
