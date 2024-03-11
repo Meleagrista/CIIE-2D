@@ -22,7 +22,8 @@ traducciones = {
         '8': "Pelayo Vieites Pérez",
         'resume': 'CONTINUAR',
         'restart': 'REINICIAR',
-        'main menu': 'MENU PRINCIPAL'
+        'main menu': 'MENU PRINCIPAL',
+        'next level': 'SIGUIENTE NIVEL'
     },
     'en': {
         'play': 'PLAY',
@@ -47,7 +48,8 @@ traducciones = {
         '8': "Pelayo Vieites Pérez",
         'resume': 'RESUME',
         'restart': 'RESTART',
-        'main menu': 'MAIN MENU'
+        'main menu': 'MAIN MENU',
+        'next level': 'NEXT LEVEL'
     }
 }
 

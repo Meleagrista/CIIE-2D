@@ -1,5 +1,6 @@
 import pygame
 
+from managers.game_manager import GameManager
 from utils.constants import FPS
 
 from utils.enums import Controls as Ctl
@@ -52,6 +53,8 @@ class SceneManager:
     def run(self):
         if len(self.scene_stack) > 0:
             scene = self.scene_stack[len(self.scene_stack) - 1]
+            if isinstance(scene, GameManager):
+                scene.set_menus()
             self.loop(scene)
         else:
             self.loop(None)

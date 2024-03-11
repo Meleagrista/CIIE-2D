@@ -58,6 +58,8 @@ FONT_PERCENT = 0.06
 
 PAUSE_MENU_ID = "pause_menu"
 DIE_MENU_ID = "die_menu"
+LEVEL_MENU_ID = "level menu"
+FINISHED_GAME_MENU_ID = "finished game menu"
 
 # ####################################################################### #
 #                               PATH CONSTANTS                            #

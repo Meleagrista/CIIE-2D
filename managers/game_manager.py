@@ -19,7 +19,7 @@ from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 from utils.i18n import get_translation
-from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH
+from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL, POPUP_IMAGE_FINISHED
 from utils.paths.maps_paths import LEVEL_1
 
 
@@ -66,7 +66,7 @@ class GameManager(Scene):
             self.grid.set_exit_square(x, y)
 
         self.menu_manager = MenuManager(self.win)
-        self._set_menus()
+        self.set_menus()
 
     def events(self, event_list):
         for event in event_list:
@@ -116,7 +116,7 @@ class GameManager(Scene):
         if self.player.in_door():  # Player has reached the end
             if self.player.has_key():
                 self.audio.play_finish()
-                self.exit()
+                self.open_menu(self.finished_level_menu)
 
         if self.player.has_key() and self.player.interacted_key():
             self.audio.play_key()
@@ -211,13 +211,13 @@ class GameManager(Scene):
     def close_menu(self):
         self.menu_manager.close_active_menu()
 
-    def _set_menus(self):
+    def set_menus(self):
         pause_menu = InfoBox(
             "",
             [
                 [
                     Button(
-                        title=get_translation('en', 'resume'),
+                        title=get_translation(self.manager.get_language(), 'resume'),
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -227,7 +227,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'restart'),
+                        title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -237,7 +237,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'main menu'),
+                        title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -256,7 +256,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title=get_translation('en', 'restart'),
+                        title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -266,7 +266,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'main menu'),
+                        title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -280,8 +280,58 @@ class GameManager(Scene):
             identifier=DIE_MENU_ID,
             background_path=POPUP_IMAGE_DEATH
         )
+        finished_level_menu = InfoBox(
+            "",
+            [
+                [
+                    Button(
+                        title=get_translation(self.manager.get_language(), 'next level'),
+                        callback=lambda: self.exit(),
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
+                    )
+                ],
+                [
+                    Button(
+                        title=get_translation(self.manager.get_language(), 'main menu'),
+                        callback=lambda: self._close(),
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
+                    )
+                ],
+            ],
+            width=300,
+            has_close_button=False,
+            identifier=LEVEL_MENU_ID,
+            background_path=POPUP_IMAGE_LEVEL
+        )
+        game_finished_menu = InfoBox(
+            "",
+            [
+                [
+                    Button(
+                        title=get_translation(self.manager.get_language(), 'main menu'),
+                        callback=lambda: self._close(),
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
+                    )
+                ],
+            ],
+            width=300,
+            has_close_button=False,
+            identifier=FINISHED_GAME_MENU_ID,
+            background_path=POPUP_IMAGE_FINISHED
+        )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
+        self.finished_level_menu = finished_level_menu
+        self.game_finished_menu = game_finished_menu
 
     def _set_interface(self):
         bar = Bar(self.win)
