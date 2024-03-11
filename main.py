@@ -14,8 +14,8 @@ if __name__ == "__main__":
     pygame.init()
     pygamepopup.init()
 
-    manager = SceneManager()
     audio = AudioManager()
+    manager = SceneManager(audio)
     game_scene = GameManager(manager, audio)
     manager.stack_scene(game_scene)
     menu_scene = MenuManager(manager, audio)

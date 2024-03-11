@@ -20,18 +20,18 @@ from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 from utils.i18n import get_translation
 from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL, POPUP_IMAGE_FINISHED
-from utils.paths.maps_paths import LEVEL_1
+from utils.paths.maps_paths import LEVELS
 
 
 class GameManager(Scene):
-    def __init__(self, manager, audio):
+    def __init__(self, manager, audio, level_number=1):
         Scene.__init__(self, manager)
 
         self.win = pygame.display.get_surface()
         self.win_size = self.win.get_width()
 
         # Read level
-        with open(LEVEL_1, 'r') as file:
+        with open(LEVELS[level_number], 'r') as file:
             data = file.read().replace('\n', '')
 
         # j = json.loads(data)
@@ -156,6 +156,20 @@ class GameManager(Scene):
         self.enemies.remove_all()
         self.close_menu()
         self._start()
+
+    def _go_to_next_level(self):
+        level_number = self.level.level_number
+
+        self._restart()
+
+        if level_number == len(LEVELS):
+            # Pantalla ganadora
+            print("Congrats! You've finished the game!")  # TODO: cambiar el mensaje a un popup diferente
+            self.audio.music_menu()
+            self.manager.change_scene()
+        else:
+            self.manager.advance_level(level_number + 1)
+
 
     # ####################################################################### #
     #                                  ENTITIES                               #
@@ -286,7 +300,7 @@ class GameManager(Scene):
                 [
                     Button(
                         title=get_translation(self.manager.get_language(), 'next level'),
-                        callback=lambda: self.exit(),
+                        callback=lambda: self._go_to_next_level(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
                         font=pygame.font.Font(FONT, 16),
