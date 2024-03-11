@@ -112,10 +112,8 @@ class Player(pygame.sprite.Sprite):
         # Adjust position of rotated sprite
         # rotated_sprite_rect = rotated_sprite.get_rect(center=scaled_sprite.get_rect().center)"""
 
-        # pygame.draw.rect(surface, BLUE, (self.rect.x - offset.x, self.rect.y - offset.y, self.size, self.size))
-
         sprite_rect = self.image.get_rect()
-        sprite_rect.centerx = self.rect.centerx - 10
+        sprite_rect.centerx = self.rect.centerx
         sprite_rect.bottom = self.rect.bottom - 10
 
         flipped_image = pygame.transform.flip(self.image, self._looking_right, False)
@@ -145,6 +143,7 @@ class Player(pygame.sprite.Sprite):
         ##############################
         # ENEMY DETECTION
         ##############################
+
         if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
             self._health = decrease(self._health)
             self._recovering = False
@@ -155,7 +154,9 @@ class Player(pygame.sprite.Sprite):
                 self._is_exposed = True
                 self.notify_observers()
         elif self._is_alive:
-            self._is_exposed = False
+            if self._is_exposed:
+                self._is_exposed = False
+                self.notify_observers()
             self._cooldown = increase(self._cooldown, self._max_cooldown)
             if self._cooldown >= self._max_cooldown and self._health < self._max_health and not self._recovering:
                 self._recovering = True

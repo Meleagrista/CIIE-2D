@@ -1,9 +1,9 @@
 {
   "level_number": 1,
   "level_map":{
-    "border_map_path": "game/map/files/csv/map_1/map_1_bordes.csv",
-    "tile_map_path": "game/map/files/csv/map_1/map_1_suelo.csv",
-    "objects_map_path": "game/map/files/csv/map_1/map_1_objetos.csv"
+    "border_map_path": "game/map/files/csv/map_1/map_layout_ids.csv",
+    "tile_map_path": "game/map/files/csv/map_1/map_layout_ground.csv",
+    "objects_map_path": "game/map/files/csv/map_1/map_layout_elements.csv"
   },
   "level_sprite_sheet": {
     "path": "game/map/files/whole_tileset.png",
@@ -11,18 +11,22 @@
     "rows": 45
   },
   "level_coordinates": {
-    "player_initial_x": 30,
-    "player_initial_y": 60,
-    "key_x": 29,
-    "key_y": 60,
-    "exit_x": 87,
-    "exit_y": 21
+    "player_initial_x": 15,
+    "player_initial_y": 74,
+    "key_x": 16,
+    "key_y": 73,
+    "exit_x": [64, 65],
+    "exit_y": [39, 39]
   },
   "enemies": [
-    [1, 2, 3],
-    [1, 3, 2],
-    [1],
+    [3, 1, 4, 5, 7, 6],
+    [6, 2, 4, 5],
+    [7, 3, 7, 5],
+    [4],
+    [2],
+    [7],
     [],
-    [3,1]
+    [],
+    []
   ]
 }

@@ -89,10 +89,17 @@ class Grid:
             if not isinstance(show_id, bool):
                 raise TypeError("show_id must be an instance of Boolean class")
 
+        only_float = kwargs.pop('float', None)
+        if only_float is not None:
+            if not isinstance(only_float, bool):
+                raise TypeError("float must be an instance of Boolean class")
+        else:
+            only_float = False
+
         only_floor = kwargs.pop('floor', None)
         if only_floor is not None:
             if not isinstance(only_floor, bool):
-                raise TypeError("show_id must be an instance of Boolean class")
+                raise TypeError("floor must be an instance of Boolean class")
         else:
             only_floor = False
 
@@ -106,13 +113,6 @@ class Grid:
 
                     if spot.is_border():
                         spot.make_barrier()
-                    """elif spot.id != 0:
-                        font = pygame.font.SysFont('arial', 20)
-                        text = font.render(str(spot.id), True, (0, 0, 0))
-                        self.win.blit(
-                            source=text,
-                            dest=(spot.row * spot.size, spot.col * spot.size)
-                        )"""
         else:
             for row in self.nodes:
                 for spot in row:
@@ -120,19 +120,12 @@ class Grid:
                         win=surface,
                         sprite_sheet=self.sprite_sheet,
                         offset=offset,
+                        only_float=only_float,
                         only_floor=only_floor
                     )
 
                     if spot.is_border():
                         spot.make_barrier()
-
-                    """elif spot.id != 0 and show_id:
-                        font = pygame.font.SysFont('arial', 20)
-                        text = font.render(str(spot.id), True, (0, 0, 0))
-                        surface.blit(
-                            source=text,
-                            dest=(spot.row * spot.size + spot.size // 2, spot.col * spot.size + spot.size // 2)
-                        )"""
 
     def add(self, group):
         for row in self.nodes:
@@ -183,6 +176,8 @@ class Grid:
         return possible_nodes[i]
 
     def get_random_node_from_zone(self, zone_id):
+        if zone_id is None:
+            return self.get_random_node()
         flattened_nodes = [node for row in self.nodes for node in row]
         possible_nodes = [node for node in flattened_nodes if node.id == zone_id]
         if not possible_nodes:
@@ -274,7 +269,10 @@ class Grid:
             csv_file = csv.reader(file)
             lines = []
             for line in csv_file:
-                lines.append(line)
+                # Split the line into characters
+                characters = list(line[0].strip())
+                # Append the characters to the lines list
+                lines.append(characters)
 
             x, y = 0, 0
             for row in self.nodes:

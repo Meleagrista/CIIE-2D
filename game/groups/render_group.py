@@ -3,6 +3,7 @@ from typing_extensions import deprecated
 
 from game.entities.player import Player
 from game.map.grid import Grid
+from game.map.square import Square
 
 
 class Camera(pygame.sprite.Group):
@@ -54,21 +55,21 @@ class Camera(pygame.sprite.Group):
             return
 
         vertices = list(map(lambda point: point - self.offset, vertices))
+
+        # tile_center = enemy.grid.get_node((enemy.x, enemy.y)).rect.topleft
+        # tile_size = enemy.grid.get_node((enemy.x, enemy.y)).size * 2
+
         position_x = int(enemy.x) - self.offset[0]
         position_y = int(enemy.y) - self.offset[1]
-
-        if len(vertices) > 2:
-            pygame.draw.polygon(self._enemy_surface, (255, 255, 255), vertices)
 
         pygame.draw.rect(
             self._enemy_surface,
             (255, 255, 255, 255),
-            pygame.Rect(position_x - enemy.size, position_y - enemy.size, enemy.size * 2, enemy.size * 2)
+            pygame.Rect(position_x - enemy.size / 2, position_y - enemy.size / 2, enemy.size, enemy.size)
         )
 
-        # pygame.draw.circle(mask, (255, 255, 255, 255), (position_x, position_y), enemy.size * 2)
-        # pygame.draw.circle(surface, (255, 255, 255, 255), (position_x, position_y), enemy.ray_radius)
-        # surface.fill((255, 255, 255))
+        if len(vertices) > 2:
+            pygame.draw.polygon(self._enemy_surface, (255, 255, 255), vertices)
 
     def player_mask(self, player):
         mask_surface = pygame.Surface((self.surface.get_width(), self.surface.get_height()), pygame.SRCALPHA)
@@ -105,8 +106,9 @@ class Camera(pygame.sprite.Group):
         kwargs['internal_surface'] = self._internal_surface
         kwargs['offset'] = self.offset
         kwargs['center'] = self._boundary.center
-        kwargs['floor'] = True
 
+        kwargs['float'] = False
+        kwargs['floor'] = True
         grid.draw(**kwargs)
 
         win = pygame.display.get_surface()
@@ -119,18 +121,29 @@ class Camera(pygame.sprite.Group):
         self._enemy_untreated_positions = []
 
         self._enemy_mask = pygame.mask.from_surface(self._enemy_surface)
-        # subtract = pygame.mask.from_surface(surface)
-        # mask = mask.overlap_mask(subtract, (0, 0))
+
+        position_x = int(player.x) - self.offset[0]
+        position_y = int(player.y) - self.offset[1]
+
+        pygame.draw.rect(
+            self._enemy_surface,
+            (255, 255, 255, 255),
+            pygame.Rect(position_x, position_y, player.size * 2, player.size * 2)
+        )
 
         if self._enemy_mask is not None:
-            self._internal_surface.blit(self._enemy_mask.to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
+            self._internal_surface.blit(pygame.mask.from_surface(self._enemy_surface).to_surface(setcolor=None, unsetcolor=(0, 0, 0, 100)), (0, 0))
 
+        kwargs['float'] = False
         kwargs['floor'] = False
-
         grid.draw(**kwargs)
 
         for sprite in sorted(self.sprites(), key=lambda custom_sprite: 0 - custom_sprite.rect.width):
             sprite.draw(*args, **kwargs)
+
+        kwargs['float'] = True
+        kwargs['floor'] = False
+        grid.draw(**kwargs)
 
         scaled_surface = pygame.transform.scale(self._internal_surface, self._internal_size * self._zoom_level)
         scaled_rectangle = scaled_surface.get_rect(center=self.center)

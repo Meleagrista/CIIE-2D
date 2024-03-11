@@ -4,6 +4,7 @@ from utils.constants import FPS
 
 from utils.enums import Controls as Ctl
 
+
 class SceneManager:
     def __init__(self):
         info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()

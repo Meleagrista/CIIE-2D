@@ -14,6 +14,7 @@ from game.map.grid import Grid
 from game.map.level import Level
 from game.ui.ui_bar import Bar
 from game.ui.ui_keys import Keys
+from game.ui.ui_level import Indicator
 from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
@@ -61,7 +62,8 @@ class GameManager(Scene):
         self._set_interface()
 
         self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
-        self.grid.set_exit_square(self.level.coordinates.exit_x, self.level.coordinates.exit_y)
+        for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
+            self.grid.set_exit_square(x, y)
 
         self.menu_manager = MenuManager(self.win)
         self._set_menus()
@@ -287,6 +289,10 @@ class GameManager(Scene):
 
         message = Message(self.win)
         message.add(self.interface)
+
+        level = Indicator(self.win)
+        level.set_text('Level 1')
+        level.add(self.interface)
 
         keys = Keys()
         keys.set_position(bar.rect)
