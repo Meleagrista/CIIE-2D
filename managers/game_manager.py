@@ -66,7 +66,7 @@ class GameManager(Scene):
             self.grid.set_exit_square(x, y)
 
         self.menu_manager = MenuManager(self.win)
-        self._set_menus()
+        self.set_menus()
 
     def events(self, event_list):
         for event in event_list:
@@ -211,13 +211,13 @@ class GameManager(Scene):
     def close_menu(self):
         self.menu_manager.close_active_menu()
 
-    def _set_menus(self):
+    def set_menus(self):
         pause_menu = InfoBox(
             "",
             [
                 [
                     Button(
-                        title=get_translation('en', 'resume'),
+                        title=get_translation(self.manager.get_language(), 'resume'),
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -227,7 +227,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'restart'),
+                        title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -237,7 +237,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'main menu'),
+                        title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -256,7 +256,7 @@ class GameManager(Scene):
             [
                 [
                     Button(
-                        title=get_translation('en', 'restart'),
+                        title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
@@ -266,7 +266,7 @@ class GameManager(Scene):
                 ],
                 [
                     Button(
-                        title=get_translation('en', 'main menu'),
+                        title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
