@@ -60,7 +60,6 @@ class AudioManager:
     def play_finish(self):
         self.pause()
         self.sound_finish_level.play()
-        pygame.time.wait(3500)
 
     def play_key(self):
         self.sound_pick_up_key.play()
