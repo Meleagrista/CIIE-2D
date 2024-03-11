@@ -313,6 +313,7 @@ class Player(pygame.sprite.Sprite):
                 self._interacted_with_key = True
                 self.notify_observers()
                 self._interacted_with_key = False
+                self.grid.visible_key = False
 
     # ####################################################################### #
     #                                OBSERVER                                 #
