@@ -18,10 +18,9 @@ class Guard(Enemy):
                  ):
         super().__init__(position, movement_speed, rotation_speed, grid, window, areas)
 
-        # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.chasing = False
         self.chase_position = None
         self.seen_positions = []
 
@@ -34,45 +33,33 @@ class Guard(Enemy):
             player.exposer = self.__class__
             super().notified(player)
 
-            self.chasing = True
             if self.chase_position is not None:
                 self.seen_positions.append(self.chase_position)
             self.chase_position = self.grid.get_node((player.x, player.y))
+            self.set_direct_path(self.chase_position)
 
-            print(player.exposer)
             self.update()
 
     def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
 
-        if self.chasing and self.chase_position is not None:
+        if self.is_chasing():
             if self.chase_position.compare_node(current_node):
-                if self.seen_positions:
-                    # visit squares of previous player sights
-                    previous_position = self.seen_positions.pop()
-                    self.pathfinding(previous_position)
-                    self.setting_path = True
-
-                else:
-                    # revert to normal status
-                    self._status = GREEN
-                    self.chasing = False
-                    self.chase_position = None
-                    self.pathfinding(self.end_node)
-                    self.setting_path = True
-                    self.setting_rotation = True
-                    self._is_moving = False
-            else:
+                # revert to normal status
+                self._status = GREEN
+                self.chase_position = None
+                self.set_path()
+            elif self.has_reached(self.next_point):
                 # direct sight to player is assumed here
-                self.set_direct_path(self.chase_position)
+                self.set_next_point()
         else:
             # normal behaviour
             if self.next_point is None or self.end_node.compare_node(current_node):
-                self.pathfinding()
-                self.setting_path = True
-                self.setting_rotation = True
-                self._is_moving = False
+                self.set_path()
             elif self.has_reached(self.next_point):
                 self.set_next_point()
 
         super().general_update(**kwargs)
+
+    def is_chasing(self):
+        return self.chase_position is not None

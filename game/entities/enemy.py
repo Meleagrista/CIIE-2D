@@ -130,10 +130,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
         if self.next_point is None or self.end_node.compare_node(current_node):
-            self.pathfinding()
-            self.setting_path = True
-            self.setting_rotation = True
-            self._is_moving = False
+            self.set_path()
         elif self.has_reached(self.next_point):
             self.set_next_point()
 
@@ -240,21 +237,32 @@ class Enemy(pygame.sprite.Sprite):
     #                               PATHFINDING                               #
     # ####################################################################### #
 
-    def pathfinding(self, end=None):
+    def pathfinding(self, end):
         try:
             self.set_start()
             if end is not None:
                 self.end_node = end
             else:
                 self.set_random_end()
-            self.path_nodes = self.a_star()
-            self.path_points = self.interpolate_points(8)
-            self.next_point = self.path_points[1]
-            self.path_nodes.pop(0)
-            self.path_points.pop(0)
+            self.set_intermediate_points(self.a_star())
         except Exception as e:
             print(e)
             print(self.path_nodes)
+
+    def direct_path(self, node):
+        self.set_start()
+        self.end_node = node
+        self.set_intermediate_points([self.start_node, node])
+
+    def set_intermediate_points(self, nodes):
+        self.path_nodes = nodes
+        self.path_points = self.interpolate_points(8)
+        self.next_point = self.path_points[1]
+        self.path_nodes.pop(0)
+        self.path_points.pop(0)
+        self.setting_path = True
+        self.setting_rotation = True
+        self._is_moving = False
 
     def set_start(self):
         self.start_node = self.grid.get_node((self.rect.centerx, self.rect.centery))
@@ -285,13 +293,11 @@ class Enemy(pygame.sprite.Sprite):
                     self.end_node = end_node
                     return
 
-    def set_direct_path(self, node):
-        current_node = self.grid.get_node((self.x, self.y))
-        self.path_points = self.points_from_path()
-        self.next_point = (node.x, node.y)
-
-    def set_path(self, node):
+    def set_path(self, node=None):
         self.pathfinding(node)
+
+    def set_direct_path(self, node):
+        self.direct_path(node)
 
     def set_next_point(self):
         try:
