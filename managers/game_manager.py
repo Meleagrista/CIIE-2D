@@ -355,7 +355,7 @@ class GameManager(Scene):
         message.add(self.interface)
 
         level = Indicator(self.win)
-        level.set_text('Level 1')
+        level.set_text('Level '+str(self.level.level_number))
         level.add(self.interface)
 
         keys = Keys()
