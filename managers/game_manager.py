@@ -19,7 +19,7 @@ from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 from utils.i18n import get_translation
-from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL
+from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL, POPUP_IMAGE_FINISHED
 from utils.paths.maps_paths import LEVEL_1
 
 
@@ -309,9 +309,29 @@ class GameManager(Scene):
             identifier=LEVEL_MENU_ID,
             background_path=POPUP_IMAGE_LEVEL
         )
+        game_finished_menu = InfoBox(
+            "",
+            [
+                [
+                    Button(
+                        title=get_translation(self.manager.get_language(), 'main menu'),
+                        callback=lambda: self._close(),
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
+                    )
+                ],
+            ],
+            width=300,
+            has_close_button=False,
+            identifier=FINISHED_GAME_MENU_ID,
+            background_path=POPUP_IMAGE_FINISHED
+        )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
         self.finished_level_menu = finished_level_menu
+        self.game_finished_menu = game_finished_menu
 
     def _set_interface(self):
         bar = Bar(self.win)

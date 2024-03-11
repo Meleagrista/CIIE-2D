@@ -37,6 +37,7 @@ POPUP_IMAGE = IMAGES_BACKGROUND + 'popup_img.png'
 POPUP_IMAGE_PAUSE = IMAGES_BACKGROUND + 'popup_img_pause_trans.png'
 POPUP_IMAGE_DEATH = IMAGES_BACKGROUND + 'popup_img_death_trans.png'
 POPUP_IMAGE_LEVEL = IMAGES_BACKGROUND + 'popup_img_level_trans.png'
+POPUP_IMAGE_FINISHED = IMAGES_BACKGROUND + 'popup_img_finished_trans.png'
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        PATH TO MUSIC ELEMENTS                                 #
