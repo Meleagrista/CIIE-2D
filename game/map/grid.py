@@ -12,6 +12,8 @@ import os
 import random
 import pygame
 
+from utils.paths.assets_paths import UI_ICONS
+
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                         GRID CLASS                                            #
@@ -45,14 +47,14 @@ class Grid:
         self.create_array()
 
         self.spawn = None
+        self.visible_key = True
 
-        # Read border map (which also includes the room ids) and tile maps for ground and objects
         self.read_border_map(MAP if border_map_path is None else border_map_path)
         self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
         self.read_tile_map(objects_map_path, True) if objects_map_path is not None else None
 
-        # Set the sprite sheet for drawing the grid
-        self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows) if tile_map_path is not None else None
+        self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows, SQUARE_SIZE) if tile_map_path is not None else None
+        self.key_sheet = SpriteSheet(UI_ICONS, 10, 9, SQUARE_SIZE)
 
         self.update()
 
@@ -116,14 +118,18 @@ class Grid:
         else:
             for row in self.nodes:
                 for spot in row:
+                    if spot.is_key and self.visible_key:
+                        key = self.key_sheet
+                    else:
+                        key = None
                     spot.draw(
                         win=surface,
                         sprite_sheet=self.sprite_sheet,
                         offset=offset,
                         only_float=only_float,
-                        only_floor=only_floor
+                        only_floor=only_floor,
+                        key_sheet=key
                     )
-
                     if spot.is_border():
                         spot.make_barrier()
 

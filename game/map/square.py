@@ -2,6 +2,7 @@ import pygame
 
 from game.sprites.spritesheet import SpriteSheet
 from utils.constants import *
+from utils.paths.assets_paths import UI_ICONS
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -122,7 +123,7 @@ class Square:
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False):
+    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False, key_sheet: SpriteSheet=None):
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -146,6 +147,9 @@ class Square:
         if tiles_to_draw is not None and len(tiles_to_draw) > 0:
             for sprite_id in tiles_to_draw:
                 self.draw_sprite(win, sprite_id, sprite_sheet, offset)
+
+        if key_sheet is not None and self.is_key and not only_float:
+            self.draw_sprite(win, 79, key_sheet, offset)
 
     # ####################################################################### #
     #                                POSITION                                 #
