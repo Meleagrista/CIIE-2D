@@ -1,10 +1,9 @@
 import math
 import pygame
-import queue
 
-from game.entities.enemy import Enemy
+from game.entities.enemies.enemy import Enemy
 from game.map.grid import Grid
-from utils.constants import ORANGE, GREEN, RED
+from utils.constants import GREEN
 
 
 class Guard(Enemy):
@@ -18,7 +17,13 @@ class Guard(Enemy):
                  ):
         super().__init__(position, movement_speed, rotation_speed, grid, window, areas)
 
+        #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.chase_position = None
+        self.seen_positions = []
+
+        #    2. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.chase_position = None
@@ -43,23 +48,4 @@ class Guard(Enemy):
     def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
 
-        if self.is_chasing():
-            if self.chase_position.compare_node(current_node):
-                # revert to normal status
-                self._status = GREEN
-                self.chase_position = None
-                self.set_path()
-            elif self.has_reached(self.next_point):
-                # direct sight to player is assumed here
-                self.set_next_point()
-        else:
-            # normal behaviour
-            if self.next_point is None or self.end_node.compare_node(current_node):
-                self.set_path()
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
-
         super().general_update(**kwargs)
-
-    def is_chasing(self):
-        return self.chase_position is not None

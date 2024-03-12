@@ -1,7 +1,6 @@
 import pygame
 
-from game.entities.enemy import Enemy
-from game.entities.guard import Guard
+from game.entities.enemies.guard import Guard
 
 
 class Enemies(pygame.sprite.Group):
