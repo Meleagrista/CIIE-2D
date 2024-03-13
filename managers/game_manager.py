@@ -1,4 +1,5 @@
 import json
+
 import pygame
 from pygamepopup.components import InfoBox, Button
 from pygamepopup.constants import BUTTON_SIZE
@@ -49,6 +50,11 @@ class GameManager(Scene):
             ss_rows=self.level.level_sprite_sheet.rows
 
         )
+
+        self.key_zones = [3, 5, 6]
+        self.key_pos_x, self.key_pos_y = (self.grid.get_random_node_from_zones(self.key_zones)).get_grid_pos()
+        self.level.coordinates.key_x = self.key_pos_x
+        self.level.coordinates.key_y = self.key_pos_y
 
         self.grid.set_spawn_square(self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y)
         self.enemies = Enemies()
