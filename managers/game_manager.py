@@ -117,11 +117,13 @@ class GameManager(Scene):
 
         if self.player.in_door():  # Player has reached the end
             if self.player.has_key():
+                self.audio.stop_movement()
                 self.audio.play_finish()
                 if self.level.level_number == len(LEVELS):
                     self.open_menu(self.game_finished_menu)
                 else:
                     self.open_menu(self.finished_level_menu)
+                return
 
         if self.player.has_key() and self.player.interacted_key():
             self.audio.play_key()
