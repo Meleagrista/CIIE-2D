@@ -23,7 +23,8 @@ traducciones = {
         'resume': 'CONTINUAR',
         'restart': 'REINICIAR',
         'main menu': 'MENU PRINCIPAL',
-        'next level': 'SIGUIENTE NIVEL'
+        'next level': 'SIGUIENTE NIVEL',
+        'level': 'NIVEL '
     },
     'en': {
         'play': 'PLAY',
@@ -49,7 +50,8 @@ traducciones = {
         'resume': 'RESUME',
         'restart': 'RESTART',
         'main menu': 'MAIN MENU',
-        'next level': 'NEXT LEVEL'
+        'next level': 'NEXT LEVEL',
+        'level': 'LEVEL '
     }
 }
 

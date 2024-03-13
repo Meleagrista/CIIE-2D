@@ -59,7 +59,9 @@ class GameManager(Scene):
 
         self._start()
 
-        self._set_interface()
+        self.level_ui = Indicator(self.win)
+
+        self.set_interface()
 
         self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
@@ -350,16 +352,15 @@ class GameManager(Scene):
         self.finished_level_menu = finished_level_menu
         self.game_finished_menu = game_finished_menu
 
-    def _set_interface(self):
+    def set_interface(self):
         bar = Bar(self.win)
         bar.add(self.interface)
 
         message = Message(self.win)
         message.add(self.interface)
 
-        level = Indicator(self.win)
-        level.set_text('Level '+str(self.level.level_number))
-        level.add(self.interface)
+        self.level_ui.set_text(get_translation(self.manager.get_language(), 'level')+str(self.level.level_number))
+        self.level_ui.add(self.interface)
 
         keys = Keys()
         keys.set_position(bar.rect)

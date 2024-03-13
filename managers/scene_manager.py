@@ -78,6 +78,7 @@ class SceneManager:
         if len(self.scene_stack) > 0:
             scene = self.scene_stack[len(self.scene_stack) - 1]
             if isinstance(scene, GameManager):
+                scene.set_interface()
                 scene.set_menus()
             self.loop(scene)
         else:
