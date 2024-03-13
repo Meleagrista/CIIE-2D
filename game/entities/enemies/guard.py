@@ -3,7 +3,7 @@ import pygame
 
 from game.entities.enemies.enemy import Enemy
 from game.map.grid import Grid
-from utils.constants import GREEN
+from utils.constants import GREEN, FPS
 
 
 class Guard(Enemy):
@@ -25,8 +25,11 @@ class Guard(Enemy):
         #    2. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.chase_position = None
-        self.seen_positions = []
+        self.vision_timer = 0
+        self.vision_max = 100
+        self.player = None
+        self.chase_node = None
+        self.previous_node = None
 
     def notified(self, player):
         distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
@@ -35,29 +38,33 @@ class Guard(Enemy):
         if player.detected():
 
             if distance < self.ray_radius:
-                player.exposer = "guard"
                 super().notified(player)
 
             if player.exposer == "civilian" or distance < self.ray_radius:
 
-                if self.chase_position is not None:
-                    self.seen_positions.append(self.chase_position)
-                self.chase_position = self.grid.get_node((player.x, player.y))
-                self.set_path(self.chase_position)
+                if self.previous_node is None:
+                    self.previous_node = self.grid.get_node((self.x, self.y))
+                self.vision_timer = self.vision_max
+                self.player = player
 
             self.update()
 
     def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
 
-        if self.is_chasing():
-            if self.chase_position.compare_node(current_node):
-                # revert to normal status
-                self._status = GREEN
-                self.chase_position = None
-                self.set_path()
+        if self.has_vision():
+            self.vision_timer = max(0, self.vision_timer - 1)
+            self.chase_node = self.grid.get_node((self.player.x, self.player.y))
+
+            if self.chase_node.compare_node(current_node):
+                self.set_path(self.previous_node)
+                self.previous_node = None
             elif self.has_reached(self.next_point):
                 self.set_next_point()
+                self.chase_node = self.grid.get_node((self.player.x, self.player.y))
+                # simplified version to avoid slow turnings
+                self.set_simplified_path(self.chase_node)
+
         else:
             # normal behaviour
             if self.next_point is None or self.end_node.compare_node(current_node):
@@ -67,5 +74,5 @@ class Guard(Enemy):
 
         super().general_update(**kwargs)
 
-    def is_chasing(self):
-        return self.chase_position is not None
+    def has_vision(self):
+        return self.vision_timer > 0 and self.player is not None
