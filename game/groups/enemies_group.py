@@ -45,7 +45,7 @@ class Enemies(pygame.sprite.Group):
             else:
                 initial_zone = None
             x, y = grid.get_random_node_from_zone(initial_zone).get_pos()
-            enemy = Civilian((x, y), 1, 3, grid, win, zones)
+            enemy = Guard((x, y), 1, 3, grid, win, zones)
             enemies.append(enemy)
 
         return enemies

@@ -32,14 +32,18 @@ class Guard(Enemy):
         distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
                              (player.rect.centery - self.rect.centery) ** 2)
 
-        if player.detected() and distance < self.ray_radius:
-            player.exposer = "guard"
-            super().notified(player)
+        if player.detected():
 
-            if self.chase_position is not None:
-                self.seen_positions.append(self.chase_position)
-            self.chase_position = self.grid.get_node((player.x, player.y))
-            self.set_direct_path(self.chase_position)
+            if distance < self.ray_radius:
+                player.exposer = "guard"
+                super().notified(player)
+
+            if player.exposer == "civilian" or distance < self.ray_radius:
+
+                if self.chase_position is not None:
+                    self.seen_positions.append(self.chase_position)
+                self.chase_position = self.grid.get_node((player.x, player.y))
+                self.set_path(self.chase_position)
 
             self.update()
 
