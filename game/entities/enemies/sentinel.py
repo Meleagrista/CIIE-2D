@@ -15,15 +15,16 @@ class Sentinel(Enemy):
                  window: pygame.Surface,
                  areas
                  ):
-        super().__init__(position, movement_speed // 1.5, rotation_speed, grid, window, areas)
+        super().__init__(position, movement_speed / 1.5, rotation_speed, grid, window, areas)
 
         #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~        VISUALS        ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._animation_start = 70
         self._idle_start = 80
 
         #    2. ~~~~~~~~~~~~~~~~~~~~~~~~
-        #    ~~       ESCAPING        ~~
+        #    ~~       CHASING         ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.chase_node = None
         self.previous_node = None
@@ -31,6 +32,7 @@ class Sentinel(Enemy):
     def notified(self, player):
 
         player_node = self.grid.get_node((player.x, player.y))
+
         if player.detected():
             distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
                                  (player.rect.centery - self.rect.centery) ** 2)
@@ -38,11 +40,11 @@ class Sentinel(Enemy):
                 player.exposer = "sentinel"
             super().notified(player)
 
-            if player.exposer == "sentinel":
-                self.chase_node = player_node
+            if player.exposer == "sentinel" or player.exposer == "security":
+                self.chase_node = (self.grid.get_random_node_from_zone(player_node.id))
                 self.previous_node = self.grid.get_node((self.x, self.y))
                 self.set_path(self.chase_node)
-            self.update()
+                self.update()
 
     def update(self, **kwargs):
 
