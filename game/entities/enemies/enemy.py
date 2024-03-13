@@ -42,7 +42,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 2.5)
         self._animation_frames = 4
-        self._animation_start = 10
+        self._animation_start = 0
         self._idle_frames = 4
         self._idle_start = 0
         self._current_frame = 0
@@ -237,14 +237,14 @@ class Enemy(pygame.sprite.Sprite):
     #                               PATHFINDING                               #
     # ####################################################################### #
 
-    def pathfinding(self, end):
+    def pathfinding(self, end, interpolation):
         try:
             self.set_start()
             if end is not None:
                 self.end_node = end
             else:
                 self.set_random_end()
-            self.set_intermediate_points(self.a_star())
+            self.set_intermediate_points(self.a_star(), interpolation)
         except Exception as e:
             print(e)
             print(self.path_nodes)
@@ -254,9 +254,11 @@ class Enemy(pygame.sprite.Sprite):
         self.end_node = node
         self.set_intermediate_points([self.start_node, node])
 
-    def set_intermediate_points(self, nodes):
+    def set_intermediate_points(self, nodes, segments):
+        if segments is None:
+            segments = 8
         self.path_nodes = nodes
-        self.path_points = self.interpolate_points(8)
+        self.path_points = self.interpolate_points(segments)
         self.next_point = self.path_points[1]
         self.path_nodes.pop(0)
         self.path_points.pop(0)
@@ -293,8 +295,8 @@ class Enemy(pygame.sprite.Sprite):
                     self.end_node = end_node
                     return
 
-    def set_path(self, node=None):
-        self.pathfinding(node)
+    def set_path(self, node=None, segments=None):
+        self.pathfinding(node, segments)
 
     def set_direct_path(self, node):
         self.direct_path(node)

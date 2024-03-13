@@ -20,8 +20,7 @@ class Guard(Enemy):
         #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.chase_position = None
-        self.seen_positions = []
+        self._idle_start = 0
 
         #    2. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
@@ -30,7 +29,11 @@ class Guard(Enemy):
         self.seen_positions = []
 
     def notified(self, player):
+        distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
+                             (player.rect.centery - self.rect.centery) ** 2)
 
+        if player.detected() and distance < self.ray_radius:
+            player.exposer = "guard"
             super().notified(player)
 
             if self.chase_position is not None:
@@ -50,7 +53,6 @@ class Guard(Enemy):
                 self.chase_position = None
                 self.set_path()
             elif self.has_reached(self.next_point):
-                # direct sight to player is assumed here
                 self.set_next_point()
         else:
             # normal behaviour
