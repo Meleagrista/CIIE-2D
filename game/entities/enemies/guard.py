@@ -32,10 +32,11 @@ class Guard(Enemy):
         self.previous_node = None
 
     def notified(self, player):
-        distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                             (player.rect.centery - self.rect.centery) ** 2)
 
         if player.detected():
+
+            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
+                                 (player.rect.centery - self.rect.centery) ** 2)
 
             if distance < self.ray_radius:
                 super().notified(player)
@@ -56,12 +57,11 @@ class Guard(Enemy):
             self.vision_timer = max(0, self.vision_timer - 1)
             self.chase_node = self.grid.get_node((self.player.x, self.player.y))
 
-            if self.chase_node.compare_node(current_node):
+            if self.next_point is None or self.chase_node.compare_node(current_node):
                 self.set_path(self.previous_node)
                 self.previous_node = None
             elif self.has_reached(self.next_point):
                 self.set_next_point()
-                self.chase_node = self.grid.get_node((self.player.x, self.player.y))
                 # simplified version to avoid slow turnings
                 self.set_simplified_path(self.chase_node)
 
@@ -72,7 +72,7 @@ class Guard(Enemy):
             elif self.has_reached(self.next_point):
                 self.set_next_point()
 
-        super().general_update(**kwargs)
+        super().update(**kwargs)
 
     def has_vision(self):
         return self.vision_timer > 0 and self.player is not None

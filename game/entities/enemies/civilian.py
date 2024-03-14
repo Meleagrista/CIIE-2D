@@ -71,7 +71,7 @@ class Civilian(Enemy):
                 self.set_path(next_node)
             elif self.has_reached(self.next_point):
                 self.set_next_point()
-        super().general_update(**kwargs)
+        super().update(**kwargs)
 
     def is_escaping(self):
         return self.escape_node is not None

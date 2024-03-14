@@ -30,15 +30,17 @@ class Security(Enemy):
         self.update()
 
     def notified(self, player):
-        distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                             (player.rect.centery - self.rect.centery) ** 2)
 
         if player.detected():
+            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
+                                 (player.rect.centery - self.rect.centery) ** 2)
             if distance < self.ray_radius:
                 player.exposer = "security"
                 super().notified(player)
 
-        self.player = player
+        # player is stored to access its precise position
+        if self.player is None:
+            self.player = player
 
         self.update()
 
@@ -46,14 +48,14 @@ class Security(Enemy):
         current_node = self.grid.get_node((self.x, self.y))
 
         if self.player_known():
+            # actively chasing the player
             self.chase_node = self.grid.get_node((self.player.x, self.player.y))
 
-            if self.chase_node.compare_node(current_node):
+            if self.next_point is None or self.chase_node.compare_node(current_node):
                 next_node = self.grid.get_random_node_from_zone(current_node.get_id())
                 self.set_path(next_node)
             elif self.has_reached(self.next_point):
                 self.set_next_point()
-                self.chase_node = self.grid.get_node((self.player.x, self.player.y))
                 # simplified version to avoid slow turnings
                 self.set_simplified_path(self.chase_node)
 
@@ -65,7 +67,7 @@ class Security(Enemy):
             elif self.has_reached(self.next_point):
                 self.set_next_point()
 
-        super().general_update(**kwargs)
+        super().update(**kwargs)
 
     def player_known(self):
         return self.player is not None

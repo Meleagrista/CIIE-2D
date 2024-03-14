@@ -128,15 +128,6 @@ class Enemy(pygame.sprite.Sprite):
                 vertical_distance < surface.get_height() // 2 + padding)
 
     def update(self, **kwargs):
-        current_node = self.grid.get_node((self.x, self.y))
-        if self.next_point is None or self.end_node.compare_node(current_node):
-            self.set_path()
-        elif self.has_reached(self.next_point):
-            self.set_next_point()
-
-        self.general_update(**kwargs)
-
-    def general_update(self, **kwargs):
 
         #################################
         # DRAWING PATH (OPTIONAL)

@@ -1,4 +1,6 @@
 import math
+import random
+
 import pygame
 
 from game.entities.enemies.enemy import Enemy
@@ -31,17 +33,18 @@ class Sentinel(Enemy):
 
     def notified(self, player):
 
-        player_node = self.grid.get_node((player.x, player.y))
-
         if player.detected():
             distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
                                  (player.rect.centery - self.rect.centery) ** 2)
-            if distance < 100:
+            if distance < self.ray_radius:
                 player.exposer = "sentinel"
             super().notified(player)
 
             if player.exposer == "sentinel" or player.exposer == "security":
-                self.chase_node = (self.grid.get_random_node_from_zone(player_node.id))
+                player_node = self.grid.get_node((player.x, player.y))
+                possible_nodes = player_node.neighbors
+                possible_nodes.append(player_node)
+                self.chase_node = random.choice(possible_nodes)
                 self.previous_node = self.grid.get_node((self.x, self.y))
                 self.set_path(self.chase_node)
                 self.update()
@@ -51,7 +54,7 @@ class Sentinel(Enemy):
         current_node = self.grid.get_node((self.x, self.y))
 
         if self.is_chasing():
-            if self.chase_node.compare_node(current_node):
+            if self.next_point is None or self.chase_node.compare_node(current_node):
                 self.chase_node = None
                 self.set_path(self.previous_node)
 
@@ -63,7 +66,7 @@ class Sentinel(Enemy):
                 self.set_path()
             elif self.has_reached(self.next_point):
                 self.set_next_point()
-        super().general_update(**kwargs)
+        super().update(**kwargs)
 
     def is_chasing(self):
         return self.chase_node is not None
