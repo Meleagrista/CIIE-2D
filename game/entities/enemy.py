@@ -177,7 +177,6 @@ class Enemy(pygame.sprite.Sprite):
         else:
             iteration_count = 0
             while (abs(updated_angle - self.angle) > 45) and (iteration_count < 2):
-                end_point = self.next_point
                 self.set_next_point()
                 if self.next_point is not None:
                     end_point = self.next_point

@@ -2,7 +2,6 @@ import pygame
 
 from game.sprites.spritesheet import SpriteSheet
 from utils.constants import *
-from utils.paths.assets_paths import UI_ICONS
 
 
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
@@ -77,6 +76,14 @@ class Square:
         self.is_exit = False
         self.is_floating = False
 
+        self._current_frame = 0
+        self._jump_frame = 1
+        self._state = 0
+
+        self._key_offset = 0
+        self._key_speed = 0.25
+        self._key_limit = 1
+
     # ####################################################################### #
     #                                VARIABLES                                #
     # ####################################################################### #
@@ -123,7 +130,8 @@ class Square:
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False, key_sheet: SpriteSheet=None):
+    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False,
+             key_sheet: SpriteSheet = None):
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -143,13 +151,42 @@ class Square:
         else:
             tiles_to_draw = [sprite_id for sprite_id in self.tile_id if
                              sprite_id not in GROUND_TILES and sprite_id >= 0 and sprite_id not in FLOATING_TILES]
+            for i in range(len(tiles_to_draw)):
+                if tiles_to_draw[i] in ANIMATED_TILES:
+                    tiles_to_draw[i] = self.animate(tiles_to_draw[i])
+                    break
 
         if tiles_to_draw is not None and len(tiles_to_draw) > 0:
             for sprite_id in tiles_to_draw:
                 self.draw_sprite(win, sprite_id, sprite_sheet, offset)
 
+        # Draw the key if possible.
         if key_sheet is not None and self.is_key and not only_float:
-            self.draw_sprite(win, 79, key_sheet, offset)
+            temp = pygame.math.Vector2(offset.x, offset.y)
+            temp.y = temp.y + self._key_offset
+            self._key_offset = self._key_offset + self._key_speed
+            if abs(self._key_offset) >= self._key_limit:
+                self._key_speed = self._key_speed * -1
+                self._key_offset = self._key_offset + self._key_speed
+            self.draw_sprite(win, 79, key_sheet, temp)
+
+    def animate(self, tile_id):
+        if self._current_frame >= 3:
+            self._current_frame = 0
+        else:
+            self._current_frame = self._current_frame + 1
+
+        if tile_id == TILE_SCREEN:
+            distance = 2
+        else:
+            distance = 1
+
+        jump = distance * self._current_frame
+
+        if self._current_frame > 0:
+            jump = jump + self._jump_frame
+
+        return tile_id + jump
 
     # ####################################################################### #
     #                                POSITION                                 #
