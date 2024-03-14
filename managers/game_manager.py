@@ -35,7 +35,6 @@ class GameManager(Scene):
         with open(LEVELS[level_number], 'r') as file:
             data = file.read().replace('\n', '')
 
-        # j = json.loads(data)
         self.level = Level(**json.loads(data))
 
         self.player = None
@@ -48,13 +47,7 @@ class GameManager(Scene):
             sprite_sheet_path=self.level.level_sprite_sheet.path,
             ss_columns=self.level.level_sprite_sheet.columns,
             ss_rows=self.level.level_sprite_sheet.rows
-
         )
-
-        self.key_zones = [3, 5, 6]
-        self.key_pos_x, self.key_pos_y = (self.grid.get_random_node_from_zones(self.key_zones)).get_grid_pos()
-        self.level.coordinates.key_x = self.key_pos_x
-        self.level.coordinates.key_y = self.key_pos_y
 
         self.grid.set_spawn_square(self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y)
         self.enemies = Enemies()
@@ -69,7 +62,11 @@ class GameManager(Scene):
 
         self.set_interface()
 
-        self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
+        # Set key position
+        key_x, key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
+        self.grid.set_key_square(key_x, key_y)
+
+        # Set exit positions
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
             self.grid.set_exit_square(x, y)
 

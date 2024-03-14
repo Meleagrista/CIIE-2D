@@ -13,20 +13,19 @@ class LevelSpriteSheet:
 
 
 class LevelCoordinates:
-    def __init__(self, player_initial_x, player_initial_y, key_x, key_y, exit_x, exit_y):
+    def __init__(self, player_initial_x, player_initial_y, exit_x, exit_y):
         self.player_initial_x = player_initial_x
         self.player_initial_y = player_initial_y
-        self.key_x = key_x
-        self.key_y = key_y
         self.exit_x = exit_x
         self.exit_y = exit_y
 
 
 class Level:
-    def __init__(self, level_number, level_map, level_sprite_sheet, level_coordinates, enemies):
+    def __init__(self, level_number, level_map, level_sprite_sheet, level_coordinates, key_zones, enemies):
         self.level_number = level_number
         self.map = LevelMap(**level_map)
         self.level_sprite_sheet = LevelSpriteSheet(**level_sprite_sheet)
         self.coordinates = LevelCoordinates(**level_coordinates)
+        self.key_zones = key_zones
         self.enemies_zones = enemies
 
