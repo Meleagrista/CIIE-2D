@@ -13,11 +13,10 @@
   "level_coordinates": {
     "player_initial_x": 15,
     "player_initial_y": 74,
-    "key_x": 16,
-    "key_y": 73,
     "exit_x": [64, 65],
     "exit_y": [39, 39]
   },
+  "key_zones": [3, 5, 6],
   "enemies": [
   ]
 }
