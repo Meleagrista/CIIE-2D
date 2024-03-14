@@ -1,8 +1,8 @@
 import math
+from typing_extensions import deprecated
 
 import pygame
-from pygame import Mask, Surface
-from typing_extensions import deprecated
+from pygame import Mask
 
 from game.map.grid import Grid
 from game.sprites.spritesheet import SpriteSheet
@@ -17,9 +17,14 @@ from utils.paths.assets_paths import CHARACTER_ASSETS
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, movement_speed: float, grid: Grid):
+    def __init__(self,
+                 x: int,
+                 y: int,
+                 movement_speed: float,
+                 grid: Grid
+                 ):
         """
-        Initialize an Enemy object.
+        Initialize a Player object.
 
         Args:
             x (int): X coordinate of the player.
@@ -28,22 +33,20 @@ class Player(pygame.sprite.Sprite):
             grid (Grid): Grid for pathfinding.
         """
         super().__init__()
-        self.x = x
-        self.y = y
-        self.groups = []
-        self.size = NPC_SIZE * 0.5
 
         # 1. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ VISUAL REPRESENTATION ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.x = x
+        self.y = y
+        self.groups = []
+        self.size = NPC_SIZE * 0.5
         self._sprite_sheet = SpriteSheet(CHARACTER_ASSETS, 10, 13, NPC_SIZE * 2.5)
         self._animation_frames = 4
         self._animation_start = 35
         self._animation_idle = 2
         self._current_frame = 0
         self._looking_right = True
-        # self.sheet = ResourceManager.load_image(SHEET_CHARACTER, -1)
-        # self.sheet = self.sheet.convert_alpha()
         self.offset = VIEW_OFFSET * (NPC_SIZE / 20)
         self.image = pygame.Surface((NPC_SIZE, NPC_SIZE))
         self.image.fill((0, 0, 0))
@@ -64,85 +67,62 @@ class Player(pygame.sprite.Sprite):
         #    ~~ OBSERVER PATTERN LIST ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._observers = []
+
+        # 4. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ HEALTH AND COOLDOWN   ~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._max_health = LIFE * FPS
         self._health = self._max_health
         self._max_cooldown = FPS
         self._cooldown = self._max_cooldown
         self._recovering = False
+
+        # 5. ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        #    ~~ STATUS FLAGS           ~~
+        #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self._is_alive = True
         self._is_exposed = False
         self._is_moving = False
-
         self._in_exit = False
         self._in_key = False
         self._has_key = False
-
         self._interacted_with_key = False
-        # self._toggle_key_controls = False
-        # self._picked_up_key = False
 
     def draw(self, **kwargs):
         surface = kwargs.pop('internal_surface', None)
-        if surface is not None:
-            if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pygame.Surface class")
-
         offset = kwargs.pop('offset', None)
-        if offset is not None:
-            if not isinstance(offset, pygame.math.Vector2):
-                raise TypeError("offset must be an instance of Vector2 class")
 
-        """# angle_to_horizontal = math.atan2(self.delta_y, self.delta_x)
+        # Check if surface and offset are provided and of correct types
+        if surface is not None and not isinstance(surface, pygame.Surface):
+            raise TypeError("surface must be an instance of pygame.Surface class")
+        if offset is not None and not isinstance(offset, pygame.math.Vector2):
+            raise TypeError("offset must be an instance of Vector2 class")
 
-        # Draw the player
-        # stopped_coordinates = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
-        # my_sprite = self.sheet.subsurface(stopped_coordinates)
+        # Calculate sprite position
+        sprite_rect = self.image.get_rect(centerx=self.rect.centerx, bottom=self.rect.bottom - 10)
 
-        # Calculate angle in degrees
-        # angle_in_degrees = -(math.degrees(angle_to_horizontal) - 90) % 360
-
-        # Scale sprite to fit the size of the rectangle
-        # scaled_sprite = pygame.transform.scale(self.image, (self.size, self.size))
-
-        # Rotate scaled sprite
-        # rotated_sprite = pygame.transform.rotate(scaled_sprite, angle_in_degrees)
-
-        # Adjust position of rotated sprite
-        # rotated_sprite_rect = rotated_sprite.get_rect(center=scaled_sprite.get_rect().center)"""
-
-        sprite_rect = self.image.get_rect()
-        sprite_rect.centerx = self.rect.centerx
-        sprite_rect.bottom = self.rect.bottom - 10
-
+        # Flip the image if needed
         flipped_image = pygame.transform.flip(self.image, self._looking_right, False)
 
-        # Draw rotated sprite
-        surface.blit(
-            source=flipped_image,
-            dest=(sprite_rect.x - offset.x, sprite_rect.y - offset.y)
-        )
+        # Draw the rotated sprite
+        surface.blit(flipped_image, (sprite_rect.x - offset.x, sprite_rect.y - offset.y))
 
     def update(self, **kwargs):
+        # Variable initialization
         movement_option = kwargs.pop('movement_option', None)
-        if movement_option is not None:
-            if not isinstance(movement_option, Controls):
-                raise TypeError("movement_option must be an instance of Controls enum,")
-
         player_mask = kwargs.pop('player_mask', None)
-        if player_mask is not None:
-            if not isinstance(player_mask, Mask):
-                raise TypeError("player_mask must be an instance of Mask type,")
-
         enemy_mask = kwargs.pop('enemy_mask', None)
-        if enemy_mask is not None:
-            if not isinstance(enemy_mask, Mask):
-                raise TypeError("enemy_mask must be an instance of Mask type,")
 
-        ##############################
-        # ENEMY DETECTION
-        ##############################
+        # Check if movement option, player mask, and enemy mask are provided and of correct types
+        if movement_option is not None and not isinstance(movement_option, Controls):
+            raise TypeError("movement_option must be an instance of Controls enum")
+        if player_mask is not None and not isinstance(player_mask, Mask):
+            raise TypeError("player_mask must be an instance of Mask type")
+        if enemy_mask is not None and not isinstance(enemy_mask, Mask):
+            raise TypeError("enemy_mask must be an instance of Mask type")
 
-        if self.is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
+        # ENEMY DETECTION AND HEALTH HANDLING
+        if self._is_detected(player_mask=player_mask, enemy_mask=enemy_mask):
             self._health = decrease(self._health)
             self._recovering = False
             self._cooldown = 0
@@ -166,28 +146,13 @@ class Player(pygame.sprite.Sprite):
             if self._recovering:
                 self._health = increase(self._health, self._max_health)
 
-            if self._is_exposed:
-                self._is_exposed = False
-                self.notify_observers()
-
-        ##############################
         # MOVEMENT AND DIRECTION
-        ##############################
-
         direction, direction_x, direction_y = get_direction(movement_option)
 
         if direction.is_west():
             self._looking_right = True
         if direction.is_east():
             self._looking_right = False
-
-        """if direction == Direction.STOPPED:
-            self.angle = self.last_direction.angle()
-        else:
-            self.angle = direction.angle()
-            self.last_direction = direction
-        self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
-        self.delta_y = math.sin(math.radians(self.angle)) * self.offset"""
 
         # Normalize the direction vector for diagonal movement
         if direction_x != 0 and direction_y != 0:
@@ -202,10 +167,7 @@ class Player(pygame.sprite.Sprite):
         # Update player's position
         self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
 
-        ##############################
         # COLLISION DETECTION
-        ##############################
-
         collisions = self.grid.has_collision(self.rect)
 
         while len(collisions) != 0:
@@ -231,28 +193,19 @@ class Player(pygame.sprite.Sprite):
                 self.rect = pygame.Rect(new_x, new_y, NPC_SIZE, NPC_SIZE)
                 collisions = self.grid.has_collision(self.rect)
 
-        ##############################
-        # KEY COLLECTION
-        ##############################
-
-        if has_changed(self.grid.is_key_square(new_x, new_y), self._in_key):
-            self._in_key = self.grid.is_key_square(new_x, new_y)
+        # KEY COLLECTION AND EXIT DETECTION
+        self._in_key = self.grid.is_key_square(new_x, new_y)
+        if has_changed(self._in_key, self._in_key):
             self.notify_observers()
 
         if self._in_key:
             self._interact()
 
-        if has_changed(self.grid.is_exit_square(new_x, new_y), self._in_exit):
-            self._in_exit = self.grid.is_exit_square(new_x, new_y)
+        self._in_exit = self.grid.is_exit_square(new_x, new_y)
+        if has_changed(self._in_exit, self._in_exit):
             self.notify_observers()
 
-        self._in_key = self.grid.is_key_square(new_x, new_y)
-        self._in_exit = self.grid.is_exit_square(new_x, new_y)
-
-        ##############################
         # MOVEMENT CHECK
-        ##############################
-
         if self.x == new_x and self.y == new_y and self._is_moving:
             self._is_moving = False
             self.notify_observers()
@@ -263,24 +216,9 @@ class Player(pygame.sprite.Sprite):
         # Update player's position
         self.x = new_x
         self.y = new_y
-
-        # Update sprite
         self.rect.topleft = (self.x, self.y)
 
-        ##############################
         # ANIMATION
-        ##############################
-
-        """if self._is_moving:
-            self.current_sprite = (self.current_sprite + 1) % TOTAL_MOVEMENT_SPRITES
-            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
-        elif self._is_moving and self.current_sprite != TOTAL_MOVEMENT_SPRITES:
-            self.current_sprite = (self.current_sprite + 1)
-            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)
-        elif not self._is_moving:
-            self.current_sprite = STOPPED
-            self.image = ResourceManager.load_coordinates(self.current_sprite, COORDINATES_CHARACTER)"""
-
         if self._is_moving:
             self._current_frame += 0.5  # Increment frame counter by 0.5
             self._current_frame %= self._animation_frames  # Ensure frame counter wraps around
@@ -291,33 +229,12 @@ class Player(pygame.sprite.Sprite):
     def add(self, *groups):
         for group in groups:
             group.add(self)
-            if group not in self.groups:
-                self.groups.append(group)
+        self.groups.extend(groups)
 
     def remove(self, *groups):
         for group in groups:
-            if self in group:
-                group.remove(self)
-            if group in self.groups:
-                self.groups.remove(group)
-
-    # ####################################################################### #
-    #                                INTERACTION                              #
-    # ####################################################################### #
-
-    def _interact(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            if self._in_key and not self._has_key:
-                self._has_key = True
-                self._interacted_with_key = True
-                self.notify_observers()
-                self._interacted_with_key = False
-                self.grid.visible_key = False
-
-    # ####################################################################### #
-    #                                OBSERVER                                 #
-    # ####################################################################### #
+            group.remove(self)
+        self.groups = [group for group in self.groups if group not in groups]
 
     def add_observer(self, observer):
         self._observers.append(observer)
@@ -329,42 +246,83 @@ class Player(pygame.sprite.Sprite):
         for observer in self._observers:
             observer.notified()
 
-    @staticmethod
-    def is_detected(player_mask: Mask, enemy_mask: Mask):
-        if player_mask is None or enemy_mask is None:
-            return False
-        return player_mask.overlap_area(enemy_mask, (0, 0)) > 0
-
     # ####################################################################### #
     #                                PROPERTIES                               #
     # ####################################################################### #
 
-    def alive(self):
+    def alive(self) -> bool:
+        """Check if the player is alive."""
         return self._is_alive
 
-    def detected(self):
+    def detected(self) -> bool:
+        """Check if the player is detected by enemies."""
         return self._is_exposed
 
-    def health(self):
+    def health(self) -> tuple[int, int]:
+        """Get the player's current health and maximum health."""
         return self._health, self._max_health
 
-    def moving(self):
+    def moving(self) -> bool:
+        """Check if the player is currently moving."""
         return self._is_moving
 
-    def recovering(self):
+    def recovering(self) -> bool:
+        """Check if the player is currently recovering."""
         return self._recovering
 
-    def in_door(self):
+    def in_door(self) -> bool:
+        """Check if the player is in front of a door."""
         return self._in_exit
 
-    def in_key(self):
+    def in_key(self) -> bool:
+        """Check if the player is in a key area."""
         return self._in_key
 
-    def has_key(self):
+    def has_key(self) -> bool:
+        """Check if the player has collected the key."""
         return self._has_key
 
-    def interacted_key(self):
+    def interacted_key(self) -> bool:
+        """Check if the player has interacted with the key."""
         return self._interacted_with_key
+
+    # ####################################################################### #
+    #                                INTERACTION                              #
+    # ####################################################################### #
+
+    def _interact(self) -> None:
+        """
+        Interact with the environment.
+
+        If the player is in a key area and hasn't collected the key, pressing space will
+        collect the key, trigger observers, and hide the key in the environment.
+        """
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            if self._in_key and not self._has_key:
+                self._has_key = True
+                self._interacted_with_key = True
+                self.notify_observers()
+                self._interacted_with_key = False
+                self.grid.visible_key = False
+
+    @staticmethod
+    def _is_detected(player_mask: Mask, enemy_mask: Mask) -> bool:
+        """
+        Check if the player is detected by an enemy.
+
+        Args:
+            player_mask (Mask): The mask representing the player's position.
+            enemy_mask (Mask): The mask representing the enemy's position.
+
+        Returns:
+            bool: True if the player is detected by the enemy, False otherwise.
+        """
+        return (
+                player_mask is not None and
+                enemy_mask is not None and
+                player_mask.overlap_area(enemy_mask, (0, 0)) > 0
+        )
 
     # ####################################################################### #
     #                                DEPRECATED                               #
@@ -378,6 +336,7 @@ class Player(pygame.sprite.Sprite):
             return True
         else:
             return False"""
+        raise NotImplemented
 
     @deprecated("This method is no longer used.")
     def key_controls(self):
@@ -387,3 +346,4 @@ class Player(pygame.sprite.Sprite):
             return True
         else:
             return False"""
+        raise NotImplemented

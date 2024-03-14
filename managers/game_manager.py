@@ -70,6 +70,12 @@ class GameManager(Scene):
             self.grid.set_exit_square(x, y)
 
         self.menu_manager = MenuManager(self.win)
+
+        self.pause_menu = None
+        self.death_menu = None
+        self.finished_level_menu = None
+        self.game_finished_menu = None
+
         self.set_menus()
 
     def events(self, event_list):
@@ -127,7 +133,7 @@ class GameManager(Scene):
     def update(self, **kwargs):
         if not self.is_open_menu() and self.end_current_frame < 0:
             kwargs['player'] = self.player
-            kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
+            kwargs['player_mask'] = self.all_sprites.return_player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
             kwargs['language'] = self.manager.get_language()
             self.all_sprites.update(**kwargs)

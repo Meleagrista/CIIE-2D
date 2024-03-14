@@ -1,17 +1,13 @@
 import csv
+import random
+from typing import List, Optional
 
+import pygame
 from pygame import Surface
-from typing_extensions import deprecated
 
+from game.map.square import Square
 from game.sprites.spritesheet import SpriteSheet
 from utils.constants import GRID_BACKGROUND, MAP, TILE_MAP, SQUARE_SIZE
-from game.map.square import Square
-
-import math
-import os
-import random
-import pygame
-
 from utils.paths.assets_paths import UI_ICONS
 
 
@@ -20,20 +16,21 @@ from utils.paths.assets_paths import UI_ICONS
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
 class Grid:
-    """
-    A class representing a grid environment for pathfinding visualization.
-
-    Attributes:
-        size (int): The size of the grid (number of rows/columns).
-        win (pygame.Surface): The pygame window surface to draw the grid on.
-        gap (int): The gap between grid cells calculated based on window size and grid size.
-        font (pygame.font.Font): The font used for rendering text in grid cells.
-        nodes (list): A 2D list containing all the grid cells (Square objects).
-        hover (Square): The grid cell currently being hovered over by the mouse cursor.
-    """
-
     def __init__(self, size, win, border_map_path=None, tile_map_path=None, objects_map_path=None,
                  sprite_sheet_path=None, ss_columns=37, ss_rows=23):
+        """
+        Initialize a Grid object.
+
+        Args:
+            size (tuple): Size of the grid.
+            win (pygame.Surface): Pygame window surface.
+            border_map_path (str, optional): Path to the border map file. Defaults to None.
+            tile_map_path (str, optional): Path to the tile map file. Defaults to None.
+            objects_map_path (str, optional): Path to the objects map file. Defaults to None.
+            sprite_sheet_path (str, optional): Path to the sprite sheet file. Defaults to None.
+            ss_columns (int, optional): Number of columns in the sprite sheet. Defaults to 37.
+            ss_rows (int, optional): Number of rows in the sprite sheet. Defaults to 23.
+        """
         self.groups = []
 
         w, _ = win.get_size()
@@ -44,25 +41,31 @@ class Grid:
         self.nodes = []
         self.hover = None
 
-        self.create_array()
+        self._create_array()
 
+        # ──────── SPAWN POINT ──────── #
         self.spawn = None
+
+        # ──────── KEY VISIBILITY ──────── #
         self.visible_key = True
 
+        # ──────── READ MAPS ──────── #
         self.read_border_map(MAP if border_map_path is None else border_map_path)
         self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
         self.read_tile_map(objects_map_path, True) if objects_map_path is not None else None
 
+        # ──────── SPRITE SHEET ──────── #
         self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows, SQUARE_SIZE) if tile_map_path is not None else None
         self.key_sheet = SpriteSheet(UI_ICONS, 10, 9, SQUARE_SIZE)
 
-        self.update()
+        # ──────── UPDATE ──────── #
+        self._update_array()
 
     # ####################################################################### #
     #                                  TRIVIAL                                #
     # ####################################################################### #
 
-    def create_array(self):
+    def _create_array(self):
         self.nodes = []
         for i in range(self.size):
             self.nodes.append([])
@@ -71,209 +74,72 @@ class Grid:
                 if node.is_border():
                     node.make_barrier()
                 self.nodes[i].append(node)
-        self.update()
+
+    def _update_array(self):
+        for row in self.nodes:
+            for spot in row:
+                spot.update_neighbors(self)
+                spot.surrounding_barrier(self)
 
     def draw(self, **kwargs):
         surface = kwargs.pop('internal_surface', None)
-        if surface is not None:
-            if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pygame.Surface class")
+        if surface is not None and not isinstance(surface, Surface):
+            raise TypeError("surface must be an instance of pygame.Surface class")
 
         offset = kwargs.pop('offset', None)
-        if offset is not None:
-            if not isinstance(offset, pygame.math.Vector2):
-                raise TypeError("offset must be an instance of Vector2 class")
+        if offset is not None and not isinstance(offset, pygame.math.Vector2):
+            raise TypeError("offset must be an instance of Vector2 class")
         else:
-            print('There is no offset.')
+            print('There is no offset.') if offset is None else None
 
         show_id = kwargs.pop('id', None)
-        if show_id is not None:
-            if not isinstance(show_id, bool):
-                raise TypeError("show_id must be an instance of Boolean class")
+        if show_id is not None and not isinstance(show_id, bool):
+            raise TypeError("show_id must be an instance of Boolean class")
 
-        only_float = kwargs.pop('float', None)
-        if only_float is not None:
-            if not isinstance(only_float, bool):
-                raise TypeError("float must be an instance of Boolean class")
-        else:
-            only_float = False
+        only_float = kwargs.pop('float', False)
+        if not isinstance(only_float, bool):
+            raise TypeError("float must be an instance of Boolean class")
 
-        only_floor = kwargs.pop('floor', None)
-        if only_floor is not None:
-            if not isinstance(only_floor, bool):
-                raise TypeError("floor must be an instance of Boolean class")
-        else:
-            only_floor = False
+        only_floor = kwargs.pop('floor', False)
+        if not isinstance(only_floor, bool):
+            raise TypeError("floor must be an instance of Boolean class")
 
         if only_floor:
             surface.fill(GRID_BACKGROUND)
 
-        if offset is None:
-            for row in self.nodes:
-                for spot in row:
-                    spot.draw(surface, self.sprite_sheet)
-
-                    if spot.is_border():
-                        spot.make_barrier()
-        else:
-            for row in self.nodes:
-                for spot in row:
-                    if spot.is_key and self.visible_key:
-                        key = self.key_sheet
-                    else:
-                        key = None
-                    spot.draw(
-                        win=surface,
-                        sprite_sheet=self.sprite_sheet,
-                        offset=offset,
-                        only_float=only_float,
-                        only_floor=only_floor,
-                        key_sheet=key
-                    )
-                    if spot.is_border():
-                        spot.make_barrier()
+        for row in self.nodes:
+            for spot in row:
+                if spot.is_key and self.visible_key:
+                    key = self.key_sheet
+                else:
+                    key = None
+                spot.draw(
+                    win=surface,
+                    sprite_sheet=self.sprite_sheet,
+                    offset=offset,
+                    only_float=only_float,
+                    only_floor=only_floor,
+                    key_sheet=key
+                )
+                if spot.is_border():
+                    spot.make_barrier()
 
     def add(self, group):
         for row in self.nodes:
             for node in row:
                 node.add(group)
 
-    def update(self):
-        for row in self.nodes:
-            for spot in row:
-                spot.update_neighbors(self)
-                spot.surrounding_barrier(self)
-
-    # ####################################################################### #
-    #                                   POSITION                              #
-    # ####################################################################### #
-
-    def get_node(self, pos):
-        y, x = pos
-        row = math.floor(y / self.gap)
-        col = math.floor(x / self.gap)
-        return self.nodes[row][col]
-
-    def get_node_from_array(self, row, col):
-        return self.nodes[row][col]
-
-    def get_nodes_by_id(self, node_id):
-        nodes = []
-        for row in self.nodes:
-            nodes = nodes + list(filter(lambda node: node.id == node_id, row))
-        return nodes
-
-    def get_random_node(self):
-        row = random.randint(0, self.size - 1)
-        col = random.randint(0, self.size - 1)
-        node = self.nodes[row][col]
-        while node.is_barrier():
-            row = random.randint(0, self.size - 1)
-            col = random.randint(0, self.size - 1)
-            node = self.nodes[row][col]
-        return node
-
-    def get_random_node_from_zones(self, zone_ids):
-        if not zone_ids:
-            return self.get_random_node()
-
-        flattened_nodes = [node for row in self.nodes for node in row]
-        possible_nodes = [node for node in flattened_nodes if node.id in set(zone_ids)]
-        if not possible_nodes:
-            return self.get_random_node()
-        i = random.randint(0, len(possible_nodes) - 1)
-        return possible_nodes[i]
-
-    def get_random_node_from_zone(self, zone_id):
-        if zone_id is None:
-            return self.get_random_node()
-        flattened_nodes = [node for row in self.nodes for node in row]
-        possible_nodes = [node for node in flattened_nodes if node.id == zone_id]
-        if not possible_nodes:
-            return None
-        i = random.randint(0, len(possible_nodes) - 1)
-        return possible_nodes[i]
-
-    # ####################################################################### #
-    #                                   NODES                                 #
-    # ####################################################################### #
-
-    def set_spawn_square(self, x, y):
-        if x < 0 or y < 0 or x >= self.size or y >= self.size:
-            raise ValueError  # TODO: Add correct exception
-        self.spawn = self.nodes[x][y]
-
-    def set_key_square(self, x, y):
-        if x < 0 or y < 0 or x >= self.size or y >= self.size:
-            return False
-        self.nodes[x][y].toggle_key()
-
-    def set_exit_square(self, x, y):
-        if x < 0 or y < 0 or x >= self.size or y >= self.size:
-            return False
-        self.nodes[x][y].make_exit()
-
-    def is_key_square(self, x, y):
-        node = self.get_node((x, y))
-        return node.is_key
-
-    def is_exit_square(self, x, y):
-        node = self.get_node((x, y))
-        return node.is_exit
-
-    @deprecated("This method is no longer used.")
-    def hover_over(self, node):
-        if self.hover is not None:
-            if not self.hover.is_border() and not self.hover.is_barrier():
-                self.hover.reset()
-        if not node.is_border() and not node.is_barrier():
-            node.make_selected()
-        self.hover = node
-
     # ####################################################################### #
     #                                    MAP                                  #
     # ####################################################################### #
 
-    def read_map(self, full_file_path):
-        with open(full_file_path, 'r') as file:
-            file_content = file.read()
-            file_content_without_newline = file_content.replace('\n', '')
-            split_result = [char for char in file_content_without_newline]
-            list_of_nodes = []
-            for row in self.nodes:
-                for node in row:
-                    list_of_nodes.append(node)
-            for character, node in zip(split_result, list_of_nodes):
-                if character == 'X':
-                    node.make_barrier()
-                elif character.isnumeric():
-                    node.make_room(int(character))
-                else:
-                    node.reset()
-        print("Map imported successfully.")
+    def read_border_map(self, full_file_path: str) -> None:
+        """
+        Read the border map file and update the grid nodes accordingly.
 
-    def save_map(self, file_path):
-        files = [f for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
-        numbers = []
-        for file in files:
-            if file.startswith('map') and file.split('.')[0].split('-')[1].isdigit():
-                numbers = [int(file.split('.')[0].split('-')[1])]
-        if numbers:
-            next_number = max(numbers) + 1
-        else:
-            next_number = 1
-
-        with open(file_path + 'map-' + str(next_number) + '.txt', 'w') as file:
-            for row in self.nodes:
-                for node in row:
-                    if node.is_barrier():
-                        file.write('X')
-                    else:
-                        file.write(str(node.get_id()))
-                file.write('\n')
-        print("Map exported successfully.")
-
-    def read_border_map(self, full_file_path):
+        Args:
+            full_file_path (str): The full file path of the border map file.
+        """
         with open(full_file_path, 'r') as file:
             csv_file = csv.reader(file)
             lines = []
@@ -283,43 +149,51 @@ class Grid:
                 # Append the characters to the lines list
                 lines.append(characters)
 
-            x, y = 0, 0
-            for row in self.nodes:
-                x = 0
-                for node in row:
+            for y, row in enumerate(self.nodes):
+                for x, node in enumerate(row):
                     if lines[x][y] == 'X':
                         node.make_barrier()
                     elif lines[x][y].isnumeric():
                         node.make_room(int(lines[x][y]))
                     else:
                         node.reset()
-                    x += 1
-                y += 1
 
-        print("Map imported successfully.")
+        # print("Map imported successfully.")
 
-    def read_tile_map(self, file_path, is_objects_map=False):
+    def read_tile_map(self, file_path: str, is_objects_map: bool = False) -> None:
+        """
+        Read the tile map file and update the grid nodes accordingly.
+
+        Args:
+            file_path (str): The full file path of the tile map file.
+            is_objects_map (bool, optional): A flag indicating whether the map is for objects. Defaults to False.
+        """
         tile_map = []
         with open(file_path, mode='r') as file:
             csv_file = csv.reader(file)
             for line in csv_file:
                 tile_map.append(line)
 
-        x, y = 0, 0
-        for row in self.nodes:
-            x = 0
-            for square in row:
+        for y, row in enumerate(self.nodes):
+            for x, square in enumerate(row):
                 square.set_tile_id(int(tile_map[x][y]), is_objects_map)
-                x += 1
-            y += 1
 
-        print("Tile map imported successfully.")
+        # print("Tile map imported successfully.")
 
     # ####################################################################### #
     #                                COLLISIONS                               #
     # ####################################################################### #
 
-    def has_collision(self, player_rect):
+    def has_collision(self, player_rect: pygame.Rect) -> List[Square]:
+        """
+        Check for collisions between the player and barriers in neighboring nodes.
+
+        Args:
+            player_rect (pygame.Rect): The rectangle representing the player.
+
+        Returns:
+            List[Barrier]: A list of barriers with which the player collides.
+        """
         # Get the grid cell containing the player
         player_node = self.get_node((player_rect.centerx, player_rect.centery))
 
@@ -327,7 +201,7 @@ class Grid:
             return []  # Player position is outside the grid
 
         # Create a list to store collided barriers
-        collided_barriers = []
+        collided_barriers: List[Square] = []
 
         # Iterate through neighboring nodes and check for collision with barriers along the specified axis
         for neighbor in player_node.barriers:
@@ -336,3 +210,166 @@ class Grid:
                 collided_barriers.append(neighbor)
 
         return collided_barriers
+
+    # ####################################################################### #
+    #                                   POSITION                              #
+    # ####################################################################### #
+
+    def get_node(self, pos: tuple) -> Square:
+        """
+        Get the node at the specified position.
+
+        Args:
+            pos (tuple): The position (y, x) of the node.
+
+        Returns:
+            Square: The node at the specified position.
+        """
+        y, x = map(int, pos)  # Convert y and x to integers
+        row = y // self.gap
+        col = x // self.gap
+        return self.nodes[row][col]
+
+    def get_node_from_array(self, row: int, col: int) -> Square:
+        """
+        Get the node from the array at the specified row and column.
+
+        Args:
+            row (int): The row index.
+            col (int): The column index.
+
+        Returns:
+            Square: The node at the specified row and column.
+        """
+        return self.nodes[row][col]
+
+    def get_nodes_by_id(self, node_id: int) -> List[Square]:
+        """
+        Get nodes with the specified ID.
+
+        Args:
+            node_id (int): The ID of the nodes to retrieve.
+
+        Returns:
+            list: List of nodes with the specified ID.
+        """
+        return [node for row in self.nodes for node in row if node.id == node_id]
+
+    def get_random_node(self) -> Square:
+        """
+        Get a random node that is not a barrier.
+
+        Returns:
+            Square: A random non-barrier node.
+        """
+        while True:
+            row = random.randint(0, self.size - 1)
+            col = random.randint(0, self.size - 1)
+            node = self.nodes[row][col]
+            if not node.is_barrier():
+                return node
+
+    def get_random_node_from_zones(self, zone_ids: List[int]) -> Optional[Square]:
+        """
+        Get a random node from zones with the specified IDs.
+
+        Args:
+            zone_ids (List[int]): List of zone IDs.
+
+        Returns:
+            Square: A random node from the specified zones, or None if no nodes found.
+        """
+        possible_nodes = [node for row in self.nodes for node in row if node.id in zone_ids]
+        return random.choice(possible_nodes) if possible_nodes else None
+
+    def get_random_node_from_zone(self, zone_id: int) -> Optional[Square]:
+        """
+        Get a random node from the zone with the specified ID.
+
+        Args:
+            zone_id (int): The ID of the zone.
+
+        Returns:
+            Square: A random node from the specified zone, or None if no nodes found.
+        """
+        possible_nodes = [node for row in self.nodes for node in row if node.id == zone_id]
+        return random.choice(possible_nodes) if possible_nodes else None
+
+    # ####################################################################### #
+    #                                   NODES                                 #
+    # ####################################################################### #
+
+    def set_spawn_square(self, x: int, y: int) -> None:
+        """
+        Set the spawn square at the specified coordinates.
+
+        Args:
+            x (int): The x-coordinate of the spawn square.
+            y (int): The y-coordinate of the spawn square.
+
+        Raises:
+            ValueError: If the coordinates are out of bounds.
+        """
+        if x < 0 or y < 0 or x >= self.size or y >= self.size:
+            raise ValueError("Square out of bounds")
+        self.spawn = self.nodes[x][y]
+
+    def set_key_square(self, x: int, y: int) -> bool:
+        """
+        Set the key square at the specified coordinates.
+
+        Args:
+            x (int): The x-coordinate of the key square.
+            y (int): The y-coordinate of the key square.
+
+        Returns:
+            bool: True if the operation was successful, False otherwise.
+        """
+        if x < 0 or y < 0 or x >= self.size or y >= self.size:
+            return False
+        self.nodes[x][y].toggle_key()
+        return True
+
+    def set_exit_square(self, x: int, y: int) -> bool:
+        """
+        Set the exit square at the specified coordinates.
+
+        Args:
+            x (int): The x-coordinate of the exit square.
+            y (int): The y-coordinate of the exit square.
+
+        Returns:
+            bool: True if the operation was successful, False otherwise.
+        """
+        if x < 0 or y < 0 or x >= self.size or y >= self.size:
+            return False
+        self.nodes[x][y].make_exit()
+        return True
+
+    def is_key_square(self, x: int, y: int) -> bool:
+        """
+        Check if the square at the specified coordinates contains a key.
+
+        Args:
+            x (int): The x-coordinate of the square.
+            y (int): The y-coordinate of the square.
+
+        Returns:
+            bool: True if the square contains a key, False otherwise.
+        """
+        node = self.get_node((x, y))
+        return node.is_key
+
+    def is_exit_square(self, x: int, y: int) -> bool:
+        """
+        Check if the square at the specified coordinates is an exit square.
+
+        Args:
+            x (int): The x-coordinate of the square.
+            y (int): The y-coordinate of the square.
+
+        Returns:
+            bool: True if the square is an exit square, False otherwise.
+        """
+        node = self.get_node((x, y))
+        return node.is_exit

@@ -1,10 +1,11 @@
-import queue
+from typing_extensions import deprecated
 
 import numpy as np
+from scipy.interpolate import CubicSpline
 from pygame import Surface
 
-from scipy.interpolate import CubicSpline
-from typing_extensions import deprecated
+import queue
+
 from game.map.grid import Grid
 from game.sprites.spritesheet import SpriteSheet
 from utils.algorithms import *
@@ -19,12 +20,12 @@ from utils.paths.assets_paths import ENEMY_ASSETS
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self,
-                 position,
-                 movement_speed,
-                 rotation_speed,
+                 position: tuple[int, int],
+                 movement_speed: float,
+                 rotation_speed: float,
                  grid: Grid,
                  window: pygame.Surface,
-                 areas
+                 areas: list[int]
                  ):
         super().__init__()
         self.groups = []
