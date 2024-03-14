@@ -77,6 +77,8 @@ class Square:
         self.is_floating = False
 
         self._current_frame = 0
+        self._delay_frame = 2
+        self._pass_frame = self._delay_frame
         self._jump_frame = 1
         self._state = 0
 
@@ -130,8 +132,15 @@ class Square:
         tile = sprite_sheet.get_sprite_by_number(sprite_id)
         win.blit(tile, (self.x - position_x, self.y - position_y))
 
-    def draw(self, win, sprite_sheet: SpriteSheet, offset=None, only_float=False, only_floor=False,
-             key_sheet: SpriteSheet = None):
+    def draw(
+            self,
+            win,
+            sprite_sheet: SpriteSheet,
+            offset=None,
+            only_float=False,
+            only_floor=False,
+            key_sheet: SpriteSheet = None
+    ):
         position_x = offset.x + self.size // 2
         position_y = offset.y + self.size // 2
 
@@ -174,18 +183,18 @@ class Square:
         if self._current_frame >= 3:
             self._current_frame = 0
         else:
-            self._current_frame = self._current_frame + 1
-
+            if self._pass_frame == 0:
+                self._current_frame = self._current_frame + 1
+                self._pass_frame = self._delay_frame
+            else:
+                self._pass_frame = self._pass_frame - 1
         if tile_id == TILE_SCREEN:
             distance = 2
         else:
             distance = 1
-
         jump = distance * self._current_frame
-
         if self._current_frame > 0:
             jump = jump + self._jump_frame
-
         return tile_id + jump
 
     # ####################################################################### #
@@ -206,6 +215,9 @@ class Square:
     # ####################################################################### #
     #                                VARIABLES                                #
     # ####################################################################### #
+
+    def set_tile_set(self, tile_id_list):
+        self.tile_id = tile_id_list
 
     def get_weight(self):
         return self.weight

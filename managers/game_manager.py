@@ -6,11 +6,11 @@ from pygamepopup.constants import BUTTON_SIZE
 from pygamepopup.menu_manager import MenuManager
 from typing_extensions import deprecated
 
-from game.groups.interface_group import Interface
-from game.groups.render_group import Camera
 from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.groups.enemies_group import Enemies
+from game.groups.interface_group import Interface
+from game.groups.render_group import Camera
 from game.map.grid import Grid
 from game.map.level import Level
 from game.ui.ui_bar import Bar
@@ -31,7 +31,6 @@ class GameManager(Scene):
         self.win = pygame.display.get_surface()
         self.win_size = self.win.get_width()
 
-        # Read level
         with open(LEVELS[level_number], 'r') as file:
             data = file.read().replace('\n', '')
 
@@ -49,24 +48,24 @@ class GameManager(Scene):
             ss_rows=self.level.level_sprite_sheet.rows
         )
 
+        self.end_current_frame = -1
+        self._end_delay_frame = 2
+        self._end_pass_frame = self._end_delay_frame
+        self.end_max_frame = len(DOOR_TILES)
+
         self.grid.set_spawn_square(self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y)
         self.enemies = Enemies()
         self.all_sprites = Camera()
         self.interface = Interface()
-
+        self.level_ui = Indicator(self.win)
         self.audio = audio
 
         self._start()
-
-        self.level_ui = Indicator(self.win)
-
         self.set_interface()
 
-        # Set key position
         key_x, key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
         self.grid.set_key_square(key_x, key_y)
 
-        # Set exit positions
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
             self.grid.set_exit_square(x, y)
 
@@ -90,7 +89,33 @@ class GameManager(Scene):
                 if event.key == pygame.K_ESCAPE:
                     self.open_menu(self.pause_menu)
 
+    def set_door(self):
+        if self.end_current_frame < 0:
+            pair = DOOR_TILES[0]
+        else:
+            pair = DOOR_TILES[self.end_current_frame]
+        count = 0
+        for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
+            door = self.grid.get_node_from_array(x, y - 1)
+            door.set_tile_set([71, pair[count]])
+            count += 1
+
     def draw(self, screen):
+        if self.end_current_frame >= 0:
+            if self.end_current_frame >= self.end_max_frame:
+                if self.level.level_number == len(LEVELS):
+                    self.open_menu(self.game_finished_menu)
+                else:
+                    self.open_menu(self.finished_level_menu)
+            else:
+                if self._end_pass_frame <= 0:
+                    self.set_door()
+                    print('Change door sprite: ' + str(self.end_current_frame))
+                    self.end_current_frame += 1
+                    self._end_pass_frame = self._end_delay_frame
+                else:
+                    self._end_pass_frame = self._end_pass_frame - 1
+
         self.all_sprites.draw(player=self.player, grid=self.grid)
         self.interface.draw(surface=screen)
 
@@ -100,7 +125,7 @@ class GameManager(Scene):
         pygame.display.update()
 
     def update(self, **kwargs):
-        if not self.is_open_menu():
+        if not self.is_open_menu() and self.end_current_frame < 0:
             kwargs['player'] = self.player
             kwargs['player_mask'] = self.all_sprites.player_mask(self.player)
             kwargs['enemy_mask'] = self._render()
@@ -122,10 +147,11 @@ class GameManager(Scene):
             if self.player.has_key():
                 self.audio.stop_movement()
                 self.audio.play_finish()
-                if self.level.level_number == len(LEVELS):
+                self._open_doors()
+                """if self.level.level_number == len(LEVELS):
                     self.open_menu(self.game_finished_menu)
                 else:
-                    self.open_menu(self.finished_level_menu)
+                    self.open_menu(self.finished_level_menu)"""
                 return
 
         if self.player.has_key() and self.player.interacted_key():
@@ -153,6 +179,19 @@ class GameManager(Scene):
         self.audio.music_menu()
         self.manager.change_scene()
 
+    def _advance(self):
+        level_number = self.level.level_number
+
+        self._restart()
+
+        if level_number == len(LEVELS):
+            # Pantalla ganadora
+            print("Congrats! You've finished the game!")  # TODO: cambiar el mensaje a un popup diferente
+            self.audio.music_menu()
+            self.manager.change_scene()
+        else:
+            self.manager.advance_level(level_number + 1)
+
     def _start(self):
         self._spawn_player()
         self._spawn_enemies()
@@ -167,19 +206,8 @@ class GameManager(Scene):
         self.close_menu()
         self._start()
 
-    def _go_to_next_level(self):
-        level_number = self.level.level_number
-
-        self._restart()
-
-        if level_number == len(LEVELS):
-            # Pantalla ganadora
-            print("Congrats! You've finished the game!")  # TODO: cambiar el mensaje a un popup diferente
-            self.audio.music_menu()
-            self.manager.change_scene()
-        else:
-            self.manager.advance_level(level_number + 1)
-
+    def _open_doors(self):
+        self.end_current_frame = 0
 
     # ####################################################################### #
     #                                  ENTITIES                               #
@@ -310,7 +338,7 @@ class GameManager(Scene):
                 [
                     Button(
                         title=get_translation(self.manager.get_language(), 'next level'),
-                        callback=lambda: self._go_to_next_level(),
+                        callback=lambda: self._advance(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
                         font=pygame.font.Font(FONT, 16),
@@ -364,7 +392,7 @@ class GameManager(Scene):
         message = Message(self.win)
         message.add(self.interface)
 
-        self.level_ui.set_text(get_translation(self.manager.get_language(), 'level')+str(self.level.level_number))
+        self.level_ui.set_text(get_translation(self.manager.get_language(), 'level') + str(self.level.level_number))
         self.level_ui.add(self.interface)
 
         keys = Keys()

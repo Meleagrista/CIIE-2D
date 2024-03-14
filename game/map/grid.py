@@ -154,6 +154,9 @@ class Grid:
         col = math.floor(x / self.gap)
         return self.nodes[row][col]
 
+    def get_node_from_array(self, row, col):
+        return self.nodes[row][col]
+
     def get_nodes_by_id(self, node_id):
         nodes = []
         for row in self.nodes:
