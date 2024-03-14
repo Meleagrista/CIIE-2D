@@ -12,7 +12,7 @@ class Indicator(pygame.sprite.Sprite, Text):
         self._x = screen.get_width() * 0.5
         self._y = 70
 
-        text_surface = fuente.render('LEVEL 1', True, (255, 255, 255))
+        text_surface = fuente.render('', True, (255, 255, 255))
         text_rect = text_surface.get_rect(center=(self._x, self._y))
 
         Text.__init__(self, screen, fuente, (255, 255, 255), '', text_rect.topleft)

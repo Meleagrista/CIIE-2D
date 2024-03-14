@@ -1,5 +1,5 @@
 {
-  "level_number": 1,
+  "level_number": 2,
   "level_map":{
     "border_map_path": "game/map/files/csv/map_2/map_layout_ids.csv",
     "tile_map_path": "game/map/files/csv/map_2/map_layout_ground.csv",

@@ -308,7 +308,7 @@ class Player(pygame.sprite.Sprite):
     def _interact(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
-            if self._in_key:
+            if self._in_key and not self._has_key:
                 self._has_key = True
                 self._interacted_with_key = True
                 self.notify_observers()

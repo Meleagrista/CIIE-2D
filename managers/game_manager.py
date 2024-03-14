@@ -1,4 +1,5 @@
 import json
+
 import pygame
 from pygamepopup.components import InfoBox, Button
 from pygamepopup.constants import BUTTON_SIZE
@@ -19,19 +20,19 @@ from game.ui.ui_text import Message
 from managers.prototypes.scene_prototype import Scene
 from utils.constants import *
 from utils.i18n import get_translation
-from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL
-from utils.paths.maps_paths import LEVEL_1
+from utils.paths.assets_paths import FONT, POPUP_IMAGE_PAUSE, POPUP_IMAGE_DEATH, POPUP_IMAGE_LEVEL, POPUP_IMAGE_FINISHED
+from utils.paths.maps_paths import LEVELS
 
 
 class GameManager(Scene):
-    def __init__(self, manager, audio):
+    def __init__(self, manager, audio, level_number=1):
         Scene.__init__(self, manager)
 
         self.win = pygame.display.get_surface()
         self.win_size = self.win.get_width()
 
         # Read level
-        with open(LEVEL_1, 'r') as file:
+        with open(LEVELS[level_number], 'r') as file:
             data = file.read().replace('\n', '')
 
         # j = json.loads(data)
@@ -50,6 +51,11 @@ class GameManager(Scene):
 
         )
 
+        self.key_zones = [3, 5, 6]
+        self.key_pos_x, self.key_pos_y = (self.grid.get_random_node_from_zones(self.key_zones)).get_grid_pos()
+        self.level.coordinates.key_x = self.key_pos_x
+        self.level.coordinates.key_y = self.key_pos_y
+
         self.grid.set_spawn_square(self.level.coordinates.player_initial_x, self.level.coordinates.player_initial_y)
         self.enemies = Enemies()
         self.all_sprites = Camera()
@@ -59,7 +65,9 @@ class GameManager(Scene):
 
         self._start()
 
-        self._set_interface()
+        self.level_ui = Indicator(self.win)
+
+        self.set_interface()
 
         self.grid.set_key_square(self.level.coordinates.key_x, self.level.coordinates.key_y)
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
@@ -115,8 +123,13 @@ class GameManager(Scene):
 
         if self.player.in_door():  # Player has reached the end
             if self.player.has_key():
+                self.audio.stop_movement()
                 self.audio.play_finish()
-                self.open_menu(self.finished_level_menu)
+                if self.level.level_number == len(LEVELS):
+                    self.open_menu(self.game_finished_menu)
+                else:
+                    self.open_menu(self.finished_level_menu)
+                return
 
         if self.player.has_key() and self.player.interacted_key():
             self.audio.play_key()
@@ -156,6 +169,20 @@ class GameManager(Scene):
         self.enemies.remove_all()
         self.close_menu()
         self._start()
+
+    def _go_to_next_level(self):
+        level_number = self.level.level_number
+
+        self._restart()
+
+        if level_number == len(LEVELS):
+            # Pantalla ganadora
+            print("Congrats! You've finished the game!")  # TODO: cambiar el mensaje a un popup diferente
+            self.audio.music_menu()
+            self.manager.change_scene()
+        else:
+            self.manager.advance_level(level_number + 1)
+
 
     # ####################################################################### #
     #                                  ENTITIES                               #
@@ -286,7 +313,7 @@ class GameManager(Scene):
                 [
                     Button(
                         title=get_translation(self.manager.get_language(), 'next level'),
-                        callback=lambda: self.exit(),
+                        callback=lambda: self._go_to_next_level(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
                         text_hover_color=PURPLE,
                         font=pygame.font.Font(FONT, 16),
@@ -309,20 +336,39 @@ class GameManager(Scene):
             identifier=LEVEL_MENU_ID,
             background_path=POPUP_IMAGE_LEVEL
         )
+        game_finished_menu = InfoBox(
+            "",
+            [
+                [
+                    Button(
+                        title=get_translation(self.manager.get_language(), 'main menu'),
+                        callback=lambda: self._close(),
+                        size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
+                        text_hover_color=PURPLE,
+                        font=pygame.font.Font(FONT, 16),
+                        no_background=True
+                    )
+                ],
+            ],
+            width=300,
+            has_close_button=False,
+            identifier=FINISHED_GAME_MENU_ID,
+            background_path=POPUP_IMAGE_FINISHED
+        )
         self.pause_menu = pause_menu
         self.death_menu = die_menu
         self.finished_level_menu = finished_level_menu
+        self.game_finished_menu = game_finished_menu
 
-    def _set_interface(self):
+    def set_interface(self):
         bar = Bar(self.win)
         bar.add(self.interface)
 
         message = Message(self.win)
         message.add(self.interface)
 
-        level = Indicator(self.win)
-        level.set_text('Level 1')
-        level.add(self.interface)
+        self.level_ui.set_text(get_translation(self.manager.get_language(), 'level')+str(self.level.level_number))
+        self.level_ui.add(self.interface)
 
         keys = Keys()
         keys.set_position(bar.rect)

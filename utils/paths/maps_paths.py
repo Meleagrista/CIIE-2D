@@ -8,7 +8,9 @@ FOLDER_PATH = 'game/map/files/'
 #                                        PATHS TO LEVELS                                        #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 
-LEVEL_1 = FOLDER_PATH + 'test_level_1.json'
-LEVEL_2 = ''
-LEVEL_3 = ''
+LEVELS = {
+    1: FOLDER_PATH + 'test_level_1.json',
+    2: FOLDER_PATH + 'test_level_2.json',
+    3: FOLDER_PATH + 'test_level_3.json'
+}
 

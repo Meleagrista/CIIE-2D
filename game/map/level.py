@@ -29,3 +29,4 @@ class Level:
         self.level_sprite_sheet = LevelSpriteSheet(**level_sprite_sheet)
         self.coordinates = LevelCoordinates(**level_coordinates)
         self.enemies_zones = enemies
+
