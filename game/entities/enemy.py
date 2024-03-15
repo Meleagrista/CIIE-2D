@@ -139,7 +139,10 @@ class Enemy(pygame.sprite.Sprite):
         # UPDATING ANGLE AND MOVEMENT
         ##############################
         end_point = self.next_point
-        updated_angle = self.angle_to_point(end_point)
+        if end_point is not None:
+            updated_angle = self.angle_to_point(end_point)
+        else:
+            updated_angle = self.angle
 
         if self.setting_path:
             self._is_moving = False

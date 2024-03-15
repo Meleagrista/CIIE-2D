@@ -44,11 +44,12 @@ class Sentinel(Enemy):
                                  (player.rect.centery - self.rect.centery) ** 2)
 
             if distance < self.ray_radius:
-                player.exposer = "sentinel"
+                if "sentinel" not in player.exposer:
+                    player.exposer.append("sentinel")
 
             super().notified(player)
 
-            if player.exposer == "sentinel" or player.exposer == "security" or distance < self.ray_radius * 1.5:
+            if "sentinel" in player.exposer or "security" in player.exposer or distance < self.ray_radius * 1.5:
                 player_node = self.grid.get_node((player.x, player.y))
                 possible_nodes = player_node.neighbors
                 possible_nodes.append(player_node)

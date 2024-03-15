@@ -84,7 +84,7 @@ class Player(pygame.sprite.Sprite):
         self._is_exposed = False
         self._is_moving = False
 
-        self.exposer = None
+        self.exposer = []
 
         self._in_exit = False
         self._in_key = False
@@ -140,6 +140,8 @@ class Player(pygame.sprite.Sprite):
             if self._is_exposed:
                 self._is_exposed = False
                 self.notify_observers()
+            else:
+                self.exposer = []
             self._cooldown = increase(self._cooldown, self._max_cooldown)
             if self._cooldown >= self._max_cooldown and self._health < self._max_health and not self._recovering:
                 self._recovering = True

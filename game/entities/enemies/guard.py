@@ -52,7 +52,7 @@ class Guard(Enemy):
             if distance < self.ray_radius:
                 super().notified(player)
 
-            if player.exposer == "civilian" or distance < self.ray_radius * 1.5:
+            if "civilian" in player.exposer or distance < self.ray_radius * 1.5:
 
                 if self.previous_node is None:
                     self.previous_node = self.grid.get_node((self.x, self.y))
@@ -79,7 +79,7 @@ class Guard(Enemy):
                 self.previous_node = None
             elif self.has_reached(self.next_point):
                 self.set_next_point()
-                # simplified version to avoid slow turnings
+                # Simplified version to avoid slow turnings
                 self.set_simplified_path(self.chase_node)
 
         else:

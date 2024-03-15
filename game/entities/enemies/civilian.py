@@ -47,7 +47,8 @@ class Civilian(Enemy):
                                  (player.rect.centery - self.rect.centery) ** 2)
 
             if distance < self.ray_radius:
-                player.exposer = "civilian"
+                if "civilian" not in player.exposer:
+                    player.exposer.append("civilian")
 
             super().notified(player)
 
