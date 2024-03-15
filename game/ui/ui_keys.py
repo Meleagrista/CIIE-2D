@@ -17,8 +17,10 @@ class Keys(pygame.sprite.Sprite):
         self.tile_size = 60
         self.tile_id = 36
 
+        # Preload sprite sheet
         self._sprite_sheet = SpriteSheet(UI_ICONS, 10, 9, self.tile_size)
 
+        # Initialize tile during initialization
         self.tile = self._sprite_sheet.get_sprite_by_number(self.tile_id)
         self.rect = self.tile.get_rect()
 
@@ -30,23 +32,13 @@ class Keys(pygame.sprite.Sprite):
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
-        if surface is not None:
-            if not isinstance(surface, Surface):
-                raise TypeError("surface must be an instance of pygame.Surface class")
-
-        if self.key_obtained:
+        if surface and isinstance(surface, Surface) and self.key_obtained:
             surface.blit(self.tile, (self._x, self._y))
 
     def update(self, *args, **kwargs):
         player = kwargs.pop('player', None)
-        if player is not None:
-            if not isinstance(player, Player):
-                raise TypeError("player must be an instance of Player class")
-
-        if player.has_key():
-            self.key_obtained = True
-        else:
-            self.key_obtained = False
+        if player and isinstance(player, Player):
+            self.key_obtained = player.has_key()
 
     def notified(self, **kwargs):
         pass

@@ -13,12 +13,13 @@ class Bar(pygame.sprite.Sprite):
         self._y = 0
 
         self._percentage = 0
-
         self.tile_size = 150
         self.tile_id = 1
 
+        # Preload sprite sheet
         self._sprite_sheet = SpriteSheet(UI_ASSETS, 20, 11, self.tile_size)
 
+        # Initialize tile during initialization
         self.tile = self._sprite_sheet.get_sprite_by_number(self.tile_id)
         self.rect = self.tile.get_rect()
 
@@ -32,12 +33,14 @@ class Bar(pygame.sprite.Sprite):
 
         hp_value, hp_max = player.health()
 
-        self._percentage = round(float(hp_value) / float(hp_max), 2)
-        tmp_tile_id = int(round(self._percentage * 10))
+        # Calculate percentage and tile id only when percentage changes
+        percentage = round(float(hp_value) / float(hp_max), 2)
+        tmp_tile_id = int(round(percentage * 10))
         if tmp_tile_id != 0:
-            self.tile_id = int(round(self._percentage * 10))
+            self.tile_id = tmp_tile_id
         else:
             self.tile_id = 1
+        self.tile = self._sprite_sheet.get_sprite_by_number(self.tile_id)
 
     def draw(self, **kwargs):
         surface = kwargs.pop('surface', None)
@@ -45,7 +48,7 @@ class Bar(pygame.sprite.Sprite):
             if not isinstance(surface, Surface):
                 raise TypeError("surface must be an instance of pygame.Surface class")
 
-        self.tile = self._sprite_sheet.get_sprite_by_number(self.tile_id)
+        # Draw the preloaded tile image directly
         surface.blit(self.tile, (self._x, self._y))
 
     def notified(self, **kwargs):

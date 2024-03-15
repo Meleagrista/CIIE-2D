@@ -194,7 +194,7 @@ class Player(pygame.sprite.Sprite):
                 collisions = self.grid.has_collision(self.rect)
 
         # KEY COLLECTION AND EXIT DETECTION
-        self._in_key = self.grid.is_key_square(new_x, new_y)
+        self._in_key = self.grid.is_key_square(new_x + self.size/2, new_y + self.size/2)
         if has_changed(self._in_key, self._in_key):
             self.notify_observers()
 

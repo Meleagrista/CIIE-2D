@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import pygame
 
 from game.sprites.spritesheet import SpriteSheet
@@ -7,6 +9,7 @@ from utils.constants import *
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
 #                                        SQUARE CLASS                                           #
 # ====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*====#
+
 
 class Square:
     """
@@ -153,7 +156,7 @@ class Square:
         pygame.draw.rect(win, self.color, ((self.x - position_x), (self.y - position_y), self.size, self.size))
 
     def _draw_sprite(self, win: pygame.Surface, sprite_id: int, sprite_sheet: SpriteSheet,
-                    offset: pygame.math.Vector2) -> None:
+                     offset: pygame.math.Vector2) -> None:
         """
         Draw a sprite on the given window.
 
@@ -276,13 +279,34 @@ class Square:
     #                                POSITION                                 #
     # ####################################################################### #
 
-    def get_grid_pos(self):
+    def get_grid_pos(self) -> tuple:
+        """
+        Get the grid position of the square.
+
+        Returns:
+            tuple: The row and column indices of the square.
+        """
         return self.row, self.col
 
-    def get_pos(self):
+    def get_pos(self) -> tuple:
+        """
+        Get the position coordinates of the square.
+
+        Returns:
+            tuple: The x and y coordinates of the center of the square.
+        """
         return self.x, self.y
 
-    def distance_to(self, other_node):
+    def distance_to(self, other_node) -> float:
+        """
+        Calculate the Euclidean distance between this square and another node.
+
+        Args:
+            other_node (Square): The other square node.
+
+        Returns:
+            float: The Euclidean distance between the two nodes.
+        """
         x1, y1 = self.get_pos()
         x2, y2 = other_node.get_pos()
         return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
@@ -291,51 +315,100 @@ class Square:
     #                                VARIABLES                                #
     # ####################################################################### #
 
-    def set_tile_set(self, tile_id_list):
+    def set_tile_set(self, tile_id_list) -> None:
+        """
+        Set the tile set for the square.
+
+        Args:
+            tile_id_list (list): List of tile IDs.
+
+        Returns:
+            None
+        """
         self.tile_id = tile_id_list
 
-    def get_weight(self):
+    def get_weight(self) -> int:
+        """
+        Get the weight of the square.
+
+        Returns:
+            int: The weight of the square.
+        """
         return self.weight
 
-    def is_barrier(self):
+    def is_barrier(self) -> bool:
+        """
+        Check if the square is a barrier.
+
+        Returns:
+            bool: True if the square is a barrier, False otherwise.
+        """
         return self.barrier
 
-    def is_border(self):
+    def is_border(self) -> bool:
+        """
+        Check if the square is on the border of the grid.
+
+        Returns:
+            bool: True if the square is on the border, False otherwise.
+        """
         return self.col == 0 or self.row == 0 or self.col >= self.total_cols - 1 or self.row >= self.total_rows - 1
 
-    def reset(self):
+    def reset(self) -> None:
+        """
+        Reset the square to its default state.
+
+        Returns:
+            None
+        """
         self.barrier = False
         self.color = GRID_BACKGROUND
 
-    def reset_for_editor(self):
-        self.barrier = False
-        self.color = WHITE
-        self.id = 0
+    def make_barrier(self) -> None:
+        """
+        Make the square a barrier.
 
-    def make_barrier(self):
+        Returns:
+            None
+        """
         self.barrier = True
-        self.color = BLACK
-        self.image.fill((0, 0, 0))
 
-    def toggle_key(self):
+    def make_key(self) -> None:
+        """
+        Toggle the key state of the square.
+
+        Returns:
+            None
+        """
         self.is_key = not self.is_key
 
-    def make_exit(self):
-        self.is_exit = True
-        self.color = GREEN
-        self.image.fill((0, 0, 0))
+    def make_exit(self) -> None:
+        """
+        Make the square an exit.
 
-    def make_room(self, room_id):
+        Returns:
+            None
+        """
+        self.is_exit = True
+
+    def make_room(self, room_id) -> None:
+        """
+        Make the square a room.
+
+        Args:
+            room_id (int): The ID of the room.
+
+        Returns:
+            None
+        """
         self.barrier = False
-        self.color = WHITE
         self.set_id(room_id)
-        self.image.fill((255, 255, 255))
 
     # ####################################################################### #
     #                                NEIGHBOURS                               #
     # ####################################################################### #
 
-    def surrounding_barrier(self, grid):
+    def surrounding_barrier(self, grid) -> None:
         """
         Update the weights of neighboring squares if the current square is a barrier.
 
@@ -360,25 +433,23 @@ class Square:
             if not leftmost:
                 grid.nodes[self.row][self.col - 1].weight += WEIGHT
 
-    def add_neighbour(self, node, force_barrier=False):
+    def add_neighbour(self, node, force_barrier: bool = False) -> None:
         """
         Add a node as a neighbor if it's not a barrier.
 
         Args:
-            node (Node): The node to be added as a neighbor.
+            node (Square): The node to be added as a neighbor.
             force_barrier (Bool): Whether the node must be always a barrier.
 
         Returns:
             None
-            :param node:
-            :param force_barrier:
         """
         if node.is_barrier() or force_barrier:
             self.barriers.append(node)
         else:
             self.neighbors.append(node)
 
-    def update_neighbors(self, grid):
+    def update_neighbors(self, grid) -> None:
         """
         Update the neighboring squares of the square based on its position.
 
@@ -402,39 +473,30 @@ class Square:
         # Assign accessible cardinal nodes
         if not bottom:
             down_node = grid.nodes[self.row + 1][self.col]
-
         if not top:
             up_node = grid.nodes[self.row - 1][self.col]
-
         if not rightmost:
             right_node = grid.nodes[self.row][self.col + 1]
-
         if not leftmost:
             left_node = grid.nodes[self.row][self.col - 1]
 
         # Assign accessible diagonal nodes
         if not bottom and not leftmost:
             left_down_node = grid.nodes[self.row + 1][self.col - 1]
-
         if not bottom and not rightmost:
             right_down_node = grid.nodes[self.row + 1][self.col + 1]
-
         if not top and not leftmost:
             left_up_node = grid.nodes[self.row - 1][self.col - 1]
-
         if not top and not rightmost:
             right_up_node = grid.nodes[self.row - 1][self.col + 1]
 
         # Cardinal checks & additions
         if down_node is not None:
             self.add_neighbour(down_node)
-
         if up_node is not None:
             self.add_neighbour(up_node)
-
         if right_node is not None:
             self.add_neighbour(right_node)
-
         if left_node is not None:
             self.add_neighbour(left_node)
 
@@ -442,28 +504,21 @@ class Square:
         if left_down_node is not None and (
                 not left_node.is_barrier() and not down_node.is_barrier()):
             self.add_neighbour(left_down_node)
-
         if left_down_node is not None and left_down_node.is_barrier():
             self.add_neighbour(left_down_node, force_barrier=True)
-
         if left_up_node is not None and (
                 not left_node.is_barrier() and not up_node.is_barrier()):
             self.add_neighbour(left_up_node)
-
         if left_up_node is not None and left_up_node.is_barrier():
             self.add_neighbour(left_up_node, force_barrier=True)
-
         if right_down_node is not None and (
                 not right_node.is_barrier() and not down_node.is_barrier()):
             self.add_neighbour(right_down_node)
-
         if right_down_node is not None and right_down_node.is_barrier():
             self.add_neighbour(right_down_node, force_barrier=True)
-
         if right_up_node is not None and (
                 not right_node.is_barrier() and not up_node.is_barrier()):
             self.add_neighbour(right_up_node)
-
         if right_up_node is not None and right_up_node.is_barrier():
             self.add_neighbour(right_up_node, force_barrier=True)
 
@@ -471,7 +526,7 @@ class Square:
     #                                  EQUALS                                 #
     # ####################################################################### #
 
-    def compare_node(self, node):
+    def compare_node(self, node) -> bool:
         """
         Compare this square with another square.
 
@@ -483,7 +538,7 @@ class Square:
         """
         return self.row == node.row and self.col == node.col
 
-    def compare_pos(self, pos, threshold: int = 1):
+    def compare_pos(self, pos: Tuple[int, int], threshold: int = 1) -> bool:
         """
         Compare the position with the center of the square.
 

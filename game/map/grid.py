@@ -327,7 +327,7 @@ class Grid:
         """
         if x < 0 or y < 0 or x >= self.size or y >= self.size:
             return False
-        self.nodes[x][y].toggle_key()
+        self.nodes[x][y].make_key()
         return True
 
     def set_exit_square(self, x: int, y: int) -> bool:
