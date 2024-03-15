@@ -20,6 +20,7 @@ UI_ASSETS = 'assets/ui_assets/ui-x3.png'
 UI_ICONS = MENU_ASSETS + 'ui_white.png'
 
 CHARACTER_ASSETS = 'assets/character_assets/players-red-x3.png'
+NPC_ASSETS = 'assets/character_assets/players-green-x3.png'
 ENEMY_ASSETS = 'assets/character_assets/enemies-x3.png'
 
 

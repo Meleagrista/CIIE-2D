@@ -81,7 +81,6 @@ class Square:
         # Additional properties
         self.is_key = False
         self.is_exit = False
-        self.is_floating = False
 
         # Animation attributes
         self._current_frame = 0
@@ -120,21 +119,17 @@ class Square:
         """
         return self.id
 
-    def set_tile_id(self, tile_id: int, is_objects_map: bool) -> None:
+    def set_tile_id(self, tile_id: int) -> None:
         """
         Set the tile identification number of the square.
 
         Args:
             tile_id (int): The tile identification number to be set.
-            is_objects_map (bool): A flag indicating whether the tile map is for objects.
 
         Returns:
             None
         """
         self.tile_id.append(int(tile_id))
-        if is_objects_map and tile_id in FLOATING_TILES:
-            self.is_floating = True
-            self.barrier = False
 
     # ####################################################################### #
     #                                  DRAW                                   #

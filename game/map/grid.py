@@ -52,7 +52,7 @@ class Grid:
         # ──────── READ MAPS ──────── #
         self.read_border_map(MAP if border_map_path is None else border_map_path)
         self.read_tile_map(TILE_MAP if tile_map_path is None else tile_map_path)
-        self.read_tile_map(objects_map_path, True) if objects_map_path is not None else None
+        self.read_tile_map(objects_map_path) if objects_map_path is not None else None
 
         # ──────── SPRITE SHEET ──────── #
         self.sprite_sheet = SpriteSheet(sprite_sheet_path, ss_columns, ss_rows, SQUARE_SIZE) if tile_map_path is not None else None
@@ -156,17 +156,16 @@ class Grid:
                     elif lines[x][y].isnumeric():
                         node.make_room(int(lines[x][y]))
                     else:
-                        node.reset()
+                        node.make_barrier()
 
         # print("Map imported successfully.")
 
-    def read_tile_map(self, file_path: str, is_objects_map: bool = False) -> None:
+    def read_tile_map(self, file_path: str) -> None:
         """
         Read the tile map file and update the grid nodes accordingly.
 
         Args:
             file_path (str): The full file path of the tile map file.
-            is_objects_map (bool, optional): A flag indicating whether the map is for objects. Defaults to False.
         """
         tile_map = []
         with open(file_path, mode='r') as file:
@@ -176,7 +175,7 @@ class Grid:
 
         for y, row in enumerate(self.nodes):
             for x, square in enumerate(row):
-                square.set_tile_id(int(tile_map[x][y]), is_objects_map)
+                square.set_tile_id(int(tile_map[x][y]))
 
         # print("Tile map imported successfully.")
 

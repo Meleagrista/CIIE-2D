@@ -41,7 +41,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
 
-        self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 2.5)
+        self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 2)
         self._animation_frames = 4
         self._animation_start = 0
         self._idle_frames = 4

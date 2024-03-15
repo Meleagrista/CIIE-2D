@@ -116,7 +116,6 @@ class GameManager(Scene):
             else:
                 if self._end_pass_frame <= 0:
                     self.set_door()
-                    print('Change door sprite: ' + str(self.end_current_frame))
                     self.end_current_frame += 1
                     self._end_pass_frame = self._end_delay_frame
                 else:

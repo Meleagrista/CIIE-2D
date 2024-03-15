@@ -1,11 +1,12 @@
 import math
+
 import pygame
 
 from game.entities.enemy import Enemy
 from game.map.grid import Grid
 from game.sprites.spritesheet import SpriteSheet
 from utils.constants import NPC_SIZE
-from utils.paths.assets_paths import CHARACTER_ASSETS
+from utils.paths.assets_paths import NPC_ASSETS
 
 
 class Guard(Enemy):
@@ -20,7 +21,7 @@ class Guard(Enemy):
         #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self._sprite_sheet = SpriteSheet(CHARACTER_ASSETS, 10, 13, NPC_SIZE * 2.5)
+        self._sprite_sheet = SpriteSheet(NPC_ASSETS, 10, 13, NPC_SIZE * 2)
         self._animation_frames = 4
         self._animation_start = 100
         self._idle_frames = 2

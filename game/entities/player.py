@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.y = y
         self.groups = []
         self.size = NPC_SIZE * 0.5
-        self._sprite_sheet = SpriteSheet(CHARACTER_ASSETS, 10, 13, NPC_SIZE * 2.5)
+        self._sprite_sheet = SpriteSheet(CHARACTER_ASSETS, 10, 13, NPC_SIZE * 2.2)
         self._animation_frames = 4
         self._animation_start = 35
         self._animation_idle = 2
@@ -157,7 +157,6 @@ class Player(pygame.sprite.Sprite):
             if previous_exposer != self.exposer:
                 self.notify_observers()
 
-        ##############################
         # MOVEMENT AND DIRECTION
         direction, direction_x, direction_y = get_direction(movement_option)
 

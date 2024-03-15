@@ -16,20 +16,27 @@ class Message(pygame.sprite.Sprite, Text):
         self.image = fuente.render('', True, (255, 255, 255))
         self.rect = self.image.get_rect(center=(self._x, self._y))
 
+        self.active = True
+
         self.groups = []
 
     def draw(self, **kwargs):
-        surface = kwargs.pop('surface', None)
-        if surface and isinstance(surface, Surface):
-            surface.blit(self.image, self.rect)
-        else:
-            raise TypeError("surface must be an instance of pygame.Surface class")
+        if self.active:
+            surface = kwargs.pop('surface', None)
+            if surface and isinstance(surface, Surface):
+                surface.blit(self.image, self.rect)
+            else:
+                raise TypeError("surface must be an instance of pygame.Surface class")
 
     def notified(self, **kwargs):
         message = kwargs.pop('text', None)
         if message is not None:
             if not isinstance(message, str):
                 raise TypeError("message must be an instance of a string")
+
+        if self.active:
+            state = kwargs.pop('key_gone', False)
+            self.active = not state
 
         self.set_text(message)
 

@@ -17,7 +17,7 @@ class Interface(pygame.sprite.Group):
         self._language = language
 
     def notified(self) -> None:
-        kwargs = {'text': ""}
+        kwargs = {'text': "", 'key_gone': False}
         player = self._player
 
         if player.in_key():
@@ -25,6 +25,8 @@ class Interface(pygame.sprite.Group):
                 kwargs['text'] = get_translation(self._language, 'pick up key')
             else:
                 kwargs['text'] = get_translation(self._language, 'find exit')
+        elif player.has_key() and not player.in_key():
+            kwargs['key_gone'] = True
         elif player.in_door() and not player.has_key():
             kwargs['text'] = get_translation(self._language, 'find key')
 

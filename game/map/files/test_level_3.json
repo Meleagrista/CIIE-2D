@@ -11,16 +11,16 @@
     "rows": 45
   },
   "level_coordinates": {
-    "player_initial_x": 15,
-    "player_initial_y": 74,
+    "player_initial_x": 14,
+    "player_initial_y": 95,
     "exit_x": [64, 65],
-    "exit_y": [39, 39]
+    "exit_y": [3, 3]
   },
-  "key_zones": [3],
+  "key_zones": [3,6,7],
   "enemies": {
-    "civilian": [1],
-    "sentinel": [[1,2]],
-    "guard" : [],
-    "security": 0
+    "civilian": [1,1,1,8,2,6,6,7,7,7,3,3,5,5],
+    "sentinel": [[4,5],[4],[4,6],[4,3],[4,7],[1,2],[8,1]],
+    "guard" : [[8,7,6,5,4,3,2,1], [3,2,8],[5,4,6,4]],
+    "security": 2
   }
 }

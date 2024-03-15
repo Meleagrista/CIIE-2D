@@ -4,6 +4,9 @@ import pygame
 
 from game.entities.enemy import Enemy
 from game.map.grid import Grid
+from game.sprites.spritesheet import SpriteSheet
+from utils.constants import NPC_SIZE
+from utils.paths.assets_paths import ENEMY_ASSETS
 
 
 class Civilian(Enemy):
@@ -18,6 +21,7 @@ class Civilian(Enemy):
         #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~        VISUALS        ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 1.8)
         self._animation_frames = 4
         self._animation_start = 130
         self._idle_frames = 2

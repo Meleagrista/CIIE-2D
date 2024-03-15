@@ -30,7 +30,7 @@ class Sentinel(Enemy):
         self.chase_node = None
         self.previous_node = None
 
-        #    2. ~~~~~~~~~~~~~~~~~~~~~~~~
+        #    3. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~       VISION        ~~
         #    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.ray_cone = 90
