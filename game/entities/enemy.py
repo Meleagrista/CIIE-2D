@@ -142,6 +142,7 @@ class Enemy(pygame.sprite.Sprite):
         updated_angle = self.angle_to_point(end_point)
 
         if self.setting_path:
+            self._is_moving = False
             if self.is_facing(end_point):
                 self.setting_path = False
             else:
@@ -163,6 +164,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.delta_x = -math.cos(math.radians(self.angle)) * self.offset
                 self.delta_y = math.sin(math.radians(self.angle)) * self.offset
         else:
+            self._is_moving = True
             iteration_count = 0
             while (abs(updated_angle - self.angle) > 45) and (iteration_count < 2):
                 self.set_next_point()
@@ -282,8 +284,8 @@ class Enemy(pygame.sprite.Sprite):
                     self.end_node = end_node
                     return
 
-    def set_path(self, node=None, segments=None):
-        self.pathfinding(node, segments)
+    def set_path(self, node=None, segments=8):
+        self.pathfinding(end=node, interpolation=segments)
 
     def set_simplified_path(self, node=None, segments=None):
         self.pathfinding(node, segments, True)

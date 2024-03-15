@@ -6,9 +6,7 @@ from pygamepopup.constants import BUTTON_SIZE
 from pygamepopup.menu_manager import MenuManager
 from typing_extensions import deprecated
 
-from game.groups.interface_group import Interface
-from game.groups.render_group import Camera
-from game.entities.enemies.enemy import Enemy
+from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.groups.interface_group import Interface
@@ -253,7 +251,7 @@ class GameManager(Scene):
         self.player.add_observer(self.interface)
 
     def _spawn_enemies(self):
-        enemies = self.enemies.spawn(self.grid, self.win, self.level.enemies_zones)
+        enemies = self.enemies.spawn(self.grid, self.win, self.level.enemies)
         for enemy in enemies:
             self.enemies.introduce(enemy, self.all_sprites, self.enemies)
 

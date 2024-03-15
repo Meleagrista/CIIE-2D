@@ -1,20 +1,17 @@
 import math
 import pygame
 
-from game.entities.enemies.enemy import Enemy
+from game.entities.enemy import Enemy
 from game.map.grid import Grid
 
 
 class Security(Enemy):
     def __init__(self,
                  position,
-                 movement_speed,
-                 rotation_speed,
                  grid: Grid,
                  window: pygame.Surface,
-                 areas
                  ):
-        super().__init__(position, movement_speed, rotation_speed, grid, window, areas)
+        super().__init__(position, 0.5, 4, grid, window, [])
 
         #    1. ~~~~~~~~~~~~~~~~~~~~~~~~
         #    ~~ CHASING RELATED VARS  ~~

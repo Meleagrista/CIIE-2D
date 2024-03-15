@@ -198,7 +198,7 @@ class Square:
         else:
             self._pass_frame -= 1
 
-        if tile_id == TILE_SCREEN:
+        if tile_id in TILE_SCREEN:
             distance = 2
         else:
             distance = 1

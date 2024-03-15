@@ -55,7 +55,7 @@ class Level:
         level_sprite_sheet (LevelSpriteSheet): The sprite sheet for the level.
         coordinates (LevelCoordinates): The coordinates for important elements.
         key_zones (list): List of zones where keys can be found.
-        enemies_zones (list): List of zones where enemies are located.
+        enemies (dict): Dictionary of zones where enemies are located.
     """
     def __init__(self, level_number, level_map, level_sprite_sheet, level_coordinates, key_zones, enemies):
         self.level_number = level_number
@@ -63,4 +63,4 @@ class Level:
         self.level_sprite_sheet = LevelSpriteSheet(**level_sprite_sheet)
         self.coordinates = LevelCoordinates(**level_coordinates)
         self.key_zones = key_zones
-        self.enemies_zones = enemies
+        self.enemies = enemies

@@ -1,5 +1,6 @@
 import pygame
 from game.entities.player import Player
+from game.entities.enemy import Enemy
 from game.map.grid import Grid
 from game.entities.enemies.guard import Guard
 from game.entities.enemies.civilian import Civilian
@@ -31,14 +32,14 @@ class Enemies(pygame.sprite.Group):
             for enemy in self.sprites():
                 enemy.kill()
 
-    def spawn(self, grid: Grid, win: pygame.Surface, enemies_zones: list[list]) -> list[Enemy]:
+    def spawn(self, grid: Grid, win: pygame.Surface, enemies_dict: dict[str, list]) -> list[Enemy]:
         """
         Spawn enemies in specified zones.
 
         Args:
             grid: Grid object for pathfinding.
             win: Surface representing the game window.
-            enemies_zones: List of zones where enemies should spawn.
+            enemies_dict: Dictionary of the enemies that should spawn.
 
         Returns:
             List of spawned Enemy objects.
@@ -47,14 +48,38 @@ class Enemies(pygame.sprite.Group):
 
         enemies = []
 
-        for zones in enemies_zones:
-            initial_zone = zones[0] if zones else None  # Simplified initialization of initial_zone
-            if initial_zone is None:
+        if enemies_dict["civilian"]:
+            for area in enemies_dict["civilian"]:
+                x, y = grid.get_random_node_from_zone(area).get_pos()
+                enemy = Civilian((x, y), grid, win, area)
+                enemies.append(enemy)
+
+        if enemies_dict["sentinel"]:
+            for areas in enemies_dict["sentinel"]:
+                initial_zone = areas[0] if areas else None  # Simplified initialization of initial_zone
+                if initial_zone is None:
+                    x, y = grid.get_random_node().get_pos()
+                else:
+                    x, y = grid.get_random_node_from_zone(initial_zone).get_pos()
+                enemy = Sentinel((x, y), grid, win, areas)
+                enemies.append(enemy)
+
+        if enemies_dict["guard"]:
+            for areas in enemies_dict["guard"]:
+                initial_zone = areas[0] if areas else None  # Simplified initialization of initial_zone
+                if initial_zone is None:
+                    x, y = grid.get_random_node().get_pos()
+                else:
+                    x, y = grid.get_random_node_from_zone(initial_zone).get_pos()
+                enemy = Guard((x, y), grid, win, areas)
+                enemies.append(enemy)
+
+        number = enemies_dict["security"]
+        if number != 0:
+            for i in range(number):
                 x, y = grid.get_random_node().get_pos()
-            else:
-                x, y = grid.get_random_node_from_zone(initial_zone).get_pos()
-            enemy = Enemy((x, y), 1, 3, grid, win, zones)
-            enemies.append(enemy)
+                enemy = Security((x, y), grid, win)
+                enemies.append(enemy)
 
         return enemies
 
