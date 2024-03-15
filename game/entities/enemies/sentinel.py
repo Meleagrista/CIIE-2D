@@ -40,23 +40,20 @@ class Sentinel(Enemy):
     def notified(self, player):
 
         if player.detected():
-            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                                 (player.rect.centery - self.rect.centery) ** 2)
 
-            if distance < self.ray_radius:
+            if self.within_reach((player.x, player.y)):
                 if "sentinel" not in player.exposer:
                     player.exposer.append("sentinel")
 
             super().notified(player)
 
-            if "sentinel" in player.exposer or "security" in player.exposer or distance < self.ray_radius * 1.5:
+            if "sentinel" in player.exposer or "security" in player.exposer or self.within_reach((player.x, player.y)):
                 player_node = self.grid.get_node((player.x, player.y))
                 possible_nodes = player_node.neighbors
                 possible_nodes.append(player_node)
                 self.chase_node = random.choice(possible_nodes)
                 self.previous_node = self.grid.get_node((self.x, self.y))
                 self.set_path(self.chase_node)
-                # self.update()
 
     def update(self, **kwargs):
 

@@ -47,20 +47,15 @@ class Guard(Enemy):
 
         if player.detected():
 
-            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                                 (player.rect.centery - self.rect.centery) ** 2)
-
-            if distance < self.ray_radius:
+            if self.within_reach((player.x, player.y)):
                 super().notified(player)
 
-            if "civilian" in player.exposer or distance < self.ray_radius * 1.5:
+            if "civilian" in player.exposer or self.within_reach((player.x, player.y)):
 
                 if self.previous_node is None:
                     self.previous_node = self.grid.get_node((self.x, self.y))
                 self.vision_timer = self.vision_max
                 self.player = player
-
-            # self.update()
 
     def update(self, **kwargs):
         current_node = self.grid.get_node((self.x, self.y))
@@ -75,13 +70,8 @@ class Guard(Enemy):
             self.vision_timer = max(0, self.vision_timer - 1)
             self.chase_node = self.grid.get_node((self.player.x, self.player.y))
 
-            if self.next_point is None or self.chase_node.compare_node(current_node):
-                self.set_path(self.previous_node)
-                self.previous_node = None
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
-                # Simplified version to avoid slow turnings
-                self.set_simplified_path(self.chase_node)
+            # Simplified version to avoid slow turnings
+            self.set_simplified_path(self.chase_node, 4)
 
         else:
             self.speed = 1
@@ -91,8 +81,6 @@ class Guard(Enemy):
 
             if self.next_point is None or self.end_node.compare_node(current_node):
                 self.set_path()
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
 
         super().update(**kwargs)
 

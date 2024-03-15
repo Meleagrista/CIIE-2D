@@ -39,9 +39,8 @@ class Security(Enemy):
     def notified(self, player):
 
         if player.detected():
-            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                                 (player.rect.centery - self.rect.centery) ** 2)
-            if distance < self.ray_radius:
+
+            if self.within_reach((player.x, player.y)):
                 if "security" not in player.exposer:
                     player.exposer.append("security")
 
@@ -66,7 +65,7 @@ class Security(Enemy):
             elif self.has_reached(self.next_point):
                 self.set_next_point()
                 # Simplified version to avoid slow turnings
-                self.set_simplified_path(self.chase_node)
+                self.set_simplified_path(self.chase_node, 2)
         else:
             if self.next_point is None or self.end_node.compare_node(current_node):
                 next_node = self.grid.get_random_node_from_zone(current_node.get_id())

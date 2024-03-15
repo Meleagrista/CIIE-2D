@@ -47,10 +47,7 @@ class Civilian(Enemy):
 
         if player.detected() and current_room == player_room:
 
-            distance = math.sqrt((player.rect.centerx - self.rect.centerx) ** 2 +
-                                 (player.rect.centery - self.rect.centery) ** 2)
-
-            if distance < self.ray_radius:
+            if self.within_reach((player.x, player.y)):
                 if "civilian" not in player.exposer:
                     player.exposer.append("civilian")
 
@@ -63,7 +60,6 @@ class Civilian(Enemy):
             self.previous_node = self.grid.get_node((self.x, self.y))
             # Fewer segments to counter greater speed
             self.set_path(self.escape_node, 4)
-            # self.update()
 
     def update(self, **kwargs):
 
@@ -90,8 +86,6 @@ class Civilian(Enemy):
             if self.next_point is None or self.end_node.compare_node(current_node):
                 next_node = self.grid.get_random_node_from_zone(current_node.get_id())
                 self.set_path(node=next_node)
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
 
         super().update(**kwargs)
 
