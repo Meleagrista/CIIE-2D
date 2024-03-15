@@ -83,6 +83,9 @@ class Player(pygame.sprite.Sprite):
         self._is_alive = True
         self._is_exposed = False
         self._is_moving = False
+
+        self.exposer = None
+
         self._in_exit = False
         self._in_key = False
         self._has_key = False
@@ -131,7 +134,9 @@ class Player(pygame.sprite.Sprite):
             if not self._is_exposed or not self._is_alive:
                 self._is_exposed = True
                 self.notify_observers()
+
         elif self._is_alive:
+            previous_exposer = self.exposer
             if self._is_exposed:
                 self._is_exposed = False
                 self.notify_observers()
@@ -142,10 +147,16 @@ class Player(pygame.sprite.Sprite):
             elif self._recovering:
                 self._recovering = False
                 self.notify_observers()
-
             if self._recovering:
                 self._health = increase(self._health, self._max_health)
+            if self._is_exposed:
+                self._is_exposed = False
+                self.notify_observers()
+            if previous_exposer != self.exposer:
+                self.notify_observers()
 
+
+        ##############################
         # MOVEMENT AND DIRECTION
         direction, direction_x, direction_y = get_direction(movement_option)
 

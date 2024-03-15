@@ -1,7 +1,10 @@
 import pygame
-from game.entities.enemy import Enemy
 from game.entities.player import Player
 from game.map.grid import Grid
+from game.entities.enemies.guard import Guard
+from game.entities.enemies.civilian import Civilian
+from game.entities.enemies.sentinel import Sentinel
+from game.entities.enemies.security import Security
 
 
 class Enemies(pygame.sprite.Group):

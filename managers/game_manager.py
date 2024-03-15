@@ -6,7 +6,9 @@ from pygamepopup.constants import BUTTON_SIZE
 from pygamepopup.menu_manager import MenuManager
 from typing_extensions import deprecated
 
-from game.entities.enemy import Enemy
+from game.groups.interface_group import Interface
+from game.groups.render_group import Camera
+from game.entities.enemies.enemy import Enemy
 from game.entities.player import Player
 from game.groups.enemies_group import Enemies
 from game.groups.interface_group import Interface

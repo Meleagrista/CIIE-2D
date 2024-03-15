@@ -43,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self._sprite_sheet = SpriteSheet(ENEMY_ASSETS, 10, 33, NPC_SIZE * 2.5)
         self._animation_frames = 4
-        self._animation_start = 10
+        self._animation_start = 0
         self._idle_frames = 4
         self._idle_start = 0
         self._current_frame = 0
@@ -129,19 +129,6 @@ class Enemy(pygame.sprite.Sprite):
                 vertical_distance < surface.get_height() // 2 + padding)
 
     def update(self, **kwargs):
-        ##############################
-        # PATHFINDING AND ROTATION
-        ##############################
-        current_pos = (self.x, self.y)
-        self._is_moving = True
-
-        if self.next_point is None or self.end_node.compare_pos(current_pos):
-            self.pathfinding()
-            self.setting_path = True
-            self.setting_rotation = True
-            self._is_moving = False
-        elif self.has_reached(self.next_point):
-            self.set_next_point()
 
         #################################
         # DRAWING PATH (OPTIONAL)
@@ -241,19 +228,35 @@ class Enemy(pygame.sprite.Sprite):
     #                               PATHFINDING                               #
     # ####################################################################### #
 
-    def pathfinding(self):
-        self.set_start()
-        self.set_random_end()
-        self.path_nodes = self.a_star()
-        self.path_points = self.interpolate_points(8)
+    def pathfinding(self, end=None, interpolation=8, simplified=True):
+        try:
+            self.set_start()
+            if end is not None:
+                self.end_node = end
+            else:
+                self.set_random_end()
+            self.set_intermediate_points(self.a_star(), interpolation, simplified)
+        except Exception as e:
+            print(e)
+            print(self.path_nodes)
+
+    def set_intermediate_points(self, nodes, segments, simplified):
+        if segments is None:
+            segments = 8
+        self.path_nodes = nodes
+        self.path_points = self.interpolate_points(segments)
         self.next_point = self.path_points[1]
         self.path_nodes.pop(0)
         self.path_points.pop(0)
+        if not simplified:
+            self.setting_path = True
+            self.setting_rotation = True
+            self._is_moving = False
 
     def set_start(self):
         self.start_node = self.grid.get_node((self.rect.centerx, self.rect.centery))
 
-    def set_manual_end(self, node):
+    def set_end(self, node):
         self.end_node = node
 
     def set_random_end(self):
@@ -278,6 +281,12 @@ class Enemy(pygame.sprite.Sprite):
                         end_node = self.grid.get_random_node()
                     self.end_node = end_node
                     return
+
+    def set_path(self, node=None, segments=None):
+        self.pathfinding(node, segments)
+
+    def set_simplified_path(self, node=None, segments=None):
+        self.pathfinding(node, segments, True)
 
     def set_next_point(self):
         try:
