@@ -60,9 +60,6 @@ class GameManager(Scene):
         self.level_ui = Indicator(self.win)
         self.audio = audio
 
-        self.key_x, self.key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
-        self.grid.set_key_square(self.key_x, self.key_y)
-
         self._start()
 
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
@@ -197,8 +194,12 @@ class GameManager(Scene):
             self.manager.advance_level(level_number + 1)
 
     def _start(self):
+        self.key_x, self.key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
+        self.grid.set_key_square(self.key_x, self.key_y)
+
         self._spawn_player()
         self._spawn_enemies()
+
         self.grid.visible_key = True
         self.set_interface()
 
@@ -220,7 +221,7 @@ class GameManager(Scene):
     # ####################################################################### #
 
     def _render(self):
-        for enemy in self.enemies.sprites():  # TODO: Limit enemies during rendering.
+        for enemy in self.enemies.sprites():
             vertices = []
             for pair in enemy.corners:
                 point1, point2 = pair
@@ -270,6 +271,8 @@ class GameManager(Scene):
         self.menu_manager.close_active_menu()
 
     def set_menus(self):
+        font_size = 24
+        font_color = GREY
         pause_menu = InfoBox(
             "",
             [
@@ -278,8 +281,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'resume'),
                         callback=lambda: self._resume(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -288,8 +291,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -298,8 +301,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -317,8 +320,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'restart'),
                         callback=lambda: self._restart(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -327,8 +330,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -346,8 +349,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'next level'),
                         callback=lambda: self._advance(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -356,8 +359,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],
@@ -375,8 +378,8 @@ class GameManager(Scene):
                         title=get_translation(self.manager.get_language(), 'main menu'),
                         callback=lambda: self._close(),
                         size=(BUTTON_SIZE[0], BUTTON_SIZE[1]),
-                        text_hover_color=PURPLE,
-                        font=pygame.font.Font(FONT, 16),
+                        text_hover_color=font_color,
+                        font=pygame.font.Font(FONT, font_size),
                         no_background=True
                     )
                 ],

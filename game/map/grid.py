@@ -324,6 +324,10 @@ class Grid:
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
+        for nodes in self.nodes:
+            for node in nodes:
+                if node.is_key:
+                    node.make_key()
         if x < 0 or y < 0 or x >= self.size or y >= self.size:
             return False
         self.nodes[x][y].make_key()
