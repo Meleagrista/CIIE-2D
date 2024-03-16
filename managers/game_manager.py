@@ -205,6 +205,7 @@ class GameManager(Scene):
 
     def _resume(self):
         self.close_menu()
+        self.player.notify_observers()
 
     def _restart(self):
         if self.player is not None:
@@ -264,6 +265,7 @@ class GameManager(Scene):
         return self.menu_manager.active_menu is not None
 
     def open_menu(self, menu_to_open):
+        self.audio.pause()
         self.close_menu()
         self.menu_manager.open_menu(menu_to_open)
 
