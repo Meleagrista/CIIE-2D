@@ -197,6 +197,11 @@ class GameManager(Scene):
         self.key_x, self.key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
         self.grid.set_key_square(self.key_x, self.key_y)
 
+        self.end_current_frame = -1
+        self._end_delay_frame = 2
+        self._end_pass_frame = self._end_delay_frame
+        self.set_door()
+
         self._spawn_player()
         self._spawn_enemies()
 
