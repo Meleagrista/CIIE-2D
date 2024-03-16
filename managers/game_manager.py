@@ -60,11 +60,12 @@ class GameManager(Scene):
         self.level_ui = Indicator(self.win)
         self.audio = audio
 
+        self.key_x, self.key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
+        self.key_x, self.key_y = 16, 75
+        self.grid.set_key_square(self.key_x, self.key_y)
+
         self._start()
         self.set_interface()
-
-        key_x, key_y = (self.grid.get_random_node_from_zones(self.level.key_zones)).get_grid_pos()
-        self.grid.set_key_square(key_x, key_y)
 
         for x, y in zip(self.level.coordinates.exit_x, self.level.coordinates.exit_y):
             self.grid.set_exit_square(x, y)
@@ -200,6 +201,7 @@ class GameManager(Scene):
     def _start(self):
         self._spawn_player()
         self._spawn_enemies()
+        self.grid.visible_key = True
 
     def _resume(self):
         self.close_menu()
