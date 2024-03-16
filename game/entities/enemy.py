@@ -1,4 +1,4 @@
-from math import ceil
+from math import ceil, floor
 
 from typing_extensions import deprecated
 
@@ -378,8 +378,8 @@ class Enemy(pygame.sprite.Sprite):
         return []
 
     def within_reach(self, position):
-        horizontal_distance = ceil(abs(position[0] - self.rect.centerx)/self.grid.gap)
-        vertical_distance = ceil(abs(position[1] - self.rect.centery)/self.grid.gap)
+        horizontal_distance = floor(abs(position[0] - self.rect.centerx)/self.grid.gap)
+        vertical_distance = floor(abs(position[1] - self.rect.centery)/self.grid.gap)
         return horizontal_distance < self.ray_radius and vertical_distance < self.ray_reach
 
     # ####################################################################### #

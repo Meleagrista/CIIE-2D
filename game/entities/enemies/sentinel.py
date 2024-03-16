@@ -70,8 +70,6 @@ class Sentinel(Enemy):
                 self.chase_node = None
                 self.set_path(self.previous_node)
 
-            elif self.has_reached(self.next_point):
-                self.set_next_point()
         else:
             self.speed = 1
             self.ray_cone = 90
